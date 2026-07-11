@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>探索商家 — OpenToday｜今日开业</title>
+<meta name="description" content="发现 Johor 最值得去的好店。按分类、状态、地区筛选新开业商家。" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="demo-banner">静态设计预览 · 示范资料均为 Demo · 可点击浏览各页面</div>
+<div id="site-header"></div>
+
+<main>
+  <div class="container">
+    <div style="padding:36px 0 8px;">
+      <h1>探索商家</h1>
+      <p class="lead" style="margin-top:8px;">发现 Johor 最值得去的好店。</p>
+      <div class="search" style="margin-top:20px;max-width:560px;">
+        <input placeholder="搜索商家名称、分类或地区…" />
+        <button class="btn btn-brand">搜索</button>
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);margin-top:22px;">分类</div>
+      <div class="filters">
+        <span class="chip active" data-group="cat">全部</span>
+        <span class="chip" data-group="cat">美食餐饮</span>
+        <span class="chip" data-group="cat">咖啡馆</span>
+        <span class="chip" data-group="cat">美容美发</span>
+        <span class="chip" data-group="cat">零售购物</span>
+        <span class="chip" data-group="cat">生活服务</span>
+        <span class="chip" data-group="cat">教育培训</span>
+      </div>
+      <div style="display:flex;gap:40px;flex-wrap:wrap;">
+        <div><div style="font-size:12px;color:var(--muted);">状态</div>
+          <div class="filters">
+            <span class="chip active" data-group="status">全部</span>
+            <span class="chip" data-group="status">现已开业</span>
+            <span class="chip" data-group="status">即将开业</span>
+            <span class="chip" data-group="status">近期开业</span>
+          </div>
+        </div>
+        <div><div style="font-size:12px;color:var(--muted);">地区</div>
+          <div class="filters">
+            <span class="chip active" data-group="area">全部</span>
+            <span class="chip" data-group="area">JB Town</span>
+            <span class="chip" data-group="area">Mount Austin</span>
+            <span class="chip" data-group="area">Bukit Indah</span>
+            <span class="chip" data-group="area">Skudai</span>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:14px;margin:8px 0 4px;">共 <b style="color:var(--ink);">6</b> 家示范商家</p>
+    </div>
+
+    <section style="padding-top:16px;">
+      <div class="grid g-3 biz-grid">
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#e7ddd4;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Brew &amp; Co. Café</b><div class="meta">咖啡馆 · JB Town</div></div></a>
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#d9ccc0;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Good Grill House</b><div class="meta">美食餐饮 · Mount Austin</div></div></a>
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#d9e0dc;"><span class="badge badge-new">近期开业</span></div><div class="biz-body"><b>Glow Studio</b><div class="meta">美容美发 · Bukit Indah</div></div></a>
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#d7ddd9;"><span class="badge badge-soon">即将开业</span></div><div class="biz-body"><b>The Green Corner</b><div class="meta">零售购物 · Permas Jaya</div></div></a>
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#e6e2d6;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Paw Hills</b><div class="meta">生活服务 · Skudai</div></div></a>
+        <a class="biz" href="business.html"><div class="biz-img" style="background:#e9dfd0;"><span class="badge badge-new">近期开业</span></div><div class="biz-body"><b>Little Joy Bakery</b><div class="meta">美食餐饮 · Taman Molek</div></div></a>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:6px;margin-top:36px;">
+        <span class="chip active">1</span><span class="chip">2</span><span class="chip">3</span><span class="chip">下一页 ›</span>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script>window.CURRENT_PAGE="explore";</script>
+<script src="site.js"></script>
+</body>
+</html>
