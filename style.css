@@ -119,8 +119,7 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);ba
 .gallery .main{border-radius:12px;background-size:cover;background-position:center;position:relative;}
 .gallery .side{display:grid;grid-template-rows:1fr 1fr;gap:10px;}
 .gallery .side div{border-radius:12px;background-size:cover;background-position:center;}
-.gallery.single{height:auto;grid-template-columns:1fr;}
-.gallery.single .main{aspect-ratio:16/9;}
+.gallery.single{grid-template-columns:1fr;}
 .gallery.single .side{display:none;}
 .detail{display:grid;grid-template-columns:1fr 340px;gap:32px;margin-top:28px;}
 .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:24px 0 20px;}
