@@ -92,7 +92,7 @@
       var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
       grid.innerHTML=rows.map(function(b,i){
         var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
-        return '<a class="biz" href="business.html"><div class="biz-img" style="background:'+colors[i%colors.length]+';"><span class="badge badge-open">已刊登</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
+        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="background:'+colors[i%colors.length]+';"><span class="badge badge-open">已刊登</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
       }).join("");
     })
     .catch(function(){});

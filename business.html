@@ -97,5 +97,37 @@
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="explore";</script>
 <script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var id=new URLSearchParams(location.search).get("id");
+  if(!id) return;
+  fetch(SB_URL+"/rest/v1/public_businesses?id=eq."+encodeURIComponent(id)+"&select=*",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!Array.isArray(rows)||!rows.length) return;
+      var b=rows[0];
+      var meta=[b.category,b.area||b.city,b.opening_date?b.opening_date+" 开业":null].filter(Boolean).join(" · ");
+      document.title=b.business_name+" — OpenToday｜今日开业";
+      var h1=document.querySelector(".detail h1"); if(h1) h1.textContent=b.business_name;
+      var m=document.querySelector(".detail .muted"); if(m) m.textContent=meta;
+      var cr=document.querySelector(".crumb span"); if(cr) cr.textContent=b.business_name;
+      var desc=document.querySelector("#p-about > p"); if(desc) desc.textContent=b.short_description||("认识 "+b.business_name+"。");
+      var addr=document.querySelector("#p-about .info-row span:last-child"); if(addr) addr.textContent=b.address||"—";
+      var cc=document.querySelectorAll(".contact-card .info-row span:last-child");
+      if(cc[0]) cc[0].textContent=b.category||"—";
+      if(cc[1]) cc[1].textContent=b.area||b.city||"—";
+      if(cc[2]) cc[2].textContent=b.opening_date||"—";
+      if(b.whatsapp){var wa=document.querySelector(".contact-card .btn-wa"); if(wa) wa.setAttribute("href","https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,""));}
+      var fb=b.facebook_url, ig=b.instagram_url, gm=b.google_maps_url;
+      var soc=document.querySelectorAll(".contact-card .socials a");
+      if(soc[0]&&fb) soc[0].setAttribute("href",fb);
+      if(soc[2]&&gm) soc[2].setAttribute("href",gm);
+      if(soc[1]&&ig) soc[1].setAttribute("href",ig);
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 </html>
