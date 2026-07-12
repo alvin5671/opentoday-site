@@ -78,7 +78,7 @@
       $("ccArea").textContent=b.area||b.city||"—";
       if(b.image_url){
         var m=$("bMain"); m.style.backgroundImage="url('"+b.image_url+"')"; m.style.backgroundSize="cover"; m.style.backgroundPosition="center";
-        $("bGallery").style.gridTemplateColumns="1fr"; $("bSide").style.display="none";
+        $("bGallery").className="gallery single";
       }
       if(b.short_description){ $("bDesc").textContent=b.short_description; show($("descSec")); }
       if(b.address){ $("bAddr").textContent=b.address; show($("addrSec")); if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); } }
