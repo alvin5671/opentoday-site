@@ -50,11 +50,11 @@
           </div>
         </div>
       </div>
-      <p class="muted" style="font-size:14px;margin:8px 0 4px;">共 <b style="color:var(--ink);">6</b> 家示范商家</p>
+      <p class="muted" style="font-size:14px;margin:8px 0 4px;">共 <b style="color:var(--ink);" id="bizCount">0</b> 家已刊登商家</p>
     </div>
 
     <section style="padding-top:16px;">
-      <div class="grid g-3 biz-grid">
+      <div class="grid g-3 biz-grid" id="bizGrid">
         <a class="biz" href="business.html"><div class="biz-img" style="background:#e7ddd4;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Brew &amp; Co. Café</b><div class="meta">咖啡馆 · JB Town</div></div></a>
         <a class="biz" href="business.html"><div class="biz-img" style="background:#d9ccc0;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Good Grill House</b><div class="meta">美食餐饮 · Mount Austin</div></div></a>
         <a class="biz" href="business.html"><div class="biz-img" style="background:#d9e0dc;"><span class="badge badge-new">近期开业</span></div><div class="biz-body"><b>Glow Studio</b><div class="meta">美容美发 · Bukit Indah</div></div></a>
@@ -73,5 +73,30 @@
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="explore";</script>
 <script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var grid=document.getElementById("bizGrid");
+  if(!grid) return;
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  fetch(SB_URL+"/rest/v1/public_businesses?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!Array.isArray(rows)) return;
+      var cnt=document.getElementById("bizCount"); if(cnt) cnt.textContent=rows.length;
+      if(rows.length===0){
+        grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家。<br><span style="font-size:13px;">在后台把商家状态改成「已刊登」，这里就会自动显示。</span></div>';
+        return;
+      }
+      var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
+      grid.innerHTML=rows.map(function(b,i){
+        var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+        return '<a class="biz" href="business.html"><div class="biz-img" style="background:'+colors[i%colors.length]+';"><span class="badge badge-open">已刊登</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
+      }).join("");
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 </html>
