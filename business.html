@@ -65,7 +65,7 @@
   var $=function(x){return document.getElementById(x);};
   function show(el){ if(el) el.style.display=""; }
   if(!id){ $("bName").textContent="请从探索页选择商家"; return; }
-  fetch(SB_URL+"/rest/v1/public_businesses?id=eq."+encodeURIComponent(id)+"&select=*",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+  fetch(SB_URL+"/rest/v1/public_customers?id=eq."+encodeURIComponent(id)+"&select=*",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
       if(!Array.isArray(rows)||!rows.length){ $("bName").textContent="找不到该商家"; return; }

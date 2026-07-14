@@ -80,7 +80,7 @@
   var grid=document.getElementById("bizGrid");
   if(!grid) return;
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-  fetch(SB_URL+"/rest/v1/public_businesses?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+  fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
       if(!Array.isArray(rows)) return;
