@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>免费登记你的商家 — OpenToday｜今日开业</title>
+<meta name="description" content="免费登记你的新开业商家，让顾客、Google 和 AI 找到你。填写资料并上传照片，审核后即可刊登。" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  .sform{max-width:640px;margin:0 auto;}
+  .sform .fld{margin-bottom:16px;}
+  .sform label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .sform label .req{color:var(--brand);}
+  .sform input,.sform select,.sform textarea{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
+    font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;box-sizing:border-box;
+  }
+  .sform input:focus,.sform select:focus,.sform textarea:focus{border-color:var(--brand);}
+  .sform textarea{min-height:90px;resize:vertical;}
+  .sform .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:560px){.sform .row2{grid-template-columns:1fr;}}
+  .sform .hint{font-size:12px;color:var(--muted);margin-top:5px;}
+  .photo-drop{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer;background:var(--surface);}
+  .photo-drop:hover{border-color:var(--brand);}
+  #photoPreview{max-width:100%;border-radius:10px;margin-top:12px;display:none;}
+  .smsg{padding:14px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;display:none;}
+  .smsg.ok{background:#eef8f0;border:1px solid #cfe9d4;color:#1c7a34;}
+  .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
+  .done-card{display:none;text-align:center;padding:44px 20px;}
+  .done-card .ic{font-size:52px;}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="container sform">
+    <div style="padding:36px 0 6px;">
+      <span class="eyebrow">免费登记 · Free Listing</span>
+      <h1 style="margin:12px 0 8px;">登记你的商家</h1>
+      <p class="lead" style="margin-bottom:8px;">填好资料并上传照片，我们审核后刊登，让顾客、Google 和 AI 找到你的新店。</p>
+    </div>
+
+    <div class="smsg" id="smsg"></div>
+
+    <form class="card" id="sform" style="padding:22px;">
+      <div class="fld">
+        <label>商家名称 <span class="req">*</span></label>
+        <input id="f_name" required placeholder="例如：早尚好 Good Morning" />
+      </div>
+
+      <div class="row2">
+        <div class="fld">
+          <label>分类 <span class="req">*</span></label>
+          <select id="f_cat" required>
+            <option value="">请选择</option>
+            <option>美食餐饮</option><option>咖啡馆</option><option>美容美发</option>
+            <option>零售购物</option><option>生活服务</option><option>教育培训</option>
+            <option>健康医疗</option><option>其他</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>开业状态</label>
+          <select id="f_type">
+            <option>现已开业</option><option>即将开业</option><option>近期开业</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="fld">
+          <label>地区</label>
+          <input id="f_area" placeholder="例如：Mount Austin" />
+        </div>
+        <div class="fld">
+          <label>开业日期</label>
+          <input id="f_date" type="date" />
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>地址</label>
+        <input id="f_addr" placeholder="完整地址" />
+      </div>
+
+      <div class="fld">
+        <label>Google 地图链接</label>
+        <input id="f_map" placeholder="https://maps.google.com/..." />
+      </div>
+
+      <div class="row2">
+        <div class="fld">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input id="f_wa" required placeholder="例如：60123456789" />
+          <div class="hint">只填数字，含国码（60）</div>
+        </div>
+        <div class="fld">
+          <label>电话</label>
+          <input id="f_phone" placeholder="例如：07-1234567" />
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="fld">
+          <label>Facebook 链接</label>
+          <input id="f_fb" placeholder="https://facebook.com/..." />
+        </div>
+        <div class="fld">
+          <label>Instagram 链接</label>
+          <input id="f_ig" placeholder="https://instagram.com/..." />
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>商家简介</label>
+        <textarea id="f_desc" placeholder="简单介绍你的店、招牌产品或服务…"></textarea>
+      </div>
+
+      <div class="fld">
+        <label>商家照片 <span class="req">*</span></label>
+        <div class="photo-drop" id="photoDrop">📷 点击选择照片（店面 / 产品，建议横图）</div>
+        <input id="f_photo" type="file" accept="image/*" style="display:none;" />
+        <img id="photoPreview" alt="预览" />
+      </div>
+
+      <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交登记</button>
+      <p class="hint" style="text-align:center;margin-top:12px;">提交后我们会审核你的资料，审核通过即会刊登在 OpenToday。<br>我们不会保证 Google 排名或 AI 推荐。</p>
+    </form>
+
+    <div class="card done-card" id="doneCard" style="padding:0;">
+      <div class="ic">✅</div>
+      <h2 style="margin:14px 0 8px;">提交成功！</h2>
+      <p class="lead">我们已收到你的商家资料，审核通过后就会刊登。<br>感谢你使用 OpenToday。</p>
+      <a class="btn btn-outline" href="index.html" style="margin-top:18px;">返回首页</a>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script>window.CURRENT_PAGE="submit";</script>
+<script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var BUCKET="business-photos";
+  var $=function(id){return document.getElementById(id);};
+  var file=null;
+
+  $("photoDrop").addEventListener("click",function(){ $("f_photo").click(); });
+  $("f_photo").addEventListener("change",function(e){
+    file=e.target.files[0]||null;
+    if(file){
+      $("photoDrop").textContent="📷 已选择："+file.name+"（点击可更换）";
+      var pv=$("photoPreview"); pv.src=URL.createObjectURL(file); pv.style.display="block";
+    }
+  });
+
+  function msg(t,type){ var m=$("smsg"); m.textContent=t; m.className="smsg "+type; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
+
+  $("sform").addEventListener("submit",async function(e){
+    e.preventDefault();
+    if(!file){ msg("请上传一张商家照片。","err"); return; }
+    var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
+    try{
+      // 1) upload photo to Storage
+      var ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+      var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+"."+ext;
+      var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+path,{
+        method:"POST",
+        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":file.type||"image/jpeg"},
+        body:file
+      });
+      if(!up.ok){ throw new Error("photo upload failed "+up.status); }
+      var imageUrl=SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+path;
+
+      // 2) insert business into customers (待审核)
+      var data={
+        business_name:$("f_name").value.trim(),
+        name:$("f_name").value.trim(),
+        category:$("f_cat").value,
+        opening_type:$("f_type").value,
+        area:$("f_area").value.trim()||null,
+        city:"Johor Bahru",
+        opening_date:$("f_date").value||null,
+        address:$("f_addr").value.trim()||null,
+        google_maps_url:$("f_map").value.trim()||null,
+        whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
+        phone:$("f_phone").value.trim()||null,
+        facebook_url:$("f_fb").value.trim()||null,
+        instagram_url:$("f_ig").value.trim()||null,
+        short_description:$("f_desc").value.trim()||null,
+        image_url:imageUrl,
+        listing_status:"待审核",
+        status:"未完成",
+        progress:"待制作",
+        submit_date:new Date().toISOString().slice(0,10),
+        project:"Free Listing"
+      };
+      var ins=await fetch(SB_URL+"/rest/v1/customers",{
+        method:"POST",
+        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},
+        body:JSON.stringify(data)
+      });
+      if(!ins.ok){ throw new Error("insert failed "+ins.status); }
+      $("sform").style.display="none";
+      $("smsg").style.display="none";
+      $("doneCard").style.display="block";
+      window.scrollTo({top:0,behavior:"smooth"});
+    }catch(err){
+      msg("提交失败，请稍后再试。("+err.message+")","err");
+      btn.disabled=false; btn.textContent="提交登记";
+    }
+  });
+})();
+</script>
+</body>
+</html>
