@@ -41,6 +41,7 @@
           <h3 style="margin:0 0 10px;">地址</h3>
           <div class="info-row" style="border-top:none;padding-top:0;"><span class="k" style="min-width:52px;">地址</span><span id="bAddr"></span></div>
           <a id="bMapBtn" class="btn btn-outline" style="margin-top:14px;display:none;" href="#" target="_blank" rel="noopener">🧭 在 Google 地图打开</a>
+          <iframe id="bMapEmbed" title="Google 地图" style="display:none;width:100%;height:320px;border:0;border-radius:12px;margin-top:14px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
 
         <div id="hoursSec" style="margin-top:26px;display:none;">
@@ -115,7 +116,11 @@
         t.addEventListener("click",function(e){ var d=e.target.closest(".th"); if(d){ $("bCover").style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } });
       }
       if(b.short_description){ $("bDesc").textContent=b.short_description; show($("descSec")); }
-      if(b.address){ $("bAddr").textContent=b.address; show($("addrSec")); if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); } }
+      if(b.address){
+        $("bAddr").textContent=b.address; show($("addrSec"));
+        if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); }
+        var mf=$("bMapEmbed"); mf.src="https://maps.google.com/maps?q="+encodeURIComponent(b.address)+"&z=16&output=embed"; show(mf);
+      }
       if(b.whatsapp){ var wa=$("bWa"); wa.href="https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,""); show(wa); }
       if(b.phone){ var tel=$("bTel"); tel.href="tel:"+String(b.phone).replace(/\s+/g,""); show(tel); }
       if(b.google_maps_url){ var dir=$("bDir"); dir.href=b.google_maps_url; show(dir); }
