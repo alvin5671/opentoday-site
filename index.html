@@ -173,10 +173,15 @@
           var idx=4, ti=0;
           setInterval(function(){
             var t=tiles[ti%4]; ti++;
-            var back=t.layers[1-t.front];
-            back.style.backgroundImage="url('"+pool[idx%pool.length]+"')"; idx++;
-            back.classList.add("on"); t.layers[t.front].classList.remove("on");
-            t.front=1-t.front;
+            var url=pool[idx%pool.length]; idx++;
+            var pre=new Image();
+            pre.onload=function(){
+              var back=t.layers[1-t.front];
+              back.style.backgroundImage="url('"+url+"')";
+              back.classList.add("on"); t.layers[t.front].classList.remove("on");
+              t.front=1-t.front;
+            };
+            pre.src=url;
           },2800);
         }
       }
