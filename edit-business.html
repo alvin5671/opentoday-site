@@ -80,36 +80,36 @@
       <button type="button" class="addbtn" onclick="document.getElementById('coverFile').click()">📷 更换封面（自动裁 21:9）</button>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="standard">
       <h3>更多照片（4:3）</h3>
       <div class="thumbs" id="galThumbs"></div>
       <input id="galFile" type="file" accept="image/*" multiple style="display:none;" />
       <button type="button" class="addbtn" onclick="document.getElementById('galFile').click()" style="margin-top:10px;">➕ 添加照片</button>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="standard">
       <h3>营业时间</h3>
       <textarea id="hours" placeholder="一行一个时段，用 | 分隔，例如：&#10;周一 – 周五 | 07:00 – 14:00&#10;周六 – 周日 | 07:00 – 15:00"></textarea>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="standard">
       <h3>品牌故事</h3>
       <textarea id="brand_story" style="min-height:110px;"></textarea>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="standard">
       <h3>产品与服务</h3>
       <div id="products"></div>
       <button type="button" class="addbtn" onclick="addProduct()">➕ 加一个产品</button>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="standard">
       <h3>常见问题</h3>
       <div id="faq"></div>
       <button type="button" class="addbtn" onclick="addFaq()">➕ 加一个问题</button>
     </div>
 
-    <div class="sec">
+    <div class="sec tsec" data-min="premium">
       <h3>分店</h3>
       <div id="branches"></div>
       <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
@@ -162,6 +162,11 @@ function loadBiz(){
     arr(b.products).forEach(function(p){ addProduct(p); });
     arr(b.faq).forEach(function(f){ addFaq(f); });
     arr(b.branches).forEach(function(br){ addBranch(br); });
+    var TIER={"Free Listing":"free","Opening Profile":"standard","Launch Boost":"standard","Premium Brand Launch":"premium"};
+    var RANK={free:0,standard:1,premium:2};
+    var _tier=TIER[b.project]||"free", _rank=RANK[_tier];
+    document.querySelectorAll(".tsec").forEach(function(sec){ var need=RANK[sec.getAttribute("data-min")]||0; sec.style.display=_rank>=need?"":"none"; });
+    $("bizIdLabel").textContent="ID: "+ID+(b.project?" · "+b.project:"");
     $("loadMsg").style.display="none"; $("form").style.display="";
   }).catch(function(){ $("loadMsg").textContent="加载失败。"; });
 }
