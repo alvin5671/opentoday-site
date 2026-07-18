@@ -120,7 +120,10 @@
       <h3>⭐ 精选曝光（Featured）</h3>
       <div class="hint" style="margin-bottom:10px;">勾选后此商家在探索页会置顶 + 显示 ⭐ 标签。适合 Launch Boost / Premium。设到期日后，过期自动取消置顶（勾选时自动填 4 周后）。</div>
       <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px;"><input type="checkbox" id="featured" style="width:auto;"> 设为精选（置顶 + ⭐）</label>
-      <div class="fld" style="margin:0;"><label>精选到期日</label><input id="featured_until" type="date" /></div>
+      <div class="row2" style="margin:0;">
+        <div class="fld" style="margin:0;"><label>精选开始日</label><input id="featured_start" type="date" /></div>
+        <div class="fld" style="margin:0;"><label>精选到期日</label><input id="featured_until" type="date" /></div>
+      </div>
     </div>
 
     <div class="savebar">
@@ -182,6 +185,7 @@ function loadBiz(){
     if(b.opening_date) $("opening_date").value=b.opening_date;
     if(b.listing_status) $("listing_status").value=b.listing_status;
     if($("featured")) $("featured").checked=!!b.featured;
+    if(b.featured_start && $("featured_start")) $("featured_start").value=b.featured_start;
     if(b.featured_until && $("featured_until")) $("featured_until").value=b.featured_until;
     if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
     current.gallery=arr(b.gallery); renderGal();
@@ -217,7 +221,7 @@ $("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e
 function renderGal(){ $("galThumbs").innerHTML=current.gallery.map(function(u,i){return '<div class="t" style="background-image:url(\''+esc(u)+'\')"><button type="button" onclick="delGal('+i+')">×</button></div>';}).join(""); }
 function delGal(i){ current.gallery.splice(i,1); renderGal(); }
 
-if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked && $("featured_until") && !$("featured_until").value){ var d=new Date(); d.setDate(d.getDate()+28); $("featured_until").value=d.toISOString().slice(0,10); } }); }
+if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked){ var t=new Date(); if($("featured_start") && !$("featured_start").value){ $("featured_start").value=t.toISOString().slice(0,10); } if($("featured_until") && !$("featured_until").value){ var d=new Date(); d.setDate(d.getDate()+28); $("featured_until").value=d.toISOString().slice(0,10); } } }); }
 
 function collect(cls,keys,root){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
 
@@ -238,6 +242,7 @@ function save(){
     branches:collect("branch",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}],"branches"),
     listing_status:$("listing_status").value,
     featured:$("featured")?$("featured").checked:false,
+    featured_start:($("featured_start")&&$("featured_start").value)||null,
     featured_until:($("featured_until")&&$("featured_until").value)||null
   };
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID),{method:"PATCH",headers:Object.assign({},H,{"Content-Type":"application/json"}),body:JSON.stringify(data)}).then(function(r){

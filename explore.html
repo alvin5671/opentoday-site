@@ -97,7 +97,7 @@
         return;
       }
       var today=new Date().toISOString().slice(0,10);
-      function isFeat(b){ return !!b.featured && (!b.featured_until || String(b.featured_until)>=today); }
+      function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
       rows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
       var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
       grid.innerHTML=rows.map(function(b,i){
