@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>免费登记你的商家 — OpenToday｜今日开业</title>
-<meta name="description" content="免费登记你的新开业商家，让顾客、Google 和 AI 找到你。填写资料并上传照片，审核后即可刊登。" />
+<title>登记你的商家 — OpenToday｜今日开业</title>
+<meta name="description" content="登记你的新开业商家，让顾客、Google 和 AI 找到你。选择配套并填写资料，审核后即可刊登。" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 <style>
@@ -12,25 +12,28 @@
   .sform .fld{margin-bottom:16px;}
   .sform label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
   .sform label .req{color:var(--brand);}
-  .sform input,.sform select,.sform textarea{
-    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
-    font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;box-sizing:border-box;
-  }
+  .sform input,.sform select,.sform textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;box-sizing:border-box;}
   .sform input:focus,.sform select:focus,.sform textarea:focus{border-color:var(--brand);}
-  .sform textarea{min-height:90px;resize:vertical;}
+  .sform textarea{min-height:80px;resize:vertical;}
   .sform .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   @media(max-width:560px){.sform .row2{grid-template-columns:1fr;}}
   .sform .hint{font-size:12px;color:var(--muted);margin-top:5px;}
-  .photo-drop{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer;background:var(--surface);}
+  .grp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;}
+  .grp h3{margin:0 0 4px;font-size:16px;}
+  .grp .gsub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .photo-drop{border:1.5px dashed var(--line);border-radius:12px;padding:16px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer;background:var(--surface);}
   .photo-drop:hover{border-color:var(--brand);}
   #cropWrap{display:none;margin-top:12px;}
-  #cropBox{max-height:340px;background:#f3f3f3;border-radius:10px;overflow:hidden;}
+  #cropBox{max-height:320px;background:#f3f3f3;border-radius:10px;overflow:hidden;}
   #cropImg{max-width:100%;display:block;}
-  #morePrev{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:10px;}
+  #morePrev{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:10px;}
   #morePrev .mp{position:relative;aspect-ratio:4/3;border-radius:8px;background:#eee center/cover no-repeat;}
-  #morePrev .mp button{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;line-height:20px;padding:0;font-size:14px;}
+  #morePrev .mp button{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;line-height:20px;padding:0;}
+  .rowitem{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--surface);position:relative;}
+  .rowitem .del{position:absolute;top:8px;right:8px;background:#fee;color:#c00;border:none;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:12px;}
+  .addbtn{background:#eef4ff;color:#2563EB;border:1px dashed #9db8f0;border-radius:9px;padding:9px;width:100%;cursor:pointer;font-weight:600;font-size:13px;}
+  .plan-note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:16px;}
   .smsg{padding:14px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;display:none;}
-  .smsg.ok{background:#eef8f0;border:1px solid #cfe9d4;color:#1c7a34;}
   .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
   .done-card{display:none;text-align:center;padding:44px 20px;}
   .done-card .ic{font-size:52px;}
@@ -42,112 +45,110 @@
 <main>
   <div class="container sform">
     <div style="padding:36px 0 6px;">
-      <span class="eyebrow">免费登记 · Free Listing</span>
+      <span class="eyebrow">登记商家</span>
       <h1 style="margin:12px 0 8px;">登记你的商家</h1>
-      <p class="lead" style="margin-bottom:8px;">填好资料并上传照片，我们审核后刊登，让顾客、Google 和 AI 找到你的新店。</p>
+      <p class="lead" style="margin-bottom:8px;">选择配套并填好资料，我们审核后刊登，让顾客、Google 和 AI 找到你的新店。</p>
     </div>
 
     <div class="smsg" id="smsg"></div>
 
-    <form class="card" id="sform" style="padding:22px;">
-      <div class="fld">
-        <label>商家名称 <span class="req">*</span></label>
-        <input id="f_name" required placeholder="例如：早尚好 Good Morning" />
+    <form id="sform">
+      <div class="grp">
+        <h3>选择配套</h3>
+        <div class="gsub">不同配套可填的内容不一样，付费配套内容更丰富。</div>
+        <select id="f_plan">
+          <option value="Free Listing">Free Listing — 免费</option>
+          <option value="Opening Profile">Opening Profile — RM699</option>
+          <option value="Launch Boost">Launch Boost — RM1,288</option>
+          <option value="Premium Brand Launch">Premium Brand Launch — RM2,888 起</option>
+        </select>
+        <div class="hint" id="planHint"></div>
       </div>
 
-      <div class="row2">
-        <div class="fld">
-          <label>分类 <span class="req">*</span></label>
-          <select id="f_cat" required>
-            <option value="">请选择</option>
-            <option>美食餐饮</option><option>咖啡馆</option><option>美容美发</option>
-            <option>零售购物</option><option>生活服务</option><option>教育培训</option>
-            <option>健康医疗</option><option>其他</option>
-          </select>
+      <div class="grp">
+        <h3>基本资料</h3>
+        <div class="fld"><label>商家名称 <span class="req">*</span></label><input id="f_name" required placeholder="例如：早尚好 Good Morning" /></div>
+        <div class="row2">
+          <div class="fld"><label>分类 <span class="req">*</span></label>
+            <select id="f_cat" required><option value="">请选择</option><option>美食餐饮</option><option>咖啡馆</option><option>美容美发</option><option>零售购物</option><option>生活服务</option><option>教育培训</option><option>健康医疗</option><option>其他</option></select>
+          </div>
+          <div class="fld"><label>开业状态</label>
+            <select id="f_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option></select>
+          </div>
         </div>
-        <div class="fld">
-          <label>开业状态</label>
-          <select id="f_type">
-            <option>现已开业</option><option>即将开业</option><option>近期开业</option>
-          </select>
+        <div class="row2">
+          <div class="fld"><label>地区</label><input id="f_area" placeholder="例如：Mount Austin" /></div>
+          <div class="fld"><label>开业日期</label><input id="f_date" type="date" /></div>
         </div>
+        <div class="fld"><label>地址</label><input id="f_addr" placeholder="完整地址" /></div>
+        <div class="fld"><label>Google 地图链接</label><input id="f_map" placeholder="https://maps.google.com/..." /></div>
+        <div class="row2">
+          <div class="fld"><label>WhatsApp <span class="req">*</span></label><input id="f_wa" required placeholder="例如：60123456789" /><div class="hint">只填数字，含国码（60）</div></div>
+          <div class="fld"><label>电话</label><input id="f_phone" placeholder="例如：07-1234567" /></div>
+        </div>
+        <div class="row2">
+          <div class="fld"><label>Facebook 链接</label><input id="f_fb" placeholder="https://facebook.com/..." /></div>
+          <div class="fld"><label>Instagram 链接</label><input id="f_ig" placeholder="https://instagram.com/..." /></div>
+        </div>
+        <div class="fld"><label>商家简介 / 关于</label><textarea id="f_desc" placeholder="简单介绍你的店、招牌产品或服务…"></textarea></div>
       </div>
 
-      <div class="row2">
-        <div class="fld">
-          <label>地区</label>
-          <input id="f_area" placeholder="例如：Mount Austin" />
-        </div>
-        <div class="fld">
-          <label>开业日期</label>
-          <input id="f_date" type="date" />
-        </div>
-      </div>
-
-      <div class="fld">
-        <label>地址</label>
-        <input id="f_addr" placeholder="完整地址" />
-      </div>
-
-      <div class="fld">
-        <label>Google 地图链接</label>
-        <input id="f_map" placeholder="https://maps.google.com/..." />
-      </div>
-
-      <div class="row2">
-        <div class="fld">
-          <label>WhatsApp <span class="req">*</span></label>
-          <input id="f_wa" required placeholder="例如：60123456789" />
-          <div class="hint">只填数字，含国码（60）</div>
-        </div>
-        <div class="fld">
-          <label>电话</label>
-          <input id="f_phone" placeholder="例如：07-1234567" />
-        </div>
-      </div>
-
-      <div class="row2">
-        <div class="fld">
-          <label>Facebook 链接</label>
-          <input id="f_fb" placeholder="https://facebook.com/..." />
-        </div>
-        <div class="fld">
-          <label>Instagram 链接</label>
-          <input id="f_ig" placeholder="https://instagram.com/..." />
-        </div>
-      </div>
-
-      <div class="fld">
-        <label>商家简介</label>
-        <textarea id="f_desc" placeholder="简单介绍你的店、招牌产品或服务…"></textarea>
-      </div>
-
-      <div class="fld">
-        <label>封面照片 <span class="req">*</span></label>
-        <div class="photo-drop" id="photoDrop">📷 点击选择封面照片（店面 / 招牌，建议横图）</div>
+      <div class="grp">
+        <h3>封面照片 <span class="req" style="color:var(--brand);">*</span></h3>
+        <div class="gsub">网站上显示的主图（宽幅 21:9）。</div>
+        <div class="photo-drop" id="photoDrop">📷 点击选择封面照片（店面 / 招牌）</div>
         <input id="f_photo" type="file" accept="image/*" style="display:none;" />
-        <div id="cropWrap">
-          <div id="cropBox"><img id="cropImg" alt="" /></div>
-          <p class="hint">拖动 / 缩放照片，<b>框内的部分</b>就是网站上显示的封面（自动裁成宽幅 21:9）。</p>
-        </div>
+        <div id="cropWrap"><div id="cropBox"><img id="cropImg" alt="" /></div><p class="hint">拖动 / 缩放，框内就是显示的封面（自动裁 21:9）。</p></div>
       </div>
 
-      <div class="fld">
-        <label>更多照片（选填，最多 8 张）</label>
-        <div class="photo-drop" id="moreDrop">➕ 添加更多照片（店内、产品、菜单…）</div>
+      <!-- ===== 付费配套：更丰富内容 ===== -->
+      <div class="grp tierbox" data-min="standard">
+        <h3>更多照片</h3>
+        <div class="gsub">店内、产品、菜单…最多 8 张（自动裁 4:3）。</div>
+        <div class="photo-drop" id="moreDrop">➕ 添加更多照片</div>
         <input id="f_more" type="file" accept="image/*" multiple style="display:none;" />
         <div id="morePrev"></div>
-        <div class="hint">额外照片会自动裁成 4:3、压缩后上传。</div>
       </div>
 
+      <div class="grp tierbox" data-min="standard">
+        <h3>营业时间</h3>
+        <textarea id="f_hours" placeholder="一行一个时段，用 | 分隔，例如：&#10;周一 – 周五 | 07:00 – 14:00&#10;周六 – 周日 | 07:00 – 15:00"></textarea>
+      </div>
+
+      <div class="grp tierbox" data-min="standard">
+        <h3>品牌故事</h3>
+        <textarea id="f_story" style="min-height:110px;" placeholder="讲讲你的品牌理念、由来…"></textarea>
+      </div>
+
+      <div class="grp tierbox" data-min="standard">
+        <h3>产品与服务</h3>
+        <div id="products"></div>
+        <button type="button" class="addbtn" onclick="addProduct()">➕ 加一个产品</button>
+      </div>
+
+      <div class="grp tierbox" data-min="standard">
+        <h3>常见问题（FAQ）</h3>
+        <div id="faq"></div>
+        <button type="button" class="addbtn" onclick="addFaq()">➕ 加一个问题</button>
+      </div>
+
+      <div class="grp tierbox" data-min="premium">
+        <h3>分店</h3>
+        <div class="gsub">Premium 专属：多个分店。</div>
+        <div id="branches"></div>
+        <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
+      </div>
+
+      <div class="plan-note" id="paidNote" style="display:none;">这是付费配套。提交后我们会先 WhatsApp 联系你确认与付款，付款后才会刊登。</div>
+
       <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交登记</button>
-      <p class="hint" style="text-align:center;margin-top:12px;">提交后我们会审核你的资料，审核通过即会刊登在 OpenToday。<br>我们不会保证 Google 排名或 AI 推荐。</p>
+      <p class="hint" style="text-align:center;margin-top:12px;">提交后我们会审核你的资料，通过后刊登在 OpenToday。<br>我们不保证 Google 排名或 AI 推荐。</p>
     </form>
 
-    <div class="card done-card" id="doneCard" style="padding:0;">
+    <div class="done-card" id="doneCard">
       <div class="ic">✅</div>
       <h2 style="margin:14px 0 8px;">提交成功！</h2>
-      <p class="lead">我们已收到你的商家资料，审核通过后就会刊登。<br>感谢你使用 OpenToday。</p>
+      <p class="lead" id="doneMsg">我们已收到你的资料，审核通过后就会刊登。<br>感谢你使用 OpenToday。</p>
       <a class="btn btn-outline" href="index.html" style="margin-top:18px;">返回首页</a>
     </div>
   </div>
@@ -163,124 +164,88 @@
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var BUCKET="business-photos";
   var $=function(id){return document.getElementById(id);};
-  var cropper=null;
-  var extras=[]; // {blob,url}
+  var cropper=null, extras=[];
+  var TIER={"Free Listing":"free","Opening Profile":"standard","Launch Boost":"standard","Premium Brand Launch":"premium"};
+  var RANK={free:0,standard:1,premium:2};
+  var PLAN_MAP={"free":"Free Listing","opening-profile":"Opening Profile","launch-boost":"Launch Boost","premium":"Premium Brand Launch"};
 
-  // ── Cover ──
+  // preselect from ?plan=
+  var pk=(new URLSearchParams(location.search).get("plan")||"").toLowerCase();
+  if(PLAN_MAP[pk]) $("f_plan").value=PLAN_MAP[pk];
+
+  function applyTier(){
+    var plan=$("f_plan").value, tier=TIER[plan]||"free", rank=RANK[tier];
+    document.querySelectorAll(".tierbox").forEach(function(box){
+      var need=RANK[box.getAttribute("data-min")]||0;
+      box.style.display = rank>=need ? "" : "none";
+    });
+    $("paidNote").style.display = tier==="free" ? "none" : "";
+    $("planHint").textContent = tier==="free" ? "免费配套：基本资料 + 1 张封面。" :
+      (tier==="premium" ? "Premium：完整内容 + 分店。" : "含营业时间、品牌故事、产品、FAQ、更多照片。");
+  }
+  $("f_plan").addEventListener("change",applyTier); applyTier();
+
+  // ── cover ──
   $("photoDrop").addEventListener("click",function(){ $("f_photo").click(); });
   $("f_photo").addEventListener("change",function(e){
     var f=e.target.files[0]; if(!f) return;
-    $("cropImg").src=URL.createObjectURL(f);
-    $("cropWrap").style.display="block";
+    $("cropImg").src=URL.createObjectURL(f); $("cropWrap").style.display="block";
     $("photoDrop").textContent="📷 已选择封面（点击可重新选择）";
     if(cropper){ cropper.destroy(); cropper=null; }
-    if(typeof Cropper!=="undefined"){
-      cropper=new Cropper($("cropImg"),{aspectRatio:21/9,viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true});
-    }
+    if(typeof Cropper!=="undefined"){ cropper=new Cropper($("cropImg"),{aspectRatio:21/9,viewMode:1,autoCropArea:1,background:false}); }
   });
 
-  // ── More photos (auto 4:3 crop + compress) ──
+  // ── more photos ──
   $("moreDrop").addEventListener("click",function(){ $("f_more").click(); });
   $("f_more").addEventListener("change",async function(e){
     var files=[].slice.call(e.target.files);
-    for(var i=0;i<files.length;i++){
-      if(extras.length>=8) break;
-      var b=await processTo43(files[i]);
-      if(b){ extras.push({blob:b,url:URL.createObjectURL(b)}); }
-    }
+    for(var i=0;i<files.length;i++){ if(extras.length>=8) break; var b=await crop43(files[i]); if(b){ extras.push({blob:b,url:URL.createObjectURL(b)}); } }
     renderExtras(); $("f_more").value="";
   });
-  function processTo43(file){
-    return new Promise(function(res){
-      var img=new Image();
-      img.onload=function(){
-        var tw=1200,th=900,tr=tw/th, sr=img.width/img.height, sw,sh,sx,sy;
-        if(sr>tr){ sh=img.height; sw=sh*tr; sx=(img.width-sw)/2; sy=0; }
-        else { sw=img.width; sh=sw/tr; sx=0; sy=(img.height-sh)/2; }
-        var c=document.createElement("canvas"); c.width=tw; c.height=th;
-        c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);
-        c.toBlob(function(b){ res(b); },"image/jpeg",0.82);
-      };
-      img.onerror=function(){ res(null); };
-      img.src=URL.createObjectURL(file);
-    });
-  }
-  function renderExtras(){
-    $("morePrev").innerHTML=extras.map(function(x,i){
-      return '<div class="mp" style="background-image:url(\''+x.url+'\')"><button type="button" data-rm="'+i+'">×</button></div>';
-    }).join("");
-    $("moreDrop").textContent = extras.length>=8 ? "已达 8 张上限" : ("➕ 添加更多照片（已选 "+extras.length+" 张）");
-  }
-  $("morePrev").addEventListener("click",function(e){
-    var i=e.target.getAttribute && e.target.getAttribute("data-rm");
-    if(i!==null && i!==undefined && i!==""){ extras.splice(+i,1); renderExtras(); }
-  });
+  function crop43(file){ return new Promise(function(res){ var img=new Image(); img.onload=function(){ var tw=1200,th=900,tr=tw/th,sr=img.width/img.height,sw,sh,sx,sy; if(sr>tr){sh=img.height;sw=sh*tr;sx=(img.width-sw)/2;sy=0;}else{sw=img.width;sh=sw/tr;sx=0;sy=(img.height-sh)/2;} var c=document.createElement("canvas");c.width=tw;c.height=th;c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);c.toBlob(function(b){res(b);},"image/jpeg",0.82);}; img.onerror=function(){res(null);}; img.src=URL.createObjectURL(file); }); }
+  function renderExtras(){ $("morePrev").innerHTML=extras.map(function(x,i){return '<div class="mp" style="background-image:url(\''+x.url+'\')"><button type="button" data-rm="'+i+'">×</button></div>';}).join(""); $("moreDrop").textContent=extras.length>=8?"已达 8 张上限":("➕ 添加更多照片（已选 "+extras.length+" 张）"); }
+  $("morePrev").addEventListener("click",function(e){ var i=e.target.getAttribute&&e.target.getAttribute("data-rm"); if(i!==null&&i!==undefined&&i!==""){ extras.splice(+i,1); renderExtras(); } });
 
-  function msg(t,type){ var m=$("smsg"); m.textContent=t; m.className="smsg "+type; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
+  // ── repeatable rows ──
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+  window.addProduct=function(){ var d=document.createElement("div"); d.className="rowitem"; d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="fld"><label>名称</label><input class="p-name"/></div><div class="fld" style="margin:0;"><label>说明</label><input class="p-desc"/></div>'; $("products").appendChild(d); };
+  window.addFaq=function(){ var d=document.createElement("div"); d.className="rowitem"; d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="fld"><label>问题</label><input class="f-q"/></div><div class="fld" style="margin:0;"><label>答案</label><textarea class="f-a"></textarea></div>'; $("faq").appendChild(d); };
+  window.addBranch=function(){ var d=document.createElement("div"); d.className="rowitem"; d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="row2"><div class="fld"><label>分店名称</label><input class="br-name"/></div><div class="fld"><label>地区</label><input class="br-area"/></div></div><div class="fld"><label>地址</label><input class="br-address"/></div><div class="fld" style="margin:0;"><label>地图链接</label><input class="br-maps"/></div>'; $("branches").appendChild(d); };
+  function collect(root,keys){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
 
-  function coverBlob(){
-    return new Promise(function(resolve,reject){
-      if(cropper && cropper.getCroppedCanvas){
-        var canvas=cropper.getCroppedCanvas({width:1680,height:720,imageSmoothingEnabled:true,imageSmoothingQuality:"high"});
-        if(!canvas) return reject(new Error("no canvas"));
-        canvas.toBlob(function(b){ b?resolve(b):reject(new Error("blob failed")); },"image/jpeg",0.85);
-      } else { var f=$("f_photo").files[0]; f?resolve(f):reject(new Error("no file")); }
-    });
-  }
-  async function uploadBlob(blob,tag){
-    var path="biz_"+Date.now()+"_"+tag+"_"+Math.random().toString(36).slice(2,6)+".jpg";
-    var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},body:blob});
-    if(!up.ok) throw new Error("upload "+up.status);
-    return SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+path;
-  }
+  function msg(t){ var m=$("smsg"); m.textContent=t; m.className="smsg err"; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
+  function coverBlob(){ return new Promise(function(resolve,reject){ if(cropper&&cropper.getCroppedCanvas){ var c=cropper.getCroppedCanvas({width:1680,height:720,imageSmoothingQuality:"high"}); if(!c) return reject(new Error("no canvas")); c.toBlob(function(b){b?resolve(b):reject(new Error("blob"));},"image/jpeg",0.85);} else { var f=$("f_photo").files[0]; f?resolve(f):reject(new Error("no file")); } }); }
+  async function uploadBlob(blob,tag){ var p="biz_"+Date.now()+"_"+tag+"_"+Math.random().toString(36).slice(2,6)+".jpg"; var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+p,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},body:blob}); if(!up.ok) throw new Error("upload "+up.status); return SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+p; }
 
   $("sform").addEventListener("submit",async function(e){
     e.preventDefault();
-    if(!$("f_photo").files[0]){ msg("请上传一张封面照片。","err"); return; }
+    if(!$("f_photo").files[0]){ msg("请上传一张封面照片。"); return; }
+    var plan=$("f_plan").value, tier=TIER[plan]||"free";
     var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
     try{
       var imageUrl=await uploadBlob(await coverBlob(),"cover");
-      var galleryUrls=[];
-      for(var i=0;i<extras.length;i++){
-        try{ galleryUrls.push(await uploadBlob(extras[i].blob,"g"+i)); }catch(x){}
-      }
+      var galleryUrls=[]; for(var i=0;i<extras.length;i++){ try{ galleryUrls.push(await uploadBlob(extras[i].blob,"g"+i)); }catch(x){} }
       var data={
-        business_name:$("f_name").value.trim(),
-        name:$("f_name").value.trim(),
-        category:$("f_cat").value,
-        opening_type:$("f_type").value,
-        area:$("f_area").value.trim()||null,
-        city:"Johor Bahru",
-        opening_date:$("f_date").value||null,
-        address:$("f_addr").value.trim()||null,
-        google_maps_url:$("f_map").value.trim()||null,
-        whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
-        phone:$("f_phone").value.trim()||null,
-        facebook_url:$("f_fb").value.trim()||null,
-        instagram_url:$("f_ig").value.trim()||null,
-        short_description:$("f_desc").value.trim()||null,
-        image_url:imageUrl,
-        gallery:galleryUrls,
-        listing_status:"待审核",
-        status:"未完成",
-        progress:"待制作",
-        submit_date:new Date().toISOString().slice(0,10),
-        project:"Free Listing"
+        business_name:$("f_name").value.trim(), name:$("f_name").value.trim(),
+        category:$("f_cat").value, opening_type:$("f_type").value,
+        area:$("f_area").value.trim()||null, city:"Johor Bahru",
+        opening_date:$("f_date").value||null, address:$("f_addr").value.trim()||null,
+        google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
+        phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
+        instagram_url:$("f_ig").value.trim()||null, short_description:$("f_desc").value.trim()||null,
+        image_url:imageUrl, gallery:galleryUrls,
+        hours:$("f_hours").value.trim()||null, brand_story:$("f_story").value.trim()||null,
+        products:collect("products",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}]),
+        faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}]),
+        branches:collect("branches",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}]),
+        project:plan, listing_status:"待审核", status:"未完成", progress:"待制作",
+        submit_date:new Date().toISOString().slice(0,10)
       };
-      var ins=await fetch(SB_URL+"/rest/v1/customers",{
-        method:"POST",
-        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},
-        body:JSON.stringify(data)
-      });
-      if(!ins.ok){ throw new Error("insert failed "+ins.status); }
-      $("sform").style.display="none";
-      $("smsg").style.display="none";
-      $("doneCard").style.display="block";
-      window.scrollTo({top:0,behavior:"smooth"});
-    }catch(err){
-      msg("提交失败，请稍后再试。("+err.message+")","err");
-      btn.disabled=false; btn.textContent="提交登记";
-    }
+      var ins=await fetch(SB_URL+"/rest/v1/customers",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});
+      if(!ins.ok){ throw new Error("提交失败 "+ins.status); }
+      if(tier!=="free"){ $("doneMsg").innerHTML="我们已收到你的资料。这是付费配套，我们会尽快 WhatsApp 联系你确认与付款，付款后即刊登。<br>感谢你选择 OpenToday。"; }
+      $("sform").style.display="none"; $("smsg").style.display="none"; $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
+    }catch(err){ msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="提交登记"; }
   });
 })();
 </script>
