@@ -9,7 +9,9 @@
 <style>
   /* 仅首页 Hero 拼贴，不改动全站设计语言 */
   .hero-collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;z-index:0;}
-  .hero-collage div{background-size:cover;background-position:center;background-color:#2a231d;}
+  .hero-collage .tile{position:relative;overflow:hidden;background:#2a231d;}
+  .hero-collage .layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.1s ease;}
+  .hero-collage .layer.on{opacity:1;}
   .hero-img .overlay,.hero-img .nowopen{position:relative;z-index:1;}
   .hero-img .nowopen{position:absolute;}
   .why .feature{height:100%;}
@@ -153,11 +155,31 @@
       rows.forEach(function(b){ b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
       rows.sort(function(a,c){ return (c._feat?1:0)-(a._feat?1:0); });
 
-      // Hero 拼贴（最多 4 张真实商家照片）
-      var pics=rows.filter(function(b){return b.image_url;}).slice(0,4);
-      var coll=$("heroCollage"), cells=[];
-      for(var k=0;k<4;k++){ cells.push('<div style="'+(pics[k]?"background-image:url(\'"+esc(pics[k].image_url)+"\')":"")+'"></div>'); }
-      if(coll) coll.innerHTML=cells.join("");
+      // Hero 拼贴 + 自动轮播（用所有商家的封面+图库做图池）
+      var pool=[], seenP={};
+      rows.forEach(function(b){ var g=Array.isArray(b.gallery)?b.gallery:[]; [b.image_url].concat(g).forEach(function(u){ if(u && !seenP[u]){ seenP[u]=1; pool.push(u); } }); });
+      var coll=$("heroCollage");
+      if(coll){
+        coll.innerHTML="";
+        var tiles=[];
+        for(var k=0;k<4;k++){
+          var tile=document.createElement("div"); tile.className="tile";
+          var la=document.createElement("div"); la.className="layer on"; if(pool[k]) la.style.backgroundImage="url('"+pool[k]+"')";
+          var lb=document.createElement("div"); lb.className="layer";
+          tile.appendChild(la); tile.appendChild(lb); coll.appendChild(tile);
+          tiles.push({layers:[la,lb],front:0});
+        }
+        if(pool.length>4){
+          var idx=4, ti=0;
+          setInterval(function(){
+            var t=tiles[ti%4]; ti++;
+            var back=t.layers[1-t.front];
+            back.style.backgroundImage="url('"+pool[idx%pool.length]+"')"; idx++;
+            back.classList.add("on"); t.layers[t.front].classList.remove("on");
+            t.front=1-t.front;
+          },2800);
+        }
+      }
       if($("heroCount")) $("heroCount").textContent = rows.length? (rows.length+" 家新店在线 · 每日更新") : "每日更新的新店资料库";
 
       // 平台数据
