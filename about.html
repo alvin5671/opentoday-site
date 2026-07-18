@@ -4,208 +4,66 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>关于我们 — OpenToday｜今日开业</title>
-<meta name="description" content="OpenToday 记录马来西亚每一个新的开始，帮助新店被顾客、Google 和 AI 更容易发现。" />
+<meta name="description" content="每一家新店，都值得拥有被发现的机会。OpenToday 因此而诞生。" />
 <link rel="stylesheet" href="style.css" />
 <style>
-  .ic-circle{width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .ic-round{width:48px;height:48px;border-radius:999px;background:var(--brand-soft);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;font-weight:800;}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
-  .two.top{align-items:start;}
-  .why-items{display:grid;grid-template-columns:1fr 1fr;gap:28px 32px;}
-  .collect-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:12px;margin-top:32px;}
-  .prin{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:32px;align-items:stretch;}
-  .prin-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
-  /* hero image + deco */
-  .about-frame{position:relative;z-index:1;width:100%;aspect-ratio:16/11;border-radius:46% 22px 22px 22px;overflow:hidden;background:#f0f0f0;}
-  .about-frame img{width:100%;height:100%;object-fit:cover;display:block;}
-  .about-frame .ph-ic{display:none;position:absolute;inset:0;margin:auto;color:#cfcfcf;}
-  .about-frame.ph .ph-ic{display:block;}
-  .about-blob{position:absolute;right:-22px;top:32%;width:96px;height:158px;background:var(--brand);border-radius:24px;z-index:0;}
-  @media(max-width:860px){.about-frame{border-radius:32% 20px 20px 20px;}}
-  /* mission diagram */
-  .diagram{position:relative;background:var(--surface);border-radius:16px;padding:44px 24px;}
-  .diagram .center{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 14px rgba(17,17,17,.06);padding:16px;width:210px;margin:0 auto;}
-  .diagram .node{position:absolute;text-align:center;width:96px;}
-  .diagram .node .b{width:48px;height:48px;border-radius:999px;background:#fff;box-shadow:0 2px 10px rgba(17,17,17,.08);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto;font-weight:800;}
-  .diagram .node span{display:block;font-size:12px;font-weight:600;margin-top:6px;}
-  .node.tl{top:28px;left:8px;} .node.tr{top:28px;right:8px;}
-  .node.bl{bottom:28px;left:8px;} .node.br{bottom:28px;right:8px;}
-  /* timeline */
-  .tl-wrap{position:relative;margin-top:32px;}
-  .tl-wrap::before{content:"";position:absolute;top:6px;left:2px;right:2px;height:2px;background:rgba(249,115,22,.3);}
-  .tl-grid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  .tl-dot{width:12px;height:12px;border-radius:999px;background:var(--brand);}
-  .quote-mark{color:var(--brand);font-size:56px;line-height:0;font-family:Georgia,serif;position:absolute;}
+  .about-hero{padding:96px 0 72px;}
+  .about-lead{font-size:19px;line-height:2.1;color:var(--muted);max-width:640px;margin:24px auto 0;}
+  .about-statement{margin-top:48px;font-size:40px;line-height:1.35;font-weight:800;color:var(--ink-strong);letter-spacing:-.01em;}
+  .vals{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center;}
+  .val .ic{width:56px;height:56px;border-radius:16px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+  .val h3{font-size:16px;}
+  .val p{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.7;}
   @media(max-width:860px){
-    .two,.prin{grid-template-columns:1fr;}
-    .prin-cards{grid-template-columns:repeat(2,1fr);}
-    .collect-grid{grid-template-columns:repeat(3,1fr);}
-    .tl-grid{grid-template-columns:repeat(2,1fr);}
-    .diagram .node{position:static;width:auto;display:inline-block;margin:6px 10px;}
+    .about-hero{padding:64px 0 48px;}
+    .about-statement{font-size:30px;}
+    .vals{grid-template-columns:1fr 1fr;gap:36px 24px;}
   }
-  @media(max-width:520px){.why-items,.prin-cards,.collect-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div id="site-header"></div>
 
 <main>
-  <div class="container">
-    <!-- Hero -->
-    <div class="hero">
-      <div>
-        <span class="eyebrow">关于我们</span>
-        <h1 style="margin:16px 0 14px;">每一家新店，<br>都值得被看见</h1>
-        <p class="lead">OpenToday 记录马来西亚每一个新的开始<br>帮助新店被顾客、Google 和 AI 更容易发现。</p>
-      </div>
-      <div style="position:relative;">
-        <div class="about-blob"></div>
-        <div class="about-frame">
-          <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1000&q=80" alt="新开业商家门店" onerror="this.style.display='none';this.parentNode.classList.add('ph');" />
-          <i data-lucide="image" class="ph-ic" style="width:48px;height:48px;"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="grid g-4" style="margin-top:48px;">
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="store" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">已收录商家</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stBiz">–</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="map-pin" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">覆盖地区</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stArea">–</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="layout-grid" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">商家分类</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stCat">–</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="refresh-cw" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">资料更新</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">每日</div></div></div>
-    </div>
-  </div>
-
-  <!-- 我们为什么存在 -->
-  <section style="background:var(--surface);">
-    <div class="container two top">
-      <div>
-        <span class="eyebrow">我们为什么存在</span>
-        <h2 style="margin:16px 0 18px;">新店很快被遗忘，这是个问题</h2>
-        <p class="muted" style="line-height:1.9;">很多商家花了很多心血和预算在开业宣传<br>但几天后就被新的内容淹没。<br>Google 找不到，AI 也不知道，顾客更难发现。</p>
-      </div>
-      <div class="why-items">
-        <div><span class="ic-round"><i data-lucide="instagram" style="width:20px;height:20px;"></i></span><h3 style="margin-top:12px;">贴文很快被刷走</h3><p class="muted" style="font-size:14px;margin-top:4px;line-height:1.7;">社交媒体更新快，新店很容易被遗忘。</p></div>
-        <div><span class="ic-round">G</span><h3 style="margin-top:12px;">Google 难以理解</h3><p class="muted" style="font-size:14px;margin-top:4px;line-height:1.7;">资料不完整，搜索结果不准确。</p></div>
-        <div><span class="ic-round"><i data-lucide="cpu" style="width:20px;height:20px;"></i></span><h3 style="margin-top:12px;">AI 搜索找不到</h3><p class="muted" style="font-size:14px;margin-top:4px;line-height:1.7;">AI 需要结构化的资料才能理解你的店。</p></div>
-        <div><span class="ic-round"><i data-lucide="users" style="width:20px;height:20px;"></i></span><h3 style="margin-top:12px;">顾客难以发现</h3><p class="muted" style="font-size:14px;margin-top:4px;line-height:1.7;">想找新店，只能靠朋友分享或运气。</p></div>
-      </div>
+  <!-- 开篇 -->
+  <section class="about-hero">
+    <div class="container" style="text-align:center;">
+      <span class="eyebrow">关于我们</span>
+      <p class="about-lead">
+        每一天，都有新的商家开始营业。<br>
+        有些被很多人看见，有些却很快被遗忘。<br>
+        我们相信，每一家新店，都值得拥有被发现的机会。<br>
+        OpenToday 因此而诞生。
+      </p>
+      <h1 class="about-statement">开业，是一天。<br><span class="brand">被发现，是每天。</span></h1>
     </div>
   </section>
 
-  <!-- 我们的使命 -->
-  <section>
-    <div class="container two">
-      <div>
-        <span class="eyebrow">我们的使命</span>
-        <h2 style="margin:16px 0 18px;line-height:1.35;">发现最新开业商家，<br>帮助新店被顾客、<span class="brand">Google</span><br>和 <span class="brand">AI</span> 找到。</h2>
-        <p class="muted" style="line-height:1.9;">我们不是新闻媒体，也不是普通商家目录，而是帮助商家建立长期存在的线上商家档案。</p>
-      </div>
-      <div class="diagram">
-        <div class="center">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;"><span style="width:20px;height:20px;border-radius:6px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;"><i data-lucide="store" style="width:12px;height:12px;"></i></span><b style="font-size:13px;">OpenToday</b></div>
-          <div style="aspect-ratio:4/3;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;"><i data-lucide="store" style="width:32px;height:32px;"></i></div>
-          <div style="margin-top:12px;display:grid;gap:6px;"><div style="height:8px;border-radius:4px;background:#eee;width:66%;"></div><div style="height:8px;border-radius:4px;background:#eee;width:100%;"></div><div style="height:8px;border-radius:4px;background:#eee;width:50%;"></div></div>
-        </div>
-        <div class="node tl"><span class="b"><i data-lucide="user" style="width:20px;height:20px;"></i></span><span>顾客发现</span></div>
-        <div class="node tr"><span class="b"><i data-lucide="cpu" style="width:20px;height:20px;"></i></span><span>AI 理解</span></div>
-        <div class="node bl"><span class="b">G</span><span>Google 收录</span></div>
-        <div class="node br"><span class="b"><i data-lucide="eye" style="width:20px;height:20px;"></i></span><span>长期曝光</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 已收录的商家（真实社会证明） -->
+  <!-- 四个价值 -->
   <section style="background:var(--surface);">
     <div class="container">
-      <span class="eyebrow">已经在 OpenToday 上的商家</span>
-      <div class="sec-head" style="margin-top:16px;"><h2>真实上线，持续增加</h2><a href="explore.html">查看全部 ›</a></div>
-      <div class="grid g-5 biz-grid" id="aboutBizGrid"><p class="muted" style="padding:20px 0;">加载中…</p></div>
-    </div>
-  </section>
-
-  <!-- 我们收录什么 -->
-  <section>
-    <div class="container">
-      <span class="eyebrow">我们收录什么</span>
-      <h2 style="margin:16px 0 0;">记录每一个新的开始</h2>
-      <div class="collect-grid">
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="hourglass" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">即将开业</div><div style="font-size:11px;color:var(--muted);">Coming Soon</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="door-open" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">试营业</div><div style="font-size:11px;color:var(--muted);">Soft Opening</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="party-popper" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">正式开业</div><div style="font-size:11px;color:var(--muted);">Grand Opening</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="star" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">最近开业</div><div style="font-size:11px;color:var(--muted);">Newly Opened</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="home" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">新分店</div><div style="font-size:11px;color:var(--muted);">New Branch</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="rotate-cw" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">重新开业</div><div style="font-size:11px;color:var(--muted);">Re-Opening</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="truck" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">搬迁重开</div><div style="font-size:11px;color:var(--muted);">Relocation</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="bell" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">商家动态</div><div style="font-size:11px;color:var(--muted);">Business Update</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="clipboard-list" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">商家档案</div><div style="font-size:11px;color:var(--muted);">Business Profile</div></div>
-        <div class="card" style="padding:14px;text-align:center;"><span class="ic-circle" style="width:40px;height:40px;margin:0 auto;"><i data-lucide="award" style="width:16px;height:16px;"></i></span><div style="font-size:13px;font-weight:700;margin-top:8px;">本地推荐</div><div style="font-size:11px;color:var(--muted);">Local Feature</div></div>
+      <div class="vals">
+        <div class="val"><div class="ic"><i data-lucide="map-pin" style="width:24px;height:24px;"></i></div><h3>长期存在</h3><p>永久保留，不会像贴文一样过期消失。</p></div>
+        <div class="val"><div class="ic"><i data-lucide="cpu" style="width:24px;height:24px;"></i></div><h3>AI Ready</h3><p>结构化资料，让 AI 更容易读懂你的店。</p></div>
+        <div class="val"><div class="ic"><i data-lucide="search" style="width:24px;height:24px;"></i></div><h3>Google Friendly</h3><p>清晰页面结构，利于 Google 收录。</p></div>
+        <div class="val"><div class="ic"><i data-lucide="refresh-cw" style="width:24px;height:24px;"></i></div><h3>持续更新</h3><p>资料随时更新，顾客看到的永远最新。</p></div>
       </div>
     </div>
   </section>
 
-  <!-- 我们的原则 -->
-  <section>
-    <div class="container">
-      <span class="eyebrow">我们的原则</span>
-      <h2 style="margin:16px 0 0;">真实 · 长期 · AI Ready · 持续更新</h2>
-      <div class="prin">
-        <div class="prin-cards">
-          <div class="feature"><div class="ic"><i data-lucide="shield-check" style="width:19px;height:19px;"></i></div><h3>真实资料</h3><p class="muted" style="font-size:14px;margin-top:8px;line-height:1.7;">我们不会偏造任何资料。无法确认的信息会标记为需要核实。</p></div>
-          <div class="feature"><div class="ic"><i data-lucide="folder" style="width:19px;height:19px;"></i></div><h3>长期存在</h3><p class="muted" style="font-size:14px;margin-top:8px;line-height:1.7;">不是一次性的曝光，而是长期存在的线上商家资产。</p></div>
-          <div class="feature"><div class="ic"><i data-lucide="cpu" style="width:19px;height:19px;"></i></div><h3>AI Ready</h3><p class="muted" style="font-size:14px;margin-top:8px;line-height:1.7;">结构化的资料，让 Google、ChatGPT、Gemini 等 AI 更容易理解。</p></div>
-          <div class="feature"><div class="ic"><i data-lucide="refresh-cw" style="width:19px;height:19px;"></i></div><h3>持续更新</h3><p class="muted" style="font-size:14px;margin-top:8px;line-height:1.7;">资料可以随时更新，确保顾客看到的是最新信息。</p></div>
-        </div>
-        <div class="card" style="min-height:220px;display:flex;align-items:center;justify-content:center;color:#cfcfcf;"><i data-lucide="smartphone" style="width:48px;height:48px;"></i></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 我们的愿景 / 旅程 -->
-  <section style="background:var(--surface);">
-    <div class="container two top">
-      <div>
-        <span class="eyebrow">我们的愿景</span>
-        <h2 style="margin:16px 0 14px;font-size:24px;">成为马来西亚最大的<br>新开业商家资料库</h2>
-        <p class="muted" style="line-height:1.9;">从 Johor 出发，逐步扩展至全马，成为顾客、搜索引擎和 AI 最值得信赖的本地商业资料来源。</p>
-        <div style="position:relative;width:160px;height:160px;margin-top:24px;color:#d8d8d8;"><i data-lucide="map" style="width:100%;height:100%;"></i><i data-lucide="map-pin" style="width:32px;height:32px;color:var(--brand);position:absolute;bottom:16px;right:34px;"></i></div>
-      </div>
-      <div>
-        <span class="eyebrow">我们的旅程</span>
-        <div class="tl-wrap">
-          <div class="tl-grid">
-            <div><span class="tl-dot"></span><div style="margin-top:16px;font-weight:800;">2026</div><div style="margin-top:4px;font-size:14px;font-weight:600;">OpenToday</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">创立于 Johor</div></div>
-            <div><span class="tl-dot"></span><div style="margin-top:16px;font-weight:800;">2026</div><div style="margin-top:4px;font-size:14px;font-weight:600;">深耕 Johor</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">建立高质量商家数据库</div></div>
-            <div><span class="tl-dot"></span><div style="margin-top:16px;font-weight:800;">2027</div><div style="margin-top:4px;font-size:14px;font-weight:600;">扩展至全马</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">更多城市加入</div></div>
-            <div><span class="tl-dot"></span><div style="margin-top:16px;font-weight:800;">未来</div><div style="margin-top:4px;font-size:14px;font-weight:600;">东南亚</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">成为区域性商业资料平台</div></div>
-          </div>
-        </div>
-      </div>
+  <!-- 真实数据（低调可信） -->
+  <section style="padding:48px 0 0;">
+    <div class="container" style="text-align:center;">
+      <p class="muted" id="proofLine" style="font-size:15px;">每日更新 · 专注 Johor</p>
     </div>
   </section>
 
   <!-- CTA -->
-  <section>
-    <div class="container">
-      <div class="cta">
-        <div>
-          <h2>让更多人发现你的店</h2>
-          <p>提交你的商家资料，建立属于你的线上档案，让顾客、Google 和 AI 更容易找到你。</p>
-          <a class="btn btn-brand btn-lg" href="submit.html">立即提交商家</a>
-          <a class="btn btn-ghost-dark btn-lg" href="pricing.html" style="margin-left:8px;">了解商家套餐</a>
-        </div>
-        <div class="cta-img"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 引言 -->
-  <section style="background:var(--surface);">
-    <div class="container" style="text-align:center;position:relative;">
-      <span class="quote-mark" style="left:8%;top:0;">“</span>
-      <p style="font-size:22px;font-weight:800;line-height:1.7;color:var(--ink-strong);">每一家新店，都值得被看见。<br>每一次开业，都是一个新的开始。</p>
-      <p class="brand" style="margin-top:14px;font-weight:600;">— OpenToday · 记录每一个新的开始</p>
-      <span class="quote-mark" style="right:8%;bottom:12px;">”</span>
+  <section style="padding:44px 0 96px;">
+    <div class="container" style="text-align:center;">
+      <h2>让更多人发现你的店</h2>
+      <p class="muted" style="margin:12px 0 26px;">从免费提交开始。</p>
+      <a class="btn btn-brand btn-lg" href="submit.html">立即提交商家</a>
     </div>
   </section>
 </main>
@@ -219,30 +77,14 @@
 (function(){
   var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
-  var $=function(x){return document.getElementById(x);};
-  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-  fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+  fetch(SB_URL+"/rest/v1/public_customers?select=id,area,city",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
-      if(!Array.isArray(rows)) rows=[];
-      var today=new Date().toISOString().slice(0,10);
-      rows.forEach(function(b){ b._f=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
-      rows.sort(function(a,c){ return (c._f?1:0)-(a._f?1:0); });
-      if($("stBiz")) $("stBiz").textContent=rows.length;
-      var areas={},cats={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; if(b.category) cats[b.category]=1; });
-      if($("stArea")) $("stArea").textContent=Object.keys(areas).length||"–";
-      if($("stCat")) $("stCat").textContent=Object.keys(cats).length||"–";
-      var g=$("aboutBizGrid"); if(!g) return;
-      if(!rows.length){ g.innerHTML='<div style="grid-column:1/-1;padding:36px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">商家陆续上线中。</div>'; return; }
-      var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0"];
-      g.innerHTML=rows.slice(0,5).map(function(b,i){
-        var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
-        var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
-        var badge=b._f?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
-        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
-      }).join("");
-    })
-    .catch(function(){});
+      if(!Array.isArray(rows)||!rows.length) return;
+      var areas={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; });
+      var el=document.getElementById("proofLine");
+      if(el) el.textContent="已收录 "+rows.length+" 家商家 · 覆盖 "+Object.keys(areas).length+" 个地区 · 每日更新";
+    }).catch(function(){});
 })();
 </script>
 </body>
