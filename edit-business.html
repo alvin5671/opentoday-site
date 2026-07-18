@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>编辑商家内容 — OpenToday 后台</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+  .ed{max-width:720px;margin:0 auto;padding:24px 0 80px;}
+  .ed .fld{margin-bottom:14px;}
+  .ed label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .ed input,.ed select,.ed textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;box-sizing:border-box;}
+  .ed input:focus,.ed select:focus,.ed textarea:focus{border-color:var(--brand);}
+  .ed textarea{min-height:72px;resize:vertical;}
+  .ed .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:560px){.ed .row2{grid-template-columns:1fr;}}
+  .sec{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;}
+  .sec h3{margin:0 0 12px;font-size:16px;}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;}
+  .rowitem{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--surface);position:relative;}
+  .rowitem .del{position:absolute;top:8px;right:8px;background:#fee;color:#c00;border:none;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:12px;}
+  .addbtn{background:#eef4ff;color:#2563EB;border:1px dashed #9db8f0;border-radius:9px;padding:9px;width:100%;cursor:pointer;font-weight:600;font-size:13px;}
+  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:10px;}
+  .thumbs .t{position:relative;aspect-ratio:4/3;border-radius:8px;background:#eee center/cover no-repeat;}
+  .thumbs .t button{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;line-height:20px;padding:0;}
+  #coverPrev{width:100%;aspect-ratio:21/9;border-radius:10px;background:#eee center/cover no-repeat;margin-bottom:8px;}
+  #gate{position:fixed;inset:0;background:#0A1A4E;display:flex;align-items:center;justify-content:center;z-index:100;}
+  #gate .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:34px;width:320px;text-align:center;}
+  #gate h2{color:#fff;margin:8px 0 16px;}
+  #gate input{width:100%;padding:11px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.9);margin-bottom:12px;box-sizing:border-box;}
+  .savebar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:14px;display:flex;gap:10px;align-items:center;}
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#16A34A;color:#fff;padding:12px 22px;border-radius:12px;z-index:200;display:none;font-weight:600;}
+</style>
+</head>
+<body>
+<div id="gate"><div class="box"><h2>🔒 后台编辑</h2><input id="gpw" type="password" placeholder="输入密码…" /><button class="btn btn-brand" style="width:100%;" onclick="doGate()">进入</button></div></div>
+
+<div class="toast" id="toast">已保存 ✓</div>
+
+<div class="ed" id="editor" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+    <h1 style="font-size:24px;margin:0;">编辑商家内容</h1>
+    <span id="bizIdLabel" class="muted" style="font-size:13px;"></span>
+  </div>
+  <p class="hint" id="loadMsg" style="margin-bottom:16px;">加载中…</p>
+
+  <div id="form" style="display:none;">
+    <div class="sec">
+      <h3>基本资料</h3>
+      <div class="fld"><label>商家名称</label><input id="business_name" /></div>
+      <div class="row2">
+        <div class="fld"><label>分类</label>
+          <select id="category"><option value="">—</option><option>美食餐饮</option><option>咖啡馆</option><option>美容美发</option><option>零售购物</option><option>生活服务</option><option>教育培训</option><option>健康医疗</option><option>其他</option></select>
+        </div>
+        <div class="fld"><label>开业状态</label>
+          <select id="opening_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option><option value="Grand Opening">Grand Opening</option></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>地区</label><input id="area" /></div>
+        <div class="fld"><label>开业日期</label><input id="opening_date" type="date" /></div>
+      </div>
+      <div class="fld"><label>地址</label><input id="address" /></div>
+      <div class="fld"><label>Google 地图链接</label><input id="google_maps_url" /></div>
+      <div class="row2">
+        <div class="fld"><label>WhatsApp</label><input id="whatsapp" /></div>
+        <div class="fld"><label>电话</label><input id="phone" /></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Facebook</label><input id="facebook_url" /></div>
+        <div class="fld"><label>Instagram</label><input id="instagram_url" /></div>
+      </div>
+      <div class="fld"><label>简介 / 关于</label><textarea id="short_description"></textarea></div>
+    </div>
+
+    <div class="sec">
+      <h3>封面照片（21:9）</h3>
+      <div id="coverPrev"></div>
+      <input id="coverFile" type="file" accept="image/*" style="display:none;" />
+      <button type="button" class="addbtn" onclick="document.getElementById('coverFile').click()">📷 更换封面（自动裁 21:9）</button>
+    </div>
+
+    <div class="sec">
+      <h3>更多照片（4:3）</h3>
+      <div class="thumbs" id="galThumbs"></div>
+      <input id="galFile" type="file" accept="image/*" multiple style="display:none;" />
+      <button type="button" class="addbtn" onclick="document.getElementById('galFile').click()" style="margin-top:10px;">➕ 添加照片</button>
+    </div>
+
+    <div class="sec">
+      <h3>营业时间</h3>
+      <textarea id="hours" placeholder="一行一个时段，用 | 分隔，例如：&#10;周一 – 周五 | 07:00 – 14:00&#10;周六 – 周日 | 07:00 – 15:00"></textarea>
+    </div>
+
+    <div class="sec">
+      <h3>品牌故事</h3>
+      <textarea id="brand_story" style="min-height:110px;"></textarea>
+    </div>
+
+    <div class="sec">
+      <h3>产品与服务</h3>
+      <div id="products"></div>
+      <button type="button" class="addbtn" onclick="addProduct()">➕ 加一个产品</button>
+    </div>
+
+    <div class="sec">
+      <h3>常见问题</h3>
+      <div id="faq"></div>
+      <button type="button" class="addbtn" onclick="addFaq()">➕ 加一个问题</button>
+    </div>
+
+    <div class="sec">
+      <h3>分店</h3>
+      <div id="branches"></div>
+      <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
+    </div>
+
+    <div class="savebar">
+      <select id="listing_status" style="width:auto;">
+        <option value="待审核">待审核（不显示）</option>
+        <option value="已刊登">已刊登（上线）</option>
+        <option value="询价">询价（lead）</option>
+      </select>
+      <button class="btn btn-brand" style="flex:1;" id="saveBtn" onclick="save()">保存</button>
+      <a class="btn btn-outline" id="viewLink" href="#" target="_blank">查看页面 ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+var H={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY};
+var $=function(id){return document.getElementById(id);};
+var ID=new URLSearchParams(location.search).get("id");
+var current={image_url:"",gallery:[]};
+
+function doGate(){
+  if($("gpw").value.trim()==="admin888"){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
+  else { $("gpw").value=""; $("gpw").placeholder="密码错误"; }
+}
+document.addEventListener("keydown",function(e){ if(e.key==="Enter" && $("gate").style.display!=="none") doGate(); });
+
+function toast(t){ var el=$("toast"); el.textContent=t; el.style.display="block"; setTimeout(function(){el.style.display="none";},2200); }
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function arr(v){ try{ return Array.isArray(v)?v:(v?JSON.parse(v):[]); }catch(e){ return []; } }
+
+function loadBiz(){
+  if(!ID){ $("loadMsg").textContent="缺少商家 ID。请用 ?id=数字 打开，例如 edit-business.html?id=3"; return; }
+  $("bizIdLabel").textContent="ID: "+ID;
+  $("viewLink").href="business.html?id="+ID;
+  fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
+    if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
+    var b=rows[0]; current=b;
+    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","short_description","hours","brand_story"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    if(b.category) $("category").value=b.category;
+    if(b.opening_type) $("opening_type").value=b.opening_type;
+    if(b.opening_date) $("opening_date").value=b.opening_date;
+    if(b.listing_status) $("listing_status").value=b.listing_status;
+    if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
+    current.gallery=arr(b.gallery); renderGal();
+    arr(b.products).forEach(function(p){ addProduct(p); });
+    arr(b.faq).forEach(function(f){ addFaq(f); });
+    arr(b.branches).forEach(function(br){ addBranch(br); });
+    $("loadMsg").style.display="none"; $("form").style.display="";
+  }).catch(function(){ $("loadMsg").textContent="加载失败。"; });
+}
+
+// ── repeatable rows ──
+function addProduct(p){ p=p||{}; var d=document.createElement("div"); d.className="rowitem"; d.dataset.kind="product";
+  d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="fld"><label>名称</label><input class="p-name" value="'+esc(p.name||"")+'"/></div><div class="fld" style="margin:0;"><label>说明</label><input class="p-desc" value="'+esc(p.desc||"")+'"/></div>';
+  $("products").appendChild(d); }
+function addFaq(f){ f=f||{}; var d=document.createElement("div"); d.className="rowitem";
+  d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="fld"><label>问题</label><input class="f-q" value="'+esc(f.q||"")+'"/></div><div class="fld" style="margin:0;"><label>答案</label><textarea class="f-a">'+esc(f.a||"")+'</textarea></div>';
+  $("faq").appendChild(d); }
+function addBranch(br){ br=br||{}; var d=document.createElement("div"); d.className="rowitem";
+  d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="row2"><div class="fld"><label>分店名称</label><input class="br-name" value="'+esc(br.name||"")+'"/></div><div class="fld"><label>地区</label><input class="br-area" value="'+esc(br.area||"")+'"/></div></div><div class="fld"><label>地址</label><input class="br-address" value="'+esc(br.address||"")+'"/></div><div class="fld" style="margin:0;"><label>地图链接</label><input class="br-maps" value="'+esc(br.maps||"")+'"/></div>';
+  $("branches").appendChild(d); }
+
+// ── photos ──
+function centerCrop(file,tw,th){ return new Promise(function(res){ var img=new Image(); img.onload=function(){ var tr=tw/th, sr=img.width/img.height, sw,sh,sx,sy; if(sr>tr){sh=img.height;sw=sh*tr;sx=(img.width-sw)/2;sy=0;}else{sw=img.width;sh=sw/tr;sx=0;sy=(img.height-sh)/2;} var c=document.createElement("canvas");c.width=tw;c.height=th;c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);c.toBlob(function(b){res(b);},"image/jpeg",0.85);}; img.onerror=function(){res(null);}; img.src=URL.createObjectURL(file); }); }
+function uploadBlob(blob){ var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,7)+".jpg"; return fetch(SB_URL+"/storage/v1/object/business-photos/"+path,{method:"POST",headers:Object.assign({},H,{"Content-Type":"image/jpeg"}),body:blob}).then(function(r){ if(!r.ok) throw new Error("upload"); return SB_URL+"/storage/v1/object/public/business-photos/"+path; }); }
+$("coverFile").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; toast("上传封面中…"); var b=await centerCrop(f,1680,720); var u=await uploadBlob(b); current.image_url=u; $("coverPrev").style.backgroundImage="url('"+u+"')"; toast("封面已更新（记得按保存）"); });
+$("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e.target.files); toast("上传照片中…"); for(var i=0;i<fs.length;i++){ var b=await centerCrop(fs[i],1200,900); if(b){ var u=await uploadBlob(b); current.gallery.push(u); } } renderGal(); toast("照片已加（记得按保存）"); e.target.value=""; });
+function renderGal(){ $("galThumbs").innerHTML=current.gallery.map(function(u,i){return '<div class="t" style="background-image:url(\''+esc(u)+'\')"><button type="button" onclick="delGal('+i+')">×</button></div>';}).join(""); }
+function delGal(i){ current.gallery.splice(i,1); renderGal(); }
+
+function collect(cls,keys,root){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
+
+function save(){
+  var btn=$("saveBtn"); btn.disabled=true; btn.textContent="保存中…";
+  var data={
+    business_name:$("business_name").value.trim(), name:$("business_name").value.trim(),
+    category:$("category").value||null, opening_type:$("opening_type").value||null,
+    area:$("area").value.trim()||null, opening_date:$("opening_date").value||null,
+    address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
+    whatsapp:$("whatsapp").value.replace(/[^0-9]/g,"")||null, phone:$("phone").value.trim()||null,
+    facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
+    short_description:$("short_description").value.trim()||null,
+    hours:$("hours").value.trim()||null, brand_story:$("brand_story").value.trim()||null,
+    image_url:current.image_url||null, gallery:current.gallery||[],
+    products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
+    faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
+    branches:collect("branch",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}],"branches"),
+    listing_status:$("listing_status").value
+  };
+  fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID),{method:"PATCH",headers:Object.assign({},H,{"Content-Type":"application/json"}),body:JSON.stringify(data)}).then(function(r){
+    btn.disabled=false; btn.textContent="保存";
+    if(r.ok){ toast("已保存 ✓"); } else { toast("保存失败，请重试"); }
+  }).catch(function(){ btn.disabled=false; btn.textContent="保存"; toast("保存失败"); });
+}
+</script>
+</body>
+</html>
