@@ -156,6 +156,7 @@
 
       // Hero 单图幻灯片（一家公司换下一家公司）
       var biz=rows.filter(function(b){return b.image_url;});
+      biz.forEach(function(b){ var im=new Image(); im.src=b.image_url; }); // 预加载全部封面
       var A=$("slideA"), B=$("slideB");
       if(biz.length && A && B){
         var front=A, back=B, i=0;
@@ -168,13 +169,9 @@
         if(biz.length>1){
           setInterval(function(){
             i=(i+1)%biz.length; var b=biz[i];
-            var pre=new Image();
-            pre.onload=function(){
-              back.style.backgroundImage="url('"+b.image_url+"')";
-              back.classList.add("on"); front.classList.remove("on");
-              var t=front; front=back; back=t; setOverlay(b);
-            };
-            pre.src=b.image_url;
+            back.style.backgroundImage="url('"+b.image_url+"')";
+            back.classList.add("on"); front.classList.remove("on");
+            var t=front; front=back; back=t; setOverlay(b);
           },4000);
         }
       }
