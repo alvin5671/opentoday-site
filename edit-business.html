@@ -163,7 +163,7 @@ var ID=new URLSearchParams(location.search).get("id");
 var current={image_url:"",gallery:[]};
 
 function doGate(){
-  if($("gpw").value.trim()==="admin888"){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
+  if($("gpw").value.trim()==="opentoday888"){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
   else { $("gpw").value=""; $("gpw").placeholder="密码错误"; }
 }
 document.addEventListener("keydown",function(e){ if(e.key==="Enter" && $("gate").style.display!=="none") doGate(); });
