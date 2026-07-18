@@ -8,10 +8,8 @@
 <link rel="stylesheet" href="style.css" />
 <style>
   /* 仅首页 Hero 拼贴，不改动全站设计语言 */
-  .hero-collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;z-index:0;}
-  .hero-collage .tile{position:relative;overflow:hidden;background:#2a231d;}
-  .hero-collage .layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.1s ease;}
-  .hero-collage .layer.on{opacity:1;}
+  .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;background-color:#2a231d;opacity:0;transition:opacity 1s ease;z-index:0;}
+  .hero-slide.on{opacity:1;}
   .hero-img .overlay,.hero-img .nowopen{position:relative;z-index:1;}
   .hero-img .nowopen{position:absolute;}
   .why .feature{height:100%;}
@@ -34,11 +32,12 @@
         </div>
         <div class="tags">热门搜索：<a href="explore.html">咖啡馆</a><a href="explore.html">美食</a><a href="explore.html">美容美发</a><a href="explore.html">宠物</a></div>
       </div>
-      <div class="hero-img" id="heroImg">
-        <div class="hero-collage" id="heroCollage"></div>
+      <a class="hero-img" id="heroImg" href="explore.html">
+        <div class="hero-slide" id="slideA"></div>
+        <div class="hero-slide" id="slideB"></div>
         <span class="nowopen">● NOW OPEN</span>
-        <div class="overlay"><b>Johor 最新开业</b><br><span id="heroCount">每日更新的新店资料库</span></div>
-      </div>
+        <div class="overlay"><b id="heroName">Johor 最新开业</b><br><span id="heroMeta">每日更新的新店资料库</span></div>
+      </a>
     </div>
 
     <!-- 平台数据 -->
@@ -155,37 +154,30 @@
       rows.forEach(function(b){ b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
       rows.sort(function(a,c){ return (c._feat?1:0)-(a._feat?1:0); });
 
-      // Hero 拼贴 + 自动轮播（用所有商家的封面+图库做图池）
-      var pool=[], seenP={};
-      rows.forEach(function(b){ var g=Array.isArray(b.gallery)?b.gallery:[]; [b.image_url].concat(g).forEach(function(u){ if(u && !seenP[u]){ seenP[u]=1; pool.push(u); } }); });
-      var coll=$("heroCollage");
-      if(coll){
-        coll.innerHTML="";
-        var tiles=[];
-        for(var k=0;k<4;k++){
-          var tile=document.createElement("div"); tile.className="tile";
-          var la=document.createElement("div"); la.className="layer on"; if(pool[k]) la.style.backgroundImage="url('"+pool[k]+"')";
-          var lb=document.createElement("div"); lb.className="layer";
-          tile.appendChild(la); tile.appendChild(lb); coll.appendChild(tile);
-          tiles.push({layers:[la,lb],front:0});
+      // Hero 单图幻灯片（一家公司换下一家公司）
+      var biz=rows.filter(function(b){return b.image_url;});
+      var A=$("slideA"), B=$("slideB");
+      if(biz.length && A && B){
+        var front=A, back=B, i=0;
+        function setOverlay(b){
+          if($("heroName")) $("heroName").textContent=b.business_name;
+          if($("heroMeta")) $("heroMeta").textContent=[b.category,b.area||b.city].filter(Boolean).join(" · ")+" · 新开业";
+          if($("heroImg")) $("heroImg").setAttribute("href","business.html?id="+b.id);
         }
-        if(pool.length>4){
-          var idx=4, ti=0;
+        front.style.backgroundImage="url('"+biz[0].image_url+"')"; front.classList.add("on"); setOverlay(biz[0]);
+        if(biz.length>1){
           setInterval(function(){
-            var t=tiles[ti%4]; ti++;
-            var url=pool[idx%pool.length]; idx++;
+            i=(i+1)%biz.length; var b=biz[i];
             var pre=new Image();
             pre.onload=function(){
-              var back=t.layers[1-t.front];
-              back.style.backgroundImage="url('"+url+"')";
-              back.classList.add("on"); t.layers[t.front].classList.remove("on");
-              t.front=1-t.front;
+              back.style.backgroundImage="url('"+b.image_url+"')";
+              back.classList.add("on"); front.classList.remove("on");
+              var t=front; front=back; back=t; setOverlay(b);
             };
-            pre.src=url;
-          },2800);
+            pre.src=b.image_url;
+          },4000);
         }
       }
-      if($("heroCount")) $("heroCount").textContent = rows.length? (rows.length+" 家新店在线 · 每日更新") : "每日更新的新店资料库";
 
       // 平台数据
       if($("statBiz")) $("statBiz").textContent = rows.length;
