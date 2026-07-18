@@ -134,10 +134,9 @@
 
     // 品牌故事（Launch/Premium）
     if(b.brand_story && rank>=2){
-      var simg=(gal[0]||cover)?("background:#eee url('"+esc(gal[0]||cover)+"') center/cover;"):"";
-      html+='<div class="story" style="margin-top:32px;"><div class="story-img" style="'+simg+'"></div>'
-        +'<div><span class="eyebrow">品牌故事</span><h2 style="margin:12px 0 10px;font-size:23px;">我们的故事</h2>'
-        +'<p class="muted" style="line-height:1.7;">'+esc(b.brand_story)+'</p></div></div>';
+      html+='<div style="margin-top:32px;"><span class="eyebrow">品牌故事</span>'
+        +'<h2 style="margin:12px 0 10px;font-size:23px;">我们的故事</h2>'
+        +'<p class="muted" style="line-height:1.8;">'+esc(b.brand_story)+'</p></div>';
     }
 
     html+='</div>'; // end main col
@@ -147,7 +146,7 @@
     if(wa) html+='<a class="btn btn-wa" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp 联系</a>';
     if(tel) html+='<a class="btn btn-outline" href="'+tel+'">📞 电话</a>';
     if(map) html+='<a class="btn btn-outline" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 查看路线</a>';
-    else if(waze) html+='<a class="btn btn-outline" href="'+waze+'" target="_blank" rel="noopener">🚗 Waze 导航</a>';
+    if(waze) html+='<a class="btn btn-outline" href="'+waze+'" target="_blank" rel="noopener">🚗 Waze 导航</a>';
     html+='<div style="border-top:1px solid var(--line);margin:14px 0;"></div>';
     html+='<div class="info-row" style="border:none;padding-top:0;"><span class="k">分类</span><span>'+esc(b.category||"—")+'</span></div>';
     html+='<div class="info-row"><span class="k">地区</span><span>'+esc(b.area||b.city||"—")+'</span></div>';
