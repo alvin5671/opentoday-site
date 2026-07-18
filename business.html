@@ -40,7 +40,10 @@
         <div id="addrSec" style="margin-top:24px;display:none;">
           <h3 style="margin:0 0 10px;">地址</h3>
           <div class="info-row" style="border-top:none;padding-top:0;"><span class="k" style="min-width:52px;">地址</span><span id="bAddr"></span></div>
-          <a id="bMapBtn" class="btn btn-outline" style="margin-top:14px;display:none;" href="#" target="_blank" rel="noopener">🧭 在 Google 地图打开</a>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+            <a id="bMapBtn" class="btn btn-outline" style="display:none;" href="#" target="_blank" rel="noopener">🧭 Google 地图</a>
+            <a id="bWazeBtn" class="btn btn-outline" style="display:none;" href="#" target="_blank" rel="noopener">🚗 Waze 导航</a>
+          </div>
           <iframe id="bMapEmbed" title="Google 地图" style="display:none;width:100%;height:320px;border:0;border-radius:12px;margin-top:14px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
 
@@ -119,6 +122,7 @@
       if(b.address){
         $("bAddr").textContent=b.address; show($("addrSec"));
         if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); }
+        var wz=$("bWazeBtn"); wz.href="https://waze.com/ul?q="+encodeURIComponent(b.address)+"&navigate=yes"; show(wz);
         var mf=$("bMapEmbed"); mf.src="https://maps.google.com/maps?q="+encodeURIComponent(b.address)+"&z=16&output=embed"; show(mf);
       }
       if(b.whatsapp){ var wa=$("bWa"); wa.href="https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,""); show(wa); }
