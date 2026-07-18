@@ -96,11 +96,15 @@
         grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家。<br><span style="font-size:13px;">在后台把商家状态改成「已刊登」，这里就会自动显示。</span></div>';
         return;
       }
+      var today=new Date().toISOString().slice(0,10);
+      function isFeat(b){ return !!b.featured && (!b.featured_until || String(b.featured_until)>=today); }
+      rows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
       var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
       grid.innerHTML=rows.map(function(b,i){
         var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
         var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
-        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'"><span class="badge badge-open">已刊登</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
+        var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
+        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
       }).join("");
     })
     .catch(function(){});
