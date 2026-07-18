@@ -42,6 +42,26 @@
           <div class="info-row" style="border-top:none;padding-top:0;"><span class="k" style="min-width:52px;">地址</span><span id="bAddr"></span></div>
           <a id="bMapBtn" class="btn btn-outline" style="margin-top:14px;display:none;" href="#" target="_blank" rel="noopener">🧭 在 Google 地图打开</a>
         </div>
+
+        <div id="hoursSec" style="margin-top:26px;display:none;">
+          <h3 style="margin:0 0 10px;">营业时间</h3>
+          <table class="hours" id="bHours"></table>
+        </div>
+
+        <div id="storySec" style="margin-top:26px;display:none;">
+          <h3 style="margin:0 0 10px;">品牌故事</h3>
+          <p id="bStory" class="muted" style="line-height:1.7;"></p>
+        </div>
+
+        <div id="prodSec" style="margin-top:26px;display:none;">
+          <h3 style="margin:0 0 12px;">产品与服务</h3>
+          <div class="grid g-3" id="bProducts"></div>
+        </div>
+
+        <div id="faqSec" style="margin-top:26px;display:none;">
+          <h3 style="margin:0 0 12px;">常见问题</h3>
+          <div id="bFaq"></div>
+        </div>
       </div>
 
       <aside>
@@ -56,6 +76,11 @@
         </div>
       </aside>
     </div>
+
+    <section id="branchSec" style="display:none;padding-top:8px;">
+      <div class="sec-head"><h2>分店</h2></div>
+      <div class="grid g-3" id="bBranches"></div>
+    </section>
   </div>
 </main>
 
@@ -98,6 +123,30 @@
       if(b.facebook_url) h+='<a href="'+b.facebook_url+'" target="_blank" rel="noopener">f</a>';
       if(b.instagram_url) h+='<a href="'+b.instagram_url+'" target="_blank" rel="noopener">◎</a>';
       soc.innerHTML=h;
+
+      // ── Paid-tier sections (show only if data present) ──
+      function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+      function arr(v){ try{ return Array.isArray(v)?v:(v?JSON.parse(v):[]); }catch(e){ return []; } }
+      if(b.hours){
+        $("bHours").innerHTML=String(b.hours).split(/\n/).filter(Boolean).map(function(ln){var p=ln.split("|");return '<tr><td>'+esc((p[0]||"").trim())+'</td><td>'+esc((p[1]||"").trim())+'</td></tr>';}).join("");
+        show($("hoursSec"));
+      }
+      if(b.brand_story){ $("bStory").textContent=b.brand_story; show($("storySec")); }
+      var prods=arr(b.products);
+      if(prods.length){
+        $("bProducts").innerHTML=prods.map(function(p){return '<div class="card" style="padding:16px;"><b>'+esc(p.name||"")+'</b>'+(p.desc?'<p class="muted" style="font-size:13px;margin-top:6px;">'+esc(p.desc)+'</p>':'')+'</div>';}).join("");
+        show($("prodSec"));
+      }
+      var faqs=arr(b.faq);
+      if(faqs.length){
+        $("bFaq").innerHTML=faqs.map(function(f,i){return '<div class="faq'+(i===0?' open':'')+'"><q>'+esc(f.q||"")+' <span class="pm">+</span></q><div class="a">'+esc(f.a||"")+'</div></div>';}).join("");
+        show($("faqSec"));
+      }
+      var brs=arr(b.branches);
+      if(brs.length){
+        $("bBranches").innerHTML=brs.map(function(br){var mb=br.maps?'<a class="btn btn-outline" href="'+esc(br.maps)+'" target="_blank" rel="noopener" style="margin-top:10px;">🧭 地图</a>':'';return '<div class="card" style="padding:16px;"><b>'+esc(br.name||"")+'</b><div class="muted" style="font-size:13px;margin-top:4px;">'+esc([br.area,br.address].filter(Boolean).join(" · "))+'</div>'+mb+'</div>';}).join("");
+        show($("branchSec"));
+      }
     })
     .catch(function(){ $("bName").textContent="加载失败，请稍后重试"; });
 })();
