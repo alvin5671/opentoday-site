@@ -102,7 +102,7 @@
       </div>
 
       <!-- ===== 付费配套：更丰富内容 ===== -->
-      <div class="grp tierbox" data-min="standard">
+      <div class="grp tierbox" data-min="opening">
         <h3>更多照片</h3>
         <div class="gsub">店内、产品、菜单…最多 8 张（自动裁 4:3）。</div>
         <div class="photo-drop" id="moreDrop">➕ 添加更多照片</div>
@@ -110,24 +110,24 @@
         <div id="morePrev"></div>
       </div>
 
-      <div class="grp tierbox" data-min="standard">
+      <div class="grp tierbox" data-min="opening">
         <h3>营业时间</h3>
         <div class="gsub">选营业/休息 + 时间，可先填周一再「套用到每天」。</div>
         <div id="hoursPicker"></div>
       </div>
 
-      <div class="grp tierbox" data-min="standard">
+      <div class="grp tierbox" data-min="launch">
         <h3>品牌故事</h3>
         <textarea id="f_story" style="min-height:110px;" placeholder="讲讲你的品牌理念、由来…"></textarea>
       </div>
 
-      <div class="grp tierbox" data-min="standard">
+      <div class="grp tierbox" data-min="launch">
         <h3>产品与服务</h3>
         <div id="products"></div>
         <button type="button" class="addbtn" onclick="addProduct()">➕ 加一个产品</button>
       </div>
 
-      <div class="grp tierbox" data-min="standard">
+      <div class="grp tierbox" data-min="launch">
         <h3>常见问题（FAQ）</h3>
         <div id="faq"></div>
         <button type="button" class="addbtn" onclick="addFaq()">➕ 加一个问题</button>
@@ -183,8 +183,8 @@
   var $=function(id){return document.getElementById(id);};
   var cropper=null, extras=[];
   if(window.buildHoursPicker) buildHoursPicker('hoursPicker');
-  var TIER={"Free Listing":"free","Opening Profile":"standard","Launch Boost":"standard","Premium Brand Launch":"premium"};
-  var RANK={free:0,standard:1,premium:2};
+  var TIER={"Free Listing":"free","Opening Profile":"opening","Launch Boost":"launch","Premium Brand Launch":"premium"};
+  var RANK={free:0,opening:1,launch:2,premium:3};
   var PLAN_MAP={"free":"Free Listing","opening-profile":"Opening Profile","launch-boost":"Launch Boost","premium":"Premium Brand Launch"};
 
   // preselect from ?plan=
@@ -198,8 +198,13 @@
       box.style.display = rank>=need ? "" : "none";
     });
     $("paidNote").style.display = tier==="free" ? "none" : "";
-    $("planHint").textContent = tier==="free" ? "免费配套：基本资料 + 1 张封面。" :
-      (tier==="premium" ? "Premium：完整内容 + 分店。" : "含营业时间、品牌故事、产品、FAQ、更多照片。");
+    var HINTS={
+      free:"免费：基本资料 + 1 张封面，收录进探索页。",
+      opening:"Opening Profile：完整商家页 — 加图库、营业时间、地图。",
+      launch:"Launch Boost：Opening 全部 + 品牌故事、产品、FAQ + 探索页/首页精选置顶 4 周。",
+      premium:"Premium：Launch 全部 + 分店/品牌主页 + 置顶 8 周 + 专属顾问。"
+    };
+    $("planHint").textContent = HINTS[tier]||HINTS.free;
   }
   $("f_plan").addEventListener("change",applyTier); applyTier();
 

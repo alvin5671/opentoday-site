@@ -41,7 +41,7 @@
   <section>
     <div class="container">
       <div class="sec-head"><h2>最新开业</h2><a href="explore.html">查看全部 ›</a></div>
-      <div class="grid g-5 biz-grid">
+      <div class="grid g-5 biz-grid" id="homeGrid">
         <a class="biz" href="business.html"><div class="biz-img" style="background:#e7ddd4;"><span class="badge badge-new">NEW</span></div><div class="biz-body"><b>Brew &amp; Co. Café</b><div class="meta">咖啡馆 · JB Town</div><div class="date">6月28日开业</div></div></a>
         <a class="biz" href="business.html"><div class="biz-img" style="background:#d9ccc0;"><span class="badge badge-new">NEW</span></div><div class="biz-body"><b>Good Grill House</b><div class="meta">美食餐饮 · Mount Austin</div><div class="date">6月20日开业</div></div></a>
         <a class="biz" href="business.html"><div class="biz-img" style="background:#d9e0dc;"><span class="badge badge-new">NEW</span></div><div class="biz-body"><b>Glow Studio</b><div class="meta">美容美发 · Bukit Indah</div><div class="date">6月10日开业</div></div></a>
@@ -84,5 +84,32 @@
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="home";</script>
 <script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var grid=document.getElementById("homeGrid");
+  if(!grid) return;
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function fmtDate(d){ if(!d) return ""; var m=String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return ""; return parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业"; }
+  fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!Array.isArray(rows)||!rows.length) return;
+      var today=new Date().toISOString().slice(0,10);
+      function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
+      rows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
+      var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0"];
+      grid.innerHTML=rows.slice(0,5).map(function(b,i){
+        var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+        var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
+        var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-new">NEW</span>';
+        var dt=fmtDate(b.opening_date);
+        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+      }).join("");
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 </html>

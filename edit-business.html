@@ -80,31 +80,31 @@
       <button type="button" class="addbtn" onclick="document.getElementById('coverFile').click()">📷 更换封面（自动裁 21:9）</button>
     </div>
 
-    <div class="sec tsec" data-min="standard">
+    <div class="sec tsec" data-min="opening">
       <h3>更多照片（4:3）</h3>
       <div class="thumbs" id="galThumbs"></div>
       <input id="galFile" type="file" accept="image/*" multiple style="display:none;" />
       <button type="button" class="addbtn" onclick="document.getElementById('galFile').click()" style="margin-top:10px;">➕ 添加照片</button>
     </div>
 
-    <div class="sec tsec" data-min="standard">
+    <div class="sec tsec" data-min="opening">
       <h3>营业时间</h3>
       <div class="hint" style="margin-bottom:8px;">选营业/休息 + 时间，可先填周一再「套用到每天」。</div>
       <div id="hoursPicker"></div>
     </div>
 
-    <div class="sec tsec" data-min="standard">
+    <div class="sec tsec" data-min="launch">
       <h3>品牌故事</h3>
       <textarea id="brand_story" style="min-height:110px;"></textarea>
     </div>
 
-    <div class="sec tsec" data-min="standard">
+    <div class="sec tsec" data-min="launch">
       <h3>产品与服务</h3>
       <div id="products"></div>
       <button type="button" class="addbtn" onclick="addProduct()">➕ 加一个产品</button>
     </div>
 
-    <div class="sec tsec" data-min="standard">
+    <div class="sec tsec" data-min="launch">
       <h3>常见问题</h3>
       <div id="faq"></div>
       <button type="button" class="addbtn" onclick="addFaq()">➕ 加一个问题</button>
@@ -193,8 +193,8 @@ function loadBiz(){
     arr(b.products).forEach(function(p){ addProduct(p); });
     arr(b.faq).forEach(function(f){ addFaq(f); });
     arr(b.branches).forEach(function(br){ addBranch(br); });
-    var TIER={"Free Listing":"free","Opening Profile":"standard","Launch Boost":"standard","Premium Brand Launch":"premium"};
-    var RANK={free:0,standard:1,premium:2};
+    var TIER={"Free Listing":"free","Opening Profile":"opening","Launch Boost":"launch","Premium Brand Launch":"premium"};
+    var RANK={free:0,opening:1,launch:2,premium:3};
     var _tier=TIER[b.project]||"free", _rank=RANK[_tier];
     document.querySelectorAll(".tsec").forEach(function(sec){ var need=RANK[sec.getAttribute("data-min")]||0; sec.style.display=_rank>=need?"":"none"; });
     $("bizIdLabel").textContent="ID: "+ID+(b.project?" · "+b.project:"");
@@ -221,7 +221,7 @@ $("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e
 function renderGal(){ $("galThumbs").innerHTML=current.gallery.map(function(u,i){return '<div class="t" style="background-image:url(\''+esc(u)+'\')"><button type="button" onclick="delGal('+i+')">×</button></div>';}).join(""); }
 function delGal(i){ current.gallery.splice(i,1); renderGal(); }
 
-if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked){ var t=new Date(); if($("featured_start") && !$("featured_start").value){ $("featured_start").value=t.toISOString().slice(0,10); } if($("featured_until") && !$("featured_until").value){ var d=new Date(); d.setDate(d.getDate()+28); $("featured_until").value=d.toISOString().slice(0,10); } } }); }
+if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked){ var t=new Date(); if($("featured_start") && !$("featured_start").value){ $("featured_start").value=t.toISOString().slice(0,10); } if($("featured_until") && !$("featured_until").value){ var days=(current&&current.project==="Premium Brand Launch")?56:28; var d=new Date(); d.setDate(d.getDate()+days); $("featured_until").value=d.toISOString().slice(0,10); } } }); }
 
 function collect(cls,keys,root){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
 
