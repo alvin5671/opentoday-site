@@ -184,10 +184,10 @@
     var gal=arr(b.gallery), branches=arr(b.branches), prods=arr(b.products), faqs=arr(b.faq);
     var wa=b.whatsapp?("https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,"")):"";
     var map=b.google_maps_url||"";
-    function firstSentence(s){ if(!s) return ""; var parts=String(s).split(/[。！？\n]/).filter(function(x){return x.trim();}); return parts.length?parts[0].trim()+"。":String(s).trim(); }
+    function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
     var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
     var sub=subbits.join(" · ");
-    var lead=b.short_description||firstSentence(b.brand_story);
+    var lead=b.short_description||teaser(b.brand_story,54);
     var heroImg=cover?("background:#eee url('"+cover+"') center/cover;"):"";
     var html="";
 
