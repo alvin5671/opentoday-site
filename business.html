@@ -187,7 +187,7 @@
     function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
     var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
     var sub=subbits.join(" · ");
-    var lead=b.short_description||teaser(b.brand_story,54);
+    var lead=teaser(b.short_description||b.brand_story,54);
     var heroImg=cover?("background:#eee url('"+cover+"') center/cover;"):"";
     var html="";
 
