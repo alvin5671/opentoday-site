@@ -184,8 +184,10 @@
     var gal=arr(b.gallery), branches=arr(b.branches), prods=arr(b.products), faqs=arr(b.faq);
     var wa=b.whatsapp?("https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,"")):"";
     var map=b.google_maps_url||"";
-    var eyebrow=branches.length?("连锁品牌 · "+branches.length+" 家分店"):(b.category||"Premium 品牌");
-    var lead=b.short_description||b.brand_story||"";
+    function firstSentence(s){ if(!s) return ""; var parts=String(s).split(/[。！？\n]/).filter(function(x){return x.trim();}); return parts.length?parts[0].trim()+"。":String(s).trim(); }
+    var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
+    var sub=subbits.join(" · ");
+    var lead=b.short_description||firstSentence(b.brand_story);
     var heroImg=cover?("background:#eee url('"+cover+"') center/cover;"):"";
     var html="";
 
@@ -194,8 +196,9 @@
       +'<div class="crumb"><a href="index.html">首页</a> / <a href="explore.html">探索商家</a> / <span>'+esc(name)+'</span></div>'
       +'<div class="brand-hero"><div>'
         +'<div class="brand-logo">'+esc(initial)+'</div>'
-        +'<span class="eyebrow" style="margin-top:14px;">'+esc(eyebrow)+'</span>'
-        +'<h1 style="margin:12px 0 12px;">'+esc(name)+' <span class="gold-line">品牌主页</span></h1>'
+        +'<span class="eyebrow" style="margin-top:14px;">⭐ PREMIUM · 品牌主页</span>'
+        +'<h1 style="margin:12px 0 8px;">'+esc(name)+'</h1>'
+        +(sub?'<p class="muted" style="margin:0 0 12px;">'+esc(sub)+'</p>':'')
         +(lead?'<p class="lead">'+esc(lead)+'</p>':'')
         +'<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">'
           +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp</a>':'')
@@ -219,7 +222,7 @@
     if(branches.length){
       html+='<section style="background:var(--surface);"><div class="container"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">'+branches.length+' 家分店，统一品牌管理</span></div><div class="grid g-3">'
         +branches.map(function(br,i){
-          var bi=gal[i]?("background:#eee url('"+gal[i]+"') center/cover;"):"background:var(--surface);";
+          var bi=gal.length?("background:#eee url('"+gal[(i+1)%gal.length]+"') center/cover;"):"background:var(--surface);";
           var href=br.maps?esc(br.maps):"#";
           return '<a class="branch gold-accent" href="'+href+'" target="_blank" rel="noopener"><div class="bi" style="'+bi+'"></div><div class="bb"><b>'+esc(br.name||"")+'</b><div class="m">'+esc([br.area,br.address].filter(Boolean).join(" · "))+'</div></div></a>';
         }).join("")
