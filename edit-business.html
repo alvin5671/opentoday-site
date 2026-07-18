@@ -89,7 +89,8 @@
 
     <div class="sec tsec" data-min="standard">
       <h3>营业时间</h3>
-      <textarea id="hours" placeholder="一行一个时段，用 | 分隔，例如：&#10;周一 – 周五 | 07:00 – 14:00&#10;周六 – 周日 | 07:00 – 15:00"></textarea>
+      <div class="hint" style="margin-bottom:8px;">选营业/休息 + 时间，可先填周一再「套用到每天」。</div>
+      <div id="hoursPicker"></div>
     </div>
 
     <div class="sec tsec" data-min="standard">
@@ -128,6 +129,22 @@
 </div>
 
 <script>
+(function(){
+  var HDAYS=["周一","周二","周三","周四","周五","周六","周日"];
+  function timeOpts(sel){var o='';for(var h=0;h<24;h++){for(var m=0;m<60;m+=30){var t=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;o+='<option'+(t===sel?' selected':'')+'>'+t+'</option>';}}return o;}
+  function toggleRow(r){var on=r.querySelector('.hopen').checked;['.hfrom','.hdash','.hto'].forEach(function(s){var e=r.querySelector(s);if(e)e.style.display=on?'':'none';});var cl=r.querySelector('.hclosed');if(cl)cl.style.display=on?'none':'';}
+  window.buildHoursPicker=function(cid){
+    var c=document.getElementById(cid); if(!c || c.dataset.built) return; c.dataset.built='1';
+    c.innerHTML=HDAYS.map(function(d){return '<div class="hrow" data-day="'+d+'" style="display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap;"><span style="width:36px;font-weight:600;font-size:13px;">'+d+'</span><label style="font-size:13px;display:flex;align-items:center;gap:4px;margin:0;font-weight:400;"><input type="checkbox" class="hopen" checked style="width:auto;"> 营业</label><select class="hfrom" style="width:auto;padding:6px 8px;">'+timeOpts('09:00')+'</select><span class="hdash">–</span><select class="hto" style="width:auto;padding:6px 8px;">'+timeOpts('18:00')+'</select><span class="hclosed" style="display:none;color:#c00;font-size:13px;">休息</span></div>';}).join('')
+      +'<button type="button" class="addbtn" style="margin-top:6px;" onclick="applyHoursToAll(\''+cid+'\')">套用第一天到每天</button>';
+    c.addEventListener('change',function(e){ if(e.target.classList&&e.target.classList.contains('hopen')){ toggleRow(e.target.closest('.hrow')); } });
+  };
+  window.applyHoursToAll=function(cid){var c=document.getElementById(cid);if(!c)return;var rows=c.querySelectorAll('.hrow');var f=rows[0];var on=f.querySelector('.hopen').checked,fr=f.querySelector('.hfrom').value,to=f.querySelector('.hto').value;rows.forEach(function(r){r.querySelector('.hopen').checked=on;r.querySelector('.hfrom').value=fr;r.querySelector('.hto').value=to;toggleRow(r);});};
+  window.buildHoursValue=function(cid){var c=document.getElementById(cid);if(!c)return '';return [].slice.call(c.querySelectorAll('.hrow')).map(function(r){var d=r.getAttribute('data-day');return r.querySelector('.hopen').checked?(d+' | '+r.querySelector('.hfrom').value+' – '+r.querySelector('.hto').value):(d+' | 休息');}).join('\n');};
+  window.setHoursValue=function(cid,text){if(!text)return;var c=document.getElementById(cid);if(!c)return;String(text).split('\n').forEach(function(ln){var i=ln.indexOf('|');if(i<0)return;var dp=ln.slice(0,i),tp=ln.slice(i+1).trim();HDAYS.forEach(function(d){if(dp.indexOf(d)>-1){var r=c.querySelector('.hrow[data-day="'+d+'"]');if(!r)return;if(/休息|closed/i.test(tp)){r.querySelector('.hopen').checked=false;}else{var m=tp.match(/(\d{1,2}:\d{2})\s*[–\-~]\s*(\d{1,2}:\d{2})/);if(m){r.querySelector('.hfrom').value=m[1];r.querySelector('.hto').value=m[2];}r.querySelector('.hopen').checked=true;}toggleRow(r);}});});};
+})();
+</script>
+<script>
 var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
 var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
 var H={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY};
@@ -159,6 +176,7 @@ function loadBiz(){
     if(b.listing_status) $("listing_status").value=b.listing_status;
     if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
     current.gallery=arr(b.gallery); renderGal();
+    if(window.buildHoursPicker){ buildHoursPicker('hoursPicker'); setHoursValue('hoursPicker', b.hours); }
     arr(b.products).forEach(function(p){ addProduct(p); });
     arr(b.faq).forEach(function(f){ addFaq(f); });
     arr(b.branches).forEach(function(br){ addBranch(br); });
@@ -202,7 +220,7 @@ function save(){
     whatsapp:$("whatsapp").value.replace(/[^0-9]/g,"")||null, phone:$("phone").value.trim()||null,
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
     short_description:$("short_description").value.trim()||null,
-    hours:$("hours").value.trim()||null, brand_story:$("brand_story").value.trim()||null,
+    hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("brand_story").value.trim()||null,
     image_url:current.image_url||null, gallery:current.gallery||[],
     products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
     faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
