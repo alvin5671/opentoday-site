@@ -6,6 +6,7 @@
 <title>免费登记你的商家 — OpenToday｜今日开业</title>
 <meta name="description" content="免费登记你的新开业商家，让顾客、Google 和 AI 找到你。填写资料并上传照片，审核后即可刊登。" />
 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 <style>
   .sform{max-width:640px;margin:0 auto;}
   .sform .fld{margin-bottom:16px;}
@@ -22,7 +23,9 @@
   .sform .hint{font-size:12px;color:var(--muted);margin-top:5px;}
   .photo-drop{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer;background:var(--surface);}
   .photo-drop:hover{border-color:var(--brand);}
-  #photoPreview{max-width:100%;border-radius:10px;margin-top:12px;display:none;}
+  #cropWrap{display:none;margin-top:12px;}
+  #cropBox{max-height:360px;background:#f3f3f3;border-radius:10px;overflow:hidden;}
+  #cropImg{max-width:100%;display:block;}
   .smsg{padding:14px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;display:none;}
   .smsg.ok{background:#eef8f0;border:1px solid #cfe9d4;color:#1c7a34;}
   .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
@@ -120,7 +123,10 @@
         <label>商家照片 <span class="req">*</span></label>
         <div class="photo-drop" id="photoDrop">📷 点击选择照片（店面 / 产品，建议横图）</div>
         <input id="f_photo" type="file" accept="image/*" style="display:none;" />
-        <img id="photoPreview" alt="预览" />
+        <div id="cropWrap">
+          <div id="cropBox"><img id="cropImg" alt="" /></div>
+          <p class="hint">拖动 / 缩放照片，<b>框内的部分</b>就是网站上显示的图（自动裁成横图 4:3）。</p>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交登记</button>
@@ -139,42 +145,58 @@
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="submit";</script>
 <script src="site.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
 (function(){
   var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var BUCKET="business-photos";
   var $=function(id){return document.getElementById(id);};
-  var file=null;
+  var cropper=null;
 
   $("photoDrop").addEventListener("click",function(){ $("f_photo").click(); });
   $("f_photo").addEventListener("change",function(e){
-    file=e.target.files[0]||null;
-    if(file){
-      $("photoDrop").textContent="📷 已选择："+file.name+"（点击可更换）";
-      var pv=$("photoPreview"); pv.src=URL.createObjectURL(file); pv.style.display="block";
+    var f=e.target.files[0]; if(!f) return;
+    var url=URL.createObjectURL(f);
+    $("cropImg").src=url;
+    $("cropWrap").style.display="block";
+    $("photoDrop").textContent="📷 已选择照片（点击可重新选择）";
+    if(cropper){ cropper.destroy(); cropper=null; }
+    if(typeof Cropper!=="undefined"){
+      cropper=new Cropper($("cropImg"),{aspectRatio:4/3,viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true});
     }
   });
 
   function msg(t,type){ var m=$("smsg"); m.textContent=t; m.className="smsg "+type; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
 
+  function getPhotoBlob(){
+    return new Promise(function(resolve,reject){
+      if(cropper && cropper.getCroppedCanvas){
+        var canvas=cropper.getCroppedCanvas({width:1600,height:1200,imageSmoothingEnabled:true,imageSmoothingQuality:"high"});
+        if(!canvas){ return reject(new Error("no canvas")); }
+        canvas.toBlob(function(b){ b?resolve(b):reject(new Error("blob failed")); },"image/jpeg",0.85);
+      } else {
+        var f=$("f_photo").files[0];
+        f?resolve(f):reject(new Error("no file"));
+      }
+    });
+  }
+
   $("sform").addEventListener("submit",async function(e){
     e.preventDefault();
-    if(!file){ msg("请上传一张商家照片。","err"); return; }
+    if(!$("f_photo").files[0]){ msg("请上传一张商家照片。","err"); return; }
     var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
     try{
-      // 1) upload photo to Storage
-      var ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-      var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+"."+ext;
+      var blob=await getPhotoBlob();
+      var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+".jpg";
       var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+path,{
         method:"POST",
-        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":file.type||"image/jpeg"},
-        body:file
+        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},
+        body:blob
       });
       if(!up.ok){ throw new Error("photo upload failed "+up.status); }
       var imageUrl=SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+path;
 
-      // 2) insert business into customers (待审核)
       var data={
         business_name:$("f_name").value.trim(),
         name:$("f_name").value.trim(),
