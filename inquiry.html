@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>选择配套 — OpenToday｜今日开业</title>
+<meta name="description" content="选择 OpenToday 付费配套。填写简单资料，我们会尽快联系你安排。" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  .iform{max-width:560px;margin:0 auto;}
+  .iform .fld{margin-bottom:16px;}
+  .iform label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .iform label .req{color:var(--brand);}
+  .iform input,.iform select,.iform textarea{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
+    font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;box-sizing:border-box;
+  }
+  .iform input:focus,.iform select:focus,.iform textarea:focus{border-color:var(--brand);}
+  .iform textarea{min-height:90px;resize:vertical;}
+  .iform .hint{font-size:12px;color:var(--muted);margin-top:5px;}
+  .plan-badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:700;margin-bottom:4px;}
+  .plan-badge .price{color:var(--brand);}
+  .smsg{padding:14px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;display:none;}
+  .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
+  .done-card{display:none;text-align:center;padding:44px 20px;}
+  .done-card .ic{font-size:52px;}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="container iform">
+    <div style="padding:36px 0 10px;">
+      <span class="eyebrow">选择配套</span>
+      <h1 style="margin:12px 0 8px;">我要这个配套</h1>
+      <p class="lead" style="margin-bottom:12px;">填好简单资料，我们会尽快用 WhatsApp 联系你，安排制作与付款。</p>
+      <div class="plan-badge" id="planBadge">配套 · <span class="price" id="planPrice"></span></div>
+    </div>
+
+    <div class="smsg" id="smsg"></div>
+
+    <form class="card" id="iform" style="padding:22px;">
+      <div class="fld">
+        <label>想要的配套 <span class="req">*</span></label>
+        <select id="f_plan" required>
+          <option value="Opening Profile">Opening Profile — RM699</option>
+          <option value="Launch Boost">Launch Boost — RM1,288</option>
+          <option value="Premium Brand Launch">Premium Brand Launch — RM2,888 起</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>商家名称 <span class="req">*</span></label>
+        <input id="f_name" required placeholder="例如：早尚好 Good Morning" />
+      </div>
+      <div class="fld">
+        <label>联系人</label>
+        <input id="f_contact" placeholder="你的名字" />
+      </div>
+      <div class="fld">
+        <label>WhatsApp <span class="req">*</span></label>
+        <input id="f_wa" required placeholder="例如：60123456789" />
+        <div class="hint">只填数字，含国码（60），方便我们联系你</div>
+      </div>
+      <div class="fld">
+        <label>需求 / 备注</label>
+        <textarea id="f_note" placeholder="想什么时候开业、有什么特别需求…（选填）"></textarea>
+      </div>
+      <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交，等我们联系</button>
+      <p class="hint" style="text-align:center;margin-top:12px;">提交后不会立即扣款。我们会先联系你确认需求与付款方式。</p>
+    </form>
+
+    <div class="card done-card" id="doneCard" style="padding:0;">
+      <div class="ic">✅</div>
+      <h2 style="margin:14px 0 8px;">已收到！</h2>
+      <p class="lead">我们会尽快用 WhatsApp 联系你，安排配套制作与付款。<br>感谢你选择 OpenToday。</p>
+      <a class="btn btn-outline" href="index.html" style="margin-top:18px;">返回首页</a>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script>window.CURRENT_PAGE="services";</script>
+<script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var $=function(id){return document.getElementById(id);};
+  var PLANS={
+    "opening-profile":{name:"Opening Profile",price:"RM699"},
+    "launch-boost":{name:"Launch Boost",price:"RM1,288"},
+    "premium":{name:"Premium Brand Launch",price:"RM2,888 起"}
+  };
+  var key=(new URLSearchParams(location.search).get("plan")||"opening-profile").toLowerCase();
+  var plan=PLANS[key]||PLANS["opening-profile"];
+  $("f_plan").value=plan.name;
+  $("planPrice").textContent=plan.name+" · "+plan.price;
+
+  function msg(t){ var m=$("smsg"); m.textContent=t; m.className="smsg err"; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
+
+  $("iform").addEventListener("submit",async function(e){
+    e.preventDefault();
+    var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
+    try{
+      var data={
+        business_name:$("f_name").value.trim(),
+        name:$("f_name").value.trim(),
+        contact_person:$("f_contact").value.trim()||null,
+        whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
+        project:$("f_plan").value,
+        short_description:$("f_note").value.trim()||null,
+        listing_status:"询价",
+        status:"未完成",
+        progress:"待制作",
+        submit_date:new Date().toISOString().slice(0,10)
+      };
+      var ins=await fetch(SB_URL+"/rest/v1/customers",{
+        method:"POST",
+        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},
+        body:JSON.stringify(data)
+      });
+      if(!ins.ok){ throw new Error("提交失败 "+ins.status); }
+      $("iform").style.display="none"; $("smsg").style.display="none";
+      $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
+    }catch(err){
+      msg("提交失败，请稍后再试。("+err.message+")");
+      btn.disabled=false; btn.textContent="提交，等我们联系";
+    }
+  });
+})();
+</script>
+</body>
+</html>
