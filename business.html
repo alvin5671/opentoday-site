@@ -8,96 +8,17 @@
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="demo.css" />
 <style>
-  #bCover{aspect-ratio:21/9;width:100%;border-radius:14px;background:#e7ddd4 center/cover no-repeat;position:relative;overflow:hidden;}
-  #bCover .badge{position:absolute;top:14px;left:14px;}
-  #bThumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px;}
-  #bThumbs .th{aspect-ratio:4/3;border-radius:10px;background:#eee center/cover no-repeat;cursor:pointer;border:2px solid transparent;}
-  #bThumbs .th:hover{border-color:var(--brand);}
-  /* Premium 品牌主页 — OpenToday 白底橙色排版 */
-  #premiumWrap .brand-logo{background:var(--ink-strong);color:#fff;}
-  #premiumWrap .brand-hero-img{background:var(--surface);border:1px solid var(--line);}
-  #premiumWrap .gold-line{color:var(--brand);}
-  #premiumWrap .gold-accent{border-top-color:var(--brand);}
-  #premiumWrap .story-img{background:var(--surface);}
-  #premiumWrap .prem-cta{background:var(--brand-soft);border:1px solid rgba(249,115,22,.25);border-radius:18px;padding:40px;text-align:center;}
+  /* Premium 品牌区块 — OpenToday 白底橙色 */
+  #page .brand-logo{background:var(--ink-strong);color:#fff;}
+  #page .brand-hero-img{background:var(--surface);border:1px solid var(--line);}
+  #page .branch.gold-accent{border-top-color:var(--brand);}
 </style>
 </head>
 <body>
 <div id="site-header"></div>
 
 <main>
-  <!-- Premium 品牌主页（Premium Brand Launch 商家自动切换）-->
-  <div id="premiumWrap" style="display:none;"></div>
-
-  <!-- 标准商家页（Free / Opening / Launch）-->
-  <div class="container" id="standardWrap">
-    <div class="crumb"><a href="index.html">首页</a> / <a href="explore.html">探索商家</a> / <span id="bCrumb">商家</span></div>
-
-    <div id="bCover"><span class="badge badge-open">已刊登</span></div>
-    <div id="bThumbs"></div>
-
-    <div class="detail">
-      <div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <h1 id="bName" style="font-size:32px;">加载中…</h1>
-          <span class="badge-inline b-verified">✓ 已刊登</span>
-        </div>
-        <p class="muted" id="bMeta" style="margin-top:6px;"></p>
-
-        <div id="descSec" style="margin-top:26px;display:none;">
-          <h3 style="margin:0 0 10px;">关于</h3>
-          <p id="bDesc" style="line-height:1.7;"></p>
-        </div>
-
-        <div id="addrSec" style="margin-top:24px;display:none;">
-          <h3 style="margin:0 0 10px;">地址</h3>
-          <div class="info-row" style="border-top:none;padding-top:0;"><span class="k" style="min-width:52px;">地址</span><span id="bAddr"></span></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-            <a id="bMapBtn" class="btn btn-outline" style="display:none;" href="#" target="_blank" rel="noopener">🧭 Google 地图</a>
-            <a id="bWazeBtn" class="btn btn-outline" style="display:none;" href="#" target="_blank" rel="noopener">🚗 Waze 导航</a>
-          </div>
-          <iframe id="bMapEmbed" title="Google 地图" style="display:none;width:100%;height:320px;border:0;border-radius:12px;margin-top:14px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-
-        <div id="hoursSec" style="margin-top:26px;display:none;">
-          <h3 style="margin:0 0 10px;">营业时间</h3>
-          <table class="hours" id="bHours"></table>
-        </div>
-
-        <div id="storySec" style="margin-top:26px;display:none;">
-          <h3 style="margin:0 0 10px;">品牌故事</h3>
-          <p id="bStory" class="muted" style="line-height:1.7;"></p>
-        </div>
-
-        <div id="prodSec" style="margin-top:26px;display:none;">
-          <h3 style="margin:0 0 12px;">产品与服务</h3>
-          <div class="grid g-3" id="bProducts"></div>
-        </div>
-
-        <div id="faqSec" style="margin-top:26px;display:none;">
-          <h3 style="margin:0 0 12px;">常见问题</h3>
-          <div id="bFaq"></div>
-        </div>
-      </div>
-
-      <aside>
-        <div class="contact-card">
-          <a class="btn btn-wa" id="bWa" style="display:none;" href="#" target="_blank" rel="noopener">● WhatsApp 联系</a>
-          <a class="btn btn-outline" id="bTel" style="display:none;" href="#">📞 电话</a>
-          <a class="btn btn-outline" id="bDir" style="display:none;" href="#" target="_blank" rel="noopener">🧭 查看路线</a>
-          <div style="border-top:1px solid var(--line);margin:14px 0;"></div>
-          <div class="info-row" style="border:none;padding-top:0;"><span class="k">分类</span><span id="ccCat">—</span></div>
-          <div class="info-row"><span class="k">地区</span><span id="ccArea">—</span></div>
-          <div class="socials" id="bSocials" style="margin-top:10px;"></div>
-        </div>
-      </aside>
-    </div>
-
-    <section id="branchSec" style="display:none;padding-top:8px;">
-      <div class="sec-head"><h2>分店</h2></div>
-      <div class="grid g-3" id="bBranches"></div>
-    </section>
-  </div>
+  <div class="container" id="page"><p class="muted" style="padding:40px 0;">加载中…</p></div>
 </main>
 
 <div id="site-footer"></div>
@@ -109,162 +30,145 @@
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var id=new URLSearchParams(location.search).get("id");
   var $=function(x){return document.getElementById(x);};
-  function show(el){ if(el) el.style.display=""; }
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
   function arr(v){ try{ return Array.isArray(v)?v:(v?JSON.parse(v):[]); }catch(e){ return []; } }
-  if(!id){ $("bName").textContent="请从探索页选择商家"; return; }
+  function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
+  function fmtDate(d){ var m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/); return m?parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业":""; }
+
+  if(!id){ $("page").innerHTML='<p class="muted" style="padding:40px 0;">请从探索页选择商家。</p>'; return; }
   fetch(SB_URL+"/rest/v1/public_customers?id=eq."+encodeURIComponent(id)+"&select=*",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
-      if(!Array.isArray(rows)||!rows.length){ $("bName").textContent="找不到该商家"; return; }
-      var b=rows[0];
-      if(b.project==="Premium Brand Launch"){ $("standardWrap").style.display="none"; renderPremium(b); }
-      else { renderStandard(b); }
+      if(!Array.isArray(rows)||!rows.length){ $("page").innerHTML='<p class="muted" style="padding:40px 0;">找不到该商家。</p>'; return; }
+      render(rows[0]);
     })
-    .catch(function(){ $("bName").textContent="加载失败，请稍后重试"; });
+    .catch(function(){ $("page").innerHTML='<p class="muted" style="padding:40px 0;">加载失败，请稍后重试。</p>'; });
 
-  // ────────────── 标准页（Free / Opening / Launch）──────────────
-  function renderStandard(b){
-      document.title=b.business_name+" — OpenToday｜今日开业";
-      $("bCrumb").textContent=b.business_name;
-      $("bName").textContent=b.business_name;
-      $("bMeta").textContent=[b.category,b.area||b.city].filter(Boolean).join(" · ");
-      $("ccCat").textContent=b.category||"—";
-      $("ccArea").textContent=b.area||b.city||"—";
-      var cover=b.image_url||"";
-      var gal=arr(b.gallery);
-      if(cover){ $("bCover").style.backgroundImage="url('"+cover+"')"; }
-      if(gal.length){
-        var t=$("bThumbs"); var all=[cover].concat(gal).filter(Boolean);
-        t.innerHTML=all.map(function(u){return '<div class="th" style="background-image:url(\''+u+'\')" data-u="'+u+'"></div>';}).join("");
-        t.addEventListener("click",function(e){ var d=e.target.closest(".th"); if(d){ $("bCover").style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } });
-      }
-      if(b.short_description){ $("bDesc").textContent=b.short_description; show($("descSec")); }
-      if(b.address){
-        $("bAddr").textContent=b.address; show($("addrSec"));
-        if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); }
-        var wz=$("bWazeBtn"); wz.href="https://waze.com/ul?q="+encodeURIComponent(b.address)+"&navigate=yes"; show(wz);
-        var mf=$("bMapEmbed"); mf.src="https://maps.google.com/maps?q="+encodeURIComponent(b.address)+"&z=16&output=embed"; show(mf);
-      }
-      if(b.whatsapp){ var wa=$("bWa"); wa.href="https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,""); show(wa); }
-      if(b.phone){ var tel=$("bTel"); tel.href="tel:"+String(b.phone).replace(/\s+/g,""); show(tel); }
-      if(b.google_maps_url){ var dir=$("bDir"); dir.href=b.google_maps_url; show(dir); }
-      var soc=$("bSocials"), h="";
-      if(b.facebook_url) h+='<a href="'+b.facebook_url+'" target="_blank" rel="noopener">f</a>';
-      if(b.instagram_url) h+='<a href="'+b.instagram_url+'" target="_blank" rel="noopener">◎</a>';
-      soc.innerHTML=h;
-      if(b.hours){
-        $("bHours").innerHTML=String(b.hours).split(/\n/).filter(Boolean).map(function(ln){var p=ln.split("|");return '<tr><td>'+esc((p[0]||"").trim())+'</td><td>'+esc((p[1]||"").trim())+'</td></tr>';}).join("");
-        show($("hoursSec"));
-      }
-      if(b.brand_story){ $("bStory").textContent=b.brand_story; show($("storySec")); }
-      var prods=arr(b.products);
-      if(prods.length){
-        $("bProducts").innerHTML=prods.map(function(p){return '<div class="card" style="padding:16px;"><b>'+esc(p.name||"")+'</b>'+(p.desc?'<p class="muted" style="font-size:13px;margin-top:6px;">'+esc(p.desc)+'</p>':'')+'</div>';}).join("");
-        show($("prodSec"));
-      }
-      var faqs=arr(b.faq);
-      if(faqs.length){
-        $("bFaq").innerHTML=faqs.map(function(f,i){return '<div class="faq'+(i===0?' open':'')+'"><q>'+esc(f.q||"")+' <span class="pm">+</span></q><div class="a">'+esc(f.a||"")+'</div></div>';}).join("");
-        show($("faqSec"));
-      }
-      var brs=arr(b.branches);
-      if(brs.length){
-        $("bBranches").innerHTML=brs.map(function(br){var mb=br.maps?'<a class="btn btn-outline" href="'+esc(br.maps)+'" target="_blank" rel="noopener" style="margin-top:10px;">🧭 地图</a>':'';return '<div class="card" style="padding:16px;"><b>'+esc(br.name||"")+'</b><div class="muted" style="font-size:13px;margin-top:4px;">'+esc([br.area,br.address].filter(Boolean).join(" · "))+'</div>'+mb+'</div>';}).join("");
-        show($("branchSec"));
-      }
-  }
-
-  // ────────────── Premium 品牌主页（黑金）──────────────
-  function renderPremium(b){
-    var wrap=$("premiumWrap"); wrap.style.display="";
+  function render(b){
     var name=b.business_name||"";
-    var initial=(name.trim().charAt(0)||"B").toUpperCase();
+    var initial=(name.trim().charAt(0)||"O").toUpperCase();
     var cover=b.image_url||"";
-    var gal=arr(b.gallery), branches=arr(b.branches), prods=arr(b.products), faqs=arr(b.faq);
+    var gal=arr(b.gallery), prods=arr(b.products), faqs=arr(b.faq), branches=arr(b.branches);
+    var TIER={"Free Listing":0,"Opening Profile":1,"Launch Boost":2,"Premium Brand Launch":3};
+    var rank=TIER[b.project]||0;
+    var premium=rank>=3;
+    var today=new Date().toISOString().slice(0,10);
+    var isFeat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today);
     var wa=b.whatsapp?("https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,"")):"";
+    var tel=b.phone?("tel:"+String(b.phone).replace(/\s+/g,"")):"";
     var map=b.google_maps_url||"";
-    function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
-    var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
-    var sub=subbits.join(" · ");
-    var lead=teaser(b.short_description||b.brand_story,54);
-    var heroImg=cover?("background:#eee url('"+cover+"') center/cover;"):"";
-    var html="";
+    var waze=b.address?("https://waze.com/ul?q="+encodeURIComponent(b.address)+"&navigate=yes"):"";
+    var metaStr=[b.category,b.area||b.city,fmtDate(b.opening_date)].filter(Boolean).join(" · ");
 
-    // 品牌主页 Hero
-    html+='<section style="padding-bottom:0;"><div class="container">'
-      +'<div class="crumb"><a href="index.html">首页</a> / <a href="explore.html">探索商家</a> / <span>'+esc(name)+'</span></div>'
-      +'<div class="brand-hero"><div>'
+    document.title=name+" — OpenToday｜今日开业";
+    var html='<div class="crumb"><a href="index.html">首页</a> / <a href="explore.html">探索商家</a> / <span>'+esc(name)+'</span></div>';
+
+    // ── Premium 品牌 Banner ──
+    if(premium){
+      var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
+      var lead=teaser(b.short_description||b.brand_story,54);
+      var heroImg=cover?("background:#eee url('"+esc(cover)+"') center/cover;"):"";
+      html+='<div class="brand-hero" style="padding:6px 0 22px;"><div>'
         +'<div class="brand-logo">'+esc(initial)+'</div>'
-        +'<span class="eyebrow" style="margin-top:14px;">⭐ PREMIUM · 品牌主页</span>'
-        +'<h1 style="margin:12px 0 8px;">'+esc(name)+'</h1>'
-        +(sub?'<p class="muted" style="margin:0 0 12px;">'+esc(sub)+'</p>':'')
+        +'<span class="eyebrow" style="margin-top:12px;">⭐ PREMIUM · 品牌主页</span>'
+        +'<h1 style="margin:10px 0 6px;">'+esc(name)+'</h1>'
+        +(subbits.length?'<p class="muted" style="margin:0 0 10px;">'+esc(subbits.join(" · "))+'</p>':'')
         +(lead?'<p class="lead">'+esc(lead)+'</p>':'')
-        +'<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">'
+        +'<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">'
           +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp</a>':'')
           +(map?'<a class="btn btn-outline btn-lg" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 地图</a>':'')
-        +'</div></div>'
-        +'<div class="brand-hero-img" style="'+heroImg+'"></div>'
-      +'</div></div></section>';
-
-    // 品牌故事
-    if(b.brand_story){
-      var simg=(gal[0]||cover)?("background:#eee url('"+(gal[0]||cover)+"') center/cover;"):"";
-      html+='<section style="padding-top:36px;"><div class="container"><div class="story">'
-        +'<div class="story-img" style="'+simg+'"></div>'
-        +'<div><span class="eyebrow">品牌故事</span>'
-        +'<h2 style="margin:12px 0 10px;">关于我们</h2>'
-        +'<p class="muted" style="line-height:1.7;">'+esc(b.brand_story)+'</p></div>'
-      +'</div></div></section>';
+        +'</div></div><div class="brand-hero-img" style="'+heroImg+'"></div></div>';
     }
 
-    // 分店
+    // ── 图库（大图库 or 单封面）──
+    var imgs=(premium?gal:[cover].concat(gal)).filter(Boolean);
+    var seen={}, uimgs=[]; imgs.forEach(function(u){ if(!seen[u]){ seen[u]=1; uimgs.push(u); } });
+    if(uimgs.length>=2){
+      html+='<div class="gallery-lg">'+uimgs.slice(0,5).map(function(u,i){return '<div class="'+(i===0?"big":"")+'" style="background-image:url(\''+esc(u)+'\')"></div>';}).join("")+'</div>';
+    } else {
+      var one=cover||uimgs[0]||"";
+      html+='<div style="aspect-ratio:21/9;width:100%;border-radius:14px;background:#e7ddd4 center/cover no-repeat;'+(one?"background-image:url('"+esc(one)+"');":"")+'"></div>';
+    }
+
+    // ── Detail 双栏 ──
+    html+='<div class="detail"><div>';
+    if(!premium){
+      var badges='<span class="badge-inline b-verified">✓ 已刊登</span>';
+      if(isFeat) badges+=' <span class="badge-inline b-featured">★ 精选</span> <span class="badge-inline b-new">持续曝光中</span>';
+      html+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h1 style="font-size:32px;">'+esc(name)+'</h1>'+badges+'</div>';
+      if(metaStr) html+='<p class="muted" style="margin-top:6px;">'+esc(metaStr)+'</p>';
+    } else if(metaStr){
+      html+='<p class="muted" style="margin:0 0 4px;">'+esc(metaStr)+'</p>';
+    }
+
+    // 曝光条（精选中）
+    if(isFeat){
+      html+='<h3 style="margin:22px 0 10px;">此商家正在这些位置曝光</h3><div class="exposure">'
+        +'<div class="exp"><div class="ic">🏠</div><b>首页精选</b><span>Home</span></div>'
+        +'<div class="exp"><div class="ic">🆕</div><b>最新开业</b><span>Latest</span></div>'
+        +'<div class="exp"><div class="ic">🔎</div><b>探索页推荐</b><span>Explore</span></div>'
+        +'<div class="exp"><div class="ic">⭐</div><b>精选置顶</b><span>Featured</span></div>'
+        +'</div>';
+    }
+
+    // Tabs
+    var aboutPane='';
+    if(b.short_description) aboutPane+='<p style="margin-bottom:16px;line-height:1.7;">'+esc(b.short_description)+'</p>';
+    if(b.hours) aboutPane+='<table class="hours">'+String(b.hours).split(/\n/).filter(Boolean).map(function(ln){var p=ln.split("|");return '<tr><td>'+esc((p[0]||"").trim())+'</td><td>'+esc((p[1]||"").trim())+'</td></tr>';}).join("")+'</table>';
+    if(b.address){ aboutPane+='<div style="margin-top:16px;"><div class="info-row" style="border-top:none;padding-top:0;"><span class="k" style="min-width:52px;">地址</span><span>'+esc(b.address)+'</span></div>'
+      +'<iframe title="地图" style="width:100%;height:300px;border:0;border-radius:12px;margin-top:12px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q='+encodeURIComponent(b.address)+'&z=16&output=embed"></iframe></div>'; }
+    if(!aboutPane) aboutPane='<p class="muted">暂无更多资料。</p>';
+
+    var tabsArr=[{id:"p-about",label:"关于我们",pane:aboutPane}];
+    if(prods.length) tabsArr.push({id:"p-products",label:"产品与服务",pane:'<div class="grid g-3" style="margin-top:4px;">'+prods.map(function(p){return '<div class="card" style="padding:16px;"><b>'+esc(p.name||"")+'</b>'+(p.desc?'<p class="muted" style="font-size:13px;margin-top:6px;">'+esc(p.desc)+'</p>':'')+'</div>';}).join("")+'</div>'});
+    if(faqs.length) tabsArr.push({id:"p-faq",label:"常见问题",pane:faqs.map(function(f,i){return '<div class="faq'+(i===0?" open":"")+'"><q>'+esc(f.q||"")+' <span class="pm">+</span></q><div class="a">'+esc(f.a||"")+'</div></div>';}).join("")});
+
+    html+='<div data-tabs style="margin-top:16px;"><div class="tabs">'
+      +tabsArr.map(function(t,i){return '<div class="tab'+(i===0?" active":"")+'" data-target="'+t.id+'">'+t.label+'</div>';}).join("")
+      +'</div>'
+      +tabsArr.map(function(t,i){return '<div class="tabpane'+(i===0?" active":"")+'" id="'+t.id+'">'+t.pane+'</div>';}).join("")
+      +'</div>';
+
+    // 品牌故事（Launch/Premium）
+    if(b.brand_story && rank>=2){
+      var simg=(gal[0]||cover)?("background:#eee url('"+esc(gal[0]||cover)+"') center/cover;"):"";
+      html+='<div class="story" style="margin-top:32px;"><div class="story-img" style="'+simg+'"></div>'
+        +'<div><span class="eyebrow">品牌故事</span><h2 style="margin:12px 0 10px;font-size:23px;">我们的故事</h2>'
+        +'<p class="muted" style="line-height:1.7;">'+esc(b.brand_story)+'</p></div></div>';
+    }
+
+    html+='</div>'; // end main col
+
+    // Aside 联系卡
+    html+='<aside><div class="contact-card">';
+    if(wa) html+='<a class="btn btn-wa" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp 联系</a>';
+    if(tel) html+='<a class="btn btn-outline" href="'+tel+'">📞 电话</a>';
+    if(map) html+='<a class="btn btn-outline" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 查看路线</a>';
+    else if(waze) html+='<a class="btn btn-outline" href="'+waze+'" target="_blank" rel="noopener">🚗 Waze 导航</a>';
+    html+='<div style="border-top:1px solid var(--line);margin:14px 0;"></div>';
+    html+='<div class="info-row" style="border:none;padding-top:0;"><span class="k">分类</span><span>'+esc(b.category||"—")+'</span></div>';
+    html+='<div class="info-row"><span class="k">地区</span><span>'+esc(b.area||b.city||"—")+'</span></div>';
+    if(isFeat) html+='<div class="info-row"><span class="k">曝光</span><span>精选中'+(b.featured_until?'（至 '+esc(b.featured_until)+'）':'')+'</span></div>';
+    var soc='';
+    if(b.facebook_url) soc+='<a href="'+esc(b.facebook_url)+'" target="_blank" rel="noopener">f</a>';
+    if(b.instagram_url) soc+='<a href="'+esc(b.instagram_url)+'" target="_blank" rel="noopener">◎</a>';
+    if(soc) html+='<div class="socials" style="margin-top:10px;">'+soc+'</div>';
+    html+='</div></aside>';
+
+    html+='</div>'; // end detail
+
+    // 分店（Premium）
     if(branches.length){
-      html+='<section style="background:var(--surface);"><div class="container"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">'+branches.length+' 家分店，统一品牌管理</span></div><div class="grid g-3">'
+      html+='<section style="padding-top:8px;"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">'+branches.length+' 家分店，统一品牌管理</span></div><div class="grid g-3">'
         +branches.map(function(br,i){
-          var bi=gal.length?("background:#eee url('"+gal[(i+1)%gal.length]+"') center/cover;"):"background:var(--surface);";
+          var bi=gal.length?("background:#eee url('"+esc(gal[(i+1)%gal.length])+"') center/cover;"):"background:var(--surface);";
           var href=br.maps?esc(br.maps):"#";
           return '<a class="branch gold-accent" href="'+href+'" target="_blank" rel="noopener"><div class="bi" style="'+bi+'"></div><div class="bb"><b>'+esc(br.name||"")+'</b><div class="m">'+esc([br.area,br.address].filter(Boolean).join(" · "))+'</div></div></a>';
         }).join("")
-      +'</div></div></section>';
+      +'</div></section>';
     }
 
-    // 品牌图库
-    if(gal.length){
-      html+='<section><div class="container"><div class="sec-head"><h2>品牌图库</h2></div><div class="gallery-lg">'
-        +gal.slice(0,5).map(function(u,i){return '<div class="'+(i===0?"big":"")+'" style="background-image:url(\''+u+'\')"></div>';}).join("")
-      +'</div></div></section>';
-    }
-
-    // 产品与服务
-    if(prods.length){
-      html+='<section><div class="container"><div class="sec-head"><h2>产品与服务</h2></div><div class="grid g-3">'
-        +prods.map(function(p){return '<div class="card" style="padding:16px;"><b>'+esc(p.name||"")+'</b>'+(p.desc?'<p class="muted" style="font-size:13px;margin-top:6px;">'+esc(p.desc)+'</p>':'')+'</div>';}).join("")
-      +'</div></div></section>';
-    }
-
-    // 营业时间 + 地址/地图
-    var hoursHtml="", addrHtml="";
-    if(b.hours){ hoursHtml='<div><h3 style="margin:0 0 10px;">营业时间</h3><table class="hours">'+String(b.hours).split(/\n/).filter(Boolean).map(function(ln){var p=ln.split("|");return '<tr><td>'+esc((p[0]||"").trim())+'</td><td>'+esc((p[1]||"").trim())+'</td></tr>';}).join("")+'</table></div>'; }
-    if(b.address){ addrHtml='<div><h3 style="margin:0 0 10px;">地址</h3><p class="muted" style="line-height:1.7;">'+esc(b.address)+'</p><iframe title="地图" style="width:100%;height:260px;border:0;border-radius:12px;margin-top:10px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q='+encodeURIComponent(b.address)+'&z=16&output=embed"></iframe></div>'; }
-    if(hoursHtml||addrHtml){ html+='<section><div class="container"><div class="grid" style="grid-template-columns:1fr 1fr;gap:32px;">'+hoursHtml+addrHtml+'</div></div></section>'; }
-
-    // 常见问题
-    if(faqs.length){
-      html+='<section><div class="container"><div class="sec-head"><h2>常见问题</h2></div><div>'
-        +faqs.map(function(f,i){return '<div class="faq'+(i===0?" open":"")+'"><q>'+esc(f.q||"")+' <span class="pm">+</span></q><div class="a">'+esc(f.a||"")+'</div></div>';}).join("")
-      +'</div></div></section>';
-    }
-
-    // 品牌 CTA
-    html+='<section style="padding-top:0;"><div class="container"><div class="prem-cta">'
-      +'<h2>'+esc(name)+'</h2>'
-      +'<p class="muted" style="margin:10px 0 20px;">Premium 品牌主页 · OpenToday｜今日开业</p>'
-      +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● 联系我们</a>':'')
-    +'</div></div></section>';
-
-    wrap.innerHTML=html;
-    document.title=name+" — OpenToday｜今日开业";
+    $("page").innerHTML=html;
   }
 })();
 </script>
