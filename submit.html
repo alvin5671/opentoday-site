@@ -24,8 +24,11 @@
   .photo-drop{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer;background:var(--surface);}
   .photo-drop:hover{border-color:var(--brand);}
   #cropWrap{display:none;margin-top:12px;}
-  #cropBox{max-height:360px;background:#f3f3f3;border-radius:10px;overflow:hidden;}
+  #cropBox{max-height:340px;background:#f3f3f3;border-radius:10px;overflow:hidden;}
   #cropImg{max-width:100%;display:block;}
+  #morePrev{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:10px;}
+  #morePrev .mp{position:relative;aspect-ratio:4/3;border-radius:8px;background:#eee center/cover no-repeat;}
+  #morePrev .mp button{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;line-height:20px;padding:0;font-size:14px;}
   .smsg{padding:14px 16px;border-radius:12px;font-size:14px;margin-bottom:18px;display:none;}
   .smsg.ok{background:#eef8f0;border:1px solid #cfe9d4;color:#1c7a34;}
   .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
@@ -120,13 +123,21 @@
       </div>
 
       <div class="fld">
-        <label>商家照片 <span class="req">*</span></label>
-        <div class="photo-drop" id="photoDrop">📷 点击选择照片（店面 / 产品，建议横图）</div>
+        <label>封面照片 <span class="req">*</span></label>
+        <div class="photo-drop" id="photoDrop">📷 点击选择封面照片（店面 / 招牌，建议横图）</div>
         <input id="f_photo" type="file" accept="image/*" style="display:none;" />
         <div id="cropWrap">
           <div id="cropBox"><img id="cropImg" alt="" /></div>
           <p class="hint">拖动 / 缩放照片，<b>框内的部分</b>就是网站上显示的封面（自动裁成宽幅 21:9）。</p>
         </div>
+      </div>
+
+      <div class="fld">
+        <label>更多照片（选填，最多 8 张）</label>
+        <div class="photo-drop" id="moreDrop">➕ 添加更多照片（店内、产品、菜单…）</div>
+        <input id="f_more" type="file" accept="image/*" multiple style="display:none;" />
+        <div id="morePrev"></div>
+        <div class="hint">额外照片会自动裁成 4:3、压缩后上传。</div>
       </div>
 
       <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交登记</button>
@@ -153,50 +164,86 @@
   var BUCKET="business-photos";
   var $=function(id){return document.getElementById(id);};
   var cropper=null;
+  var extras=[]; // {blob,url}
 
+  // ── Cover ──
   $("photoDrop").addEventListener("click",function(){ $("f_photo").click(); });
   $("f_photo").addEventListener("change",function(e){
     var f=e.target.files[0]; if(!f) return;
-    var url=URL.createObjectURL(f);
-    $("cropImg").src=url;
+    $("cropImg").src=URL.createObjectURL(f);
     $("cropWrap").style.display="block";
-    $("photoDrop").textContent="📷 已选择照片（点击可重新选择）";
+    $("photoDrop").textContent="📷 已选择封面（点击可重新选择）";
     if(cropper){ cropper.destroy(); cropper=null; }
     if(typeof Cropper!=="undefined"){
       cropper=new Cropper($("cropImg"),{aspectRatio:21/9,viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true});
     }
   });
 
+  // ── More photos (auto 4:3 crop + compress) ──
+  $("moreDrop").addEventListener("click",function(){ $("f_more").click(); });
+  $("f_more").addEventListener("change",async function(e){
+    var files=[].slice.call(e.target.files);
+    for(var i=0;i<files.length;i++){
+      if(extras.length>=8) break;
+      var b=await processTo43(files[i]);
+      if(b){ extras.push({blob:b,url:URL.createObjectURL(b)}); }
+    }
+    renderExtras(); $("f_more").value="";
+  });
+  function processTo43(file){
+    return new Promise(function(res){
+      var img=new Image();
+      img.onload=function(){
+        var tw=1200,th=900,tr=tw/th, sr=img.width/img.height, sw,sh,sx,sy;
+        if(sr>tr){ sh=img.height; sw=sh*tr; sx=(img.width-sw)/2; sy=0; }
+        else { sw=img.width; sh=sw/tr; sx=0; sy=(img.height-sh)/2; }
+        var c=document.createElement("canvas"); c.width=tw; c.height=th;
+        c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);
+        c.toBlob(function(b){ res(b); },"image/jpeg",0.82);
+      };
+      img.onerror=function(){ res(null); };
+      img.src=URL.createObjectURL(file);
+    });
+  }
+  function renderExtras(){
+    $("morePrev").innerHTML=extras.map(function(x,i){
+      return '<div class="mp" style="background-image:url(\''+x.url+'\')"><button type="button" data-rm="'+i+'">×</button></div>';
+    }).join("");
+    $("moreDrop").textContent = extras.length>=8 ? "已达 8 张上限" : ("➕ 添加更多照片（已选 "+extras.length+" 张）");
+  }
+  $("morePrev").addEventListener("click",function(e){
+    var i=e.target.getAttribute && e.target.getAttribute("data-rm");
+    if(i!==null && i!==undefined && i!==""){ extras.splice(+i,1); renderExtras(); }
+  });
+
   function msg(t,type){ var m=$("smsg"); m.textContent=t; m.className="smsg "+type; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
 
-  function getPhotoBlob(){
+  function coverBlob(){
     return new Promise(function(resolve,reject){
       if(cropper && cropper.getCroppedCanvas){
         var canvas=cropper.getCroppedCanvas({width:1680,height:720,imageSmoothingEnabled:true,imageSmoothingQuality:"high"});
-        if(!canvas){ return reject(new Error("no canvas")); }
+        if(!canvas) return reject(new Error("no canvas"));
         canvas.toBlob(function(b){ b?resolve(b):reject(new Error("blob failed")); },"image/jpeg",0.85);
-      } else {
-        var f=$("f_photo").files[0];
-        f?resolve(f):reject(new Error("no file"));
-      }
+      } else { var f=$("f_photo").files[0]; f?resolve(f):reject(new Error("no file")); }
     });
+  }
+  async function uploadBlob(blob,tag){
+    var path="biz_"+Date.now()+"_"+tag+"_"+Math.random().toString(36).slice(2,6)+".jpg";
+    var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},body:blob});
+    if(!up.ok) throw new Error("upload "+up.status);
+    return SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+path;
   }
 
   $("sform").addEventListener("submit",async function(e){
     e.preventDefault();
-    if(!$("f_photo").files[0]){ msg("请上传一张商家照片。","err"); return; }
+    if(!$("f_photo").files[0]){ msg("请上传一张封面照片。","err"); return; }
     var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
     try{
-      var blob=await getPhotoBlob();
-      var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+".jpg";
-      var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+path,{
-        method:"POST",
-        headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},
-        body:blob
-      });
-      if(!up.ok){ throw new Error("photo upload failed "+up.status); }
-      var imageUrl=SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+path;
-
+      var imageUrl=await uploadBlob(await coverBlob(),"cover");
+      var galleryUrls=[];
+      for(var i=0;i<extras.length;i++){
+        try{ galleryUrls.push(await uploadBlob(extras[i].blob,"g"+i)); }catch(x){}
+      }
       var data={
         business_name:$("f_name").value.trim(),
         name:$("f_name").value.trim(),
@@ -213,6 +260,7 @@
         instagram_url:$("f_ig").value.trim()||null,
         short_description:$("f_desc").value.trim()||null,
         image_url:imageUrl,
+        gallery:galleryUrls,
         listing_status:"待审核",
         status:"未完成",
         progress:"待制作",
