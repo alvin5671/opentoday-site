@@ -69,10 +69,10 @@
 
     <!-- Stats -->
     <div class="grid g-4" style="margin-top:48px;">
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="store" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">收录商家</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">320+</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="calendar-days" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">本周新增</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">46+</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="eye" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">每月浏览量</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">2,381+</div></div></div>
-      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="shield-check" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">已验证商家</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">98%</div></div></div>
+      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="store" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">已收录商家</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stBiz">–</div></div></div>
+      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="map-pin" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">覆盖地区</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stArea">–</div></div></div>
+      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="layout-grid" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">商家分类</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);" id="stCat">–</div></div></div>
+      <div class="card" style="padding:20px;display:flex;align-items:center;gap:14px;"><span class="ic-circle"><i data-lucide="refresh-cw" style="width:20px;height:20px;"></i></span><div><div style="font-size:13px;color:var(--muted);">资料更新</div><div style="font-size:24px;font-weight:800;color:var(--ink-strong);">每日</div></div></div>
     </div>
   </div>
 
@@ -112,6 +112,15 @@
         <div class="node bl"><span class="b">G</span><span>Google 收录</span></div>
         <div class="node br"><span class="b"><i data-lucide="eye" style="width:20px;height:20px;"></i></span><span>长期曝光</span></div>
       </div>
+    </div>
+  </section>
+
+  <!-- 已收录的商家（真实社会证明） -->
+  <section style="background:var(--surface);">
+    <div class="container">
+      <span class="eyebrow">已经在 OpenToday 上的商家</span>
+      <div class="sec-head" style="margin-top:16px;"><h2>真实上线，持续增加</h2><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="aboutBizGrid"><p class="muted" style="padding:20px 0;">加载中…</p></div>
     </div>
   </section>
 
@@ -206,5 +215,35 @@
 <script src="site.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>lucide.createIcons();</script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var $=function(x){return document.getElementById(x);};
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!Array.isArray(rows)) rows=[];
+      var today=new Date().toISOString().slice(0,10);
+      rows.forEach(function(b){ b._f=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
+      rows.sort(function(a,c){ return (c._f?1:0)-(a._f?1:0); });
+      if($("stBiz")) $("stBiz").textContent=rows.length;
+      var areas={},cats={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; if(b.category) cats[b.category]=1; });
+      if($("stArea")) $("stArea").textContent=Object.keys(areas).length||"–";
+      if($("stCat")) $("stCat").textContent=Object.keys(cats).length||"–";
+      var g=$("aboutBizGrid"); if(!g) return;
+      if(!rows.length){ g.innerHTML='<div style="grid-column:1/-1;padding:36px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">商家陆续上线中。</div>'; return; }
+      var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0"];
+      g.innerHTML=rows.slice(0,5).map(function(b,i){
+        var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+        var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
+        var badge=b._f?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
+        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
+      }).join("");
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 </html>
