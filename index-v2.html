@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpenToday｜今日开业 — 发现 Johor 最新开业商家</title>
+<meta name="description" content="OpenToday 是马来西亚新开业商家资料库。帮新店第一时间被顾客、Google 和 AI 找到。专注 Johor。" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  /* 仅首页 Hero 拼贴，不改动全站设计语言 */
+  .hero-collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;z-index:0;}
+  .hero-collage div{background-size:cover;background-position:center;background-color:#2a231d;}
+  .hero-img .overlay,.hero-img .nowopen{position:relative;z-index:1;}
+  .hero-img .nowopen{position:absolute;}
+  .why .feature{height:100%;}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="container">
+    <!-- HERO -->
+    <div class="hero">
+      <div>
+        <span class="eyebrow">专注 Johor · 每日更新</span>
+        <h1 style="margin:16px 0 14px;">发现 Johor<br><span class="brand">最新开业的店</span></h1>
+        <p class="lead">OpenToday 是马来西亚新开业商家资料库 —— 帮新店第一时间被顾客、Google 和 AI 找到。</p>
+        <div class="search" style="margin-top:22px;">
+          <input placeholder="搜索商家、分类或地区…" />
+          <a class="btn btn-brand" href="explore.html">搜索</a>
+        </div>
+        <div class="tags">热门搜索：<a href="explore.html">咖啡馆</a><a href="explore.html">美食</a><a href="explore.html">美容美发</a><a href="explore.html">宠物</a></div>
+      </div>
+      <div class="hero-img" id="heroImg">
+        <div class="hero-collage" id="heroCollage"></div>
+        <span class="nowopen">● NOW OPEN</span>
+        <div class="overlay"><b>Johor 最新开业</b><br><span id="heroCount">每日更新的新店资料库</span></div>
+      </div>
+    </div>
+
+    <!-- 平台数据 -->
+    <div class="stats">
+      <div class="stat"><b id="statBiz">–</b><span>收录商家</span></div>
+      <div class="stat"><b id="statArea">–</b><span>覆盖地区</span></div>
+      <div class="stat"><b>每日</b><span>持续更新</span></div>
+      <div class="stat brand"><b>Johor</b><span>专注地区</span></div>
+    </div>
+  </div>
+
+  <!-- 今日开业 -->
+  <section>
+    <div class="container">
+      <div class="sec-head"><h2>今日开业 · Today Opening</h2><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="todayGrid"><p class="muted">加载中…</p></div>
+    </div>
+  </section>
+
+  <!-- 最近开业 -->
+  <section id="recentSec" style="background:var(--surface);display:none;padding-top:44px;">
+    <div class="container">
+      <div class="sec-head"><h2>最近开业 · Recently Opened</h2><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="recentGrid"></div>
+    </div>
+  </section>
+
+  <!-- 为什么选择 OpenToday -->
+  <section class="why">
+    <div class="container">
+      <div style="text-align:center;max-width:640px;margin:0 auto 32px;">
+        <span class="eyebrow">为什么选择 OpenToday</span>
+        <h2 style="margin:14px 0 10px;">不是一篇会沉底的贴文，<br>而是一个长期存在的商家档案</h2>
+        <p class="lead">我们帮你建立可被顾客、Google 和 AI 长期找到的商家资料。</p>
+      </div>
+      <div class="grid g-4">
+        <div class="feature"><div class="ic">🗂</div><h3>永久商家档案</h3><p class="muted" style="font-size:14px;margin-top:8px;">一次登记，长期保留。你的商家资料不会像贴文一样过几天就沉底消失。</p></div>
+        <div class="feature"><div class="ic">🔎</div><h3>Google 更容易理解</h3><p class="muted" style="font-size:14px;margin-top:8px;">结构化资料 + 清晰页面结构，让 Google 更容易收录与理解你的店。</p></div>
+        <div class="feature"><div class="ic">🤖</div><h3>AI 更容易理解</h3><p class="muted" style="font-size:14px;margin-top:8px;">为 AI 时代准备的完整商家资料，让 AI 更容易读懂你的店在做什么。</p></div>
+        <div class="feature"><div class="ic">📍</div><h3>长期存在</h3><p class="muted" style="font-size:14px;margin-top:8px;">持续在线的商家主页，资料越完整，越容易被长期发现。</p></div>
+      </div>
+      <p class="muted" style="text-align:center;font-size:13px;margin-top:20px;">我们强调长期档案、资料完整度与可发现性，不保证 Google 排名或任何 AI 推荐。</p>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="sec-head" style="justify-content:center;"><h2>如何运作 · How It Works</h2></div>
+      <div class="steps">
+        <div class="step card"><div class="n">1</div><h3>Submit 提交</h3><p class="muted" style="font-size:14px;margin-top:6px;">选择配套，填写你的商家资料与照片。</p></div>
+        <div class="step card"><div class="n">2</div><h3>Verify 审核</h3><p class="muted" style="font-size:14px;margin-top:6px;">我们审核确认资料，付费配套确认收款。</p></div>
+        <div class="step card"><div class="n">3</div><h3>Publish 刊登</h3><p class="muted" style="font-size:14px;margin-top:6px;">你的商家主页正式上线 OpenToday。</p></div>
+        <div class="step card"><div class="n">4</div><h3>Get Discovered 被发现</h3><p class="muted" style="font-size:14px;margin-top:6px;">顾客、Google 和 AI 更容易找到你的新店。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 热门分类 -->
+  <section id="categories">
+    <div class="container">
+      <div class="sec-head"><h2>热门分类</h2><a href="explore.html">更多分类 ›</a></div>
+      <div class="grid g-4" style="grid-template-columns:repeat(6,1fr);" id="catGrid">
+        <a class="cat" href="explore.html" data-cat="美食餐饮"><div class="ic">🍽</div><b>美食餐饮</b><span>查看 ›</span></a>
+        <a class="cat" href="explore.html" data-cat="咖啡馆"><div class="ic">☕</div><b>咖啡馆</b><span>查看 ›</span></a>
+        <a class="cat" href="explore.html" data-cat="美容美发"><div class="ic">✂️</div><b>美容美发</b><span>查看 ›</span></a>
+        <a class="cat" href="explore.html" data-cat="零售购物"><div class="ic">🛍</div><b>零售购物</b><span>查看 ›</span></a>
+        <a class="cat" href="explore.html" data-cat="生活服务"><div class="ic">🔧</div><b>生活服务</b><span>查看 ›</span></a>
+        <a class="cat" href="explore.html" data-cat="专业服务"><div class="ic">💼</div><b>专业服务</b><span>查看 ›</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section>
+    <div class="container">
+      <div class="cta">
+        <div>
+          <h2>免费登记你的商家</h2>
+          <p>让顾客、Google 和 AI 更容易找到你的新店 —— 从免费收录开始。</p>
+          <ul><li>永久商家档案</li><li>Google / AI 友好</li><li>专注 Johor 本地</li><li>随时升级配套</li></ul>
+          <a class="btn btn-brand btn-lg" href="submit.html">立即免费登记</a>
+          <a class="btn btn-ghost-dark btn-lg" href="pricing.html" style="margin-left:8px;">查看配套</a>
+        </div>
+        <div class="cta-img"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script>window.CURRENT_PAGE="home";</script>
+<script src="site.js"></script>
+<script>
+(function(){
+  var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
+  var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var $=function(x){return document.getElementById(x);};
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function fmtDate(d){ if(!d) return ""; var m=String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return ""; return parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业"; }
+  var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0"];
+  function card(b,i){
+    var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+    var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
+    var badge=b._feat?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-new">NEW</span>';
+    var dt=fmtDate(b.opening_date);
+    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+  }
+  fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!Array.isArray(rows)) rows=[];
+      var today=new Date().toISOString().slice(0,10);
+      rows.forEach(function(b){ b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
+      rows.sort(function(a,c){ return (c._feat?1:0)-(a._feat?1:0); });
+
+      // Hero 拼贴（最多 4 张真实商家照片）
+      var pics=rows.filter(function(b){return b.image_url;}).slice(0,4);
+      var coll=$("heroCollage"), cells=[];
+      for(var k=0;k<4;k++){ cells.push('<div style="'+(pics[k]?"background-image:url(\'"+esc(pics[k].image_url)+"\')":"")+'"></div>'); }
+      if(coll) coll.innerHTML=cells.join("");
+      if($("heroCount")) $("heroCount").textContent = rows.length? (rows.length+" 家新店在线 · 每日更新") : "每日更新的新店资料库";
+
+      // 平台数据
+      if($("statBiz")) $("statBiz").textContent = rows.length;
+      var areas={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; });
+      if($("statArea")) $("statArea").textContent = Object.keys(areas).length || "–";
+
+      // 今日开业 / 最近开业
+      var tg=$("todayGrid");
+      if(!rows.length){ if(tg) tg.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家，后台批准后这里自动显示。</div>'; }
+      else{
+        if(tg) tg.innerHTML=rows.slice(0,5).map(card).join("");
+        var rest=rows.slice(5,10);
+        if(rest.length){ $("recentGrid").innerHTML=rest.map(card).join(""); $("recentSec").style.display=""; }
+      }
+
+      // 分类真实数量
+      var counts={}; rows.forEach(function(b){ if(b.category) counts[b.category]=(counts[b.category]||0)+1; });
+      document.querySelectorAll("#catGrid .cat").forEach(function(el){
+        var c=el.getAttribute("data-cat"); var n=counts[c]||0;
+        var s=el.querySelector("span"); if(s) s.textContent = n>0 ? (n+" 家") : "查看 ›";
+      });
+    })
+    .catch(function(){
+      var tg=$("todayGrid"); if(tg) tg.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);">加载失败，请稍后重试。</div>';
+    });
+})();
+</script>
+</body>
+</html>
