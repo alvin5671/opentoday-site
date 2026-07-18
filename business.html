@@ -6,6 +6,13 @@
 <title>商家详情 — OpenToday｜今日开业</title>
 <meta name="description" content="OpenToday 商家详情。" />
 <link rel="stylesheet" href="style.css" />
+<style>
+  #bCover{aspect-ratio:16/9;width:100%;border-radius:14px;background:#e7ddd4 center/cover no-repeat;position:relative;overflow:hidden;}
+  #bCover .badge{position:absolute;top:14px;left:14px;}
+  #bThumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px;}
+  #bThumbs .th{aspect-ratio:4/3;border-radius:10px;background:#eee center/cover no-repeat;cursor:pointer;border:2px solid transparent;}
+  #bThumbs .th:hover{border-color:var(--brand);}
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -14,10 +21,8 @@
   <div class="container">
     <div class="crumb"><a href="index.html">首页</a> / <a href="explore.html">探索商家</a> / <span id="bCrumb">商家</span></div>
 
-    <div class="gallery" id="bGallery">
-      <div class="main" id="bMain" style="background:#e7ddd4;"><span class="badge badge-open">已刊登</span></div>
-      <div class="side" id="bSide"><div style="background:#e6e2d6;"></div><div style="background:#dfe3ea;"></div></div>
-    </div>
+    <div id="bCover"><span class="badge badge-open">已刊登</span></div>
+    <div id="bThumbs"></div>
 
     <div class="detail">
       <div>
@@ -76,9 +81,13 @@
       $("bMeta").textContent=[b.category,b.area||b.city].filter(Boolean).join(" · ");
       $("ccCat").textContent=b.category||"—";
       $("ccArea").textContent=b.area||b.city||"—";
-      if(b.image_url){
-        var m=$("bMain"); m.style.backgroundImage="url('"+b.image_url+"')"; m.style.backgroundSize="cover"; m.style.backgroundPosition="center";
-        $("bGallery").className="gallery single";
+      var cover=b.image_url||"";
+      var gal=[]; try{ gal=Array.isArray(b.gallery)?b.gallery:(b.gallery?JSON.parse(b.gallery):[]); }catch(e){ gal=[]; }
+      if(cover){ $("bCover").style.backgroundImage="url('"+cover+"')"; }
+      if(gal.length){
+        var t=$("bThumbs"); var all=[cover].concat(gal).filter(Boolean);
+        t.innerHTML=all.map(function(u){return '<div class="th" style="background-image:url(\''+u+'\')" data-u="'+u+'"></div>';}).join("");
+        t.addEventListener("click",function(e){ var d=e.target.closest(".th"); if(d){ $("bCover").style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } });
       }
       if(b.short_description){ $("bDesc").textContent=b.short_description; show($("descSec")); }
       if(b.address){ $("bAddr").textContent=b.address; show($("addrSec")); if(b.google_maps_url){ var mb=$("bMapBtn"); mb.href=b.google_maps_url; show(mb); } }

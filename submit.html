@@ -125,7 +125,7 @@
         <input id="f_photo" type="file" accept="image/*" style="display:none;" />
         <div id="cropWrap">
           <div id="cropBox"><img id="cropImg" alt="" /></div>
-          <p class="hint">拖动 / 缩放照片，<b>框内的部分</b>就是网站上显示的图（自动裁成横图 4:3）。</p>
+          <p class="hint">拖动 / 缩放照片，<b>框内的部分</b>就是网站上显示的封面（自动裁成宽幅 16:9）。</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
     $("photoDrop").textContent="📷 已选择照片（点击可重新选择）";
     if(cropper){ cropper.destroy(); cropper=null; }
     if(typeof Cropper!=="undefined"){
-      cropper=new Cropper($("cropImg"),{aspectRatio:4/3,viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true});
+      cropper=new Cropper($("cropImg"),{aspectRatio:16/9,viewMode:1,autoCropArea:1,background:false,movable:true,zoomable:true});
     }
   });
 
@@ -172,7 +172,7 @@
   function getPhotoBlob(){
     return new Promise(function(resolve,reject){
       if(cropper && cropper.getCroppedCanvas){
-        var canvas=cropper.getCroppedCanvas({width:1600,height:1200,imageSmoothingEnabled:true,imageSmoothingQuality:"high"});
+        var canvas=cropper.getCroppedCanvas({width:1600,height:900,imageSmoothingEnabled:true,imageSmoothingQuality:"high"});
         if(!canvas){ return reject(new Error("no canvas")); }
         canvas.toBlob(function(b){ b?resolve(b):reject(new Error("blob failed")); },"image/jpeg",0.85);
       } else {
