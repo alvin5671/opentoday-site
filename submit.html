@@ -37,6 +37,13 @@
   .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
   .done-card{display:none;text-align:center;padding:44px 20px;}
   .done-card .ic{font-size:52px;}
+  .steps{max-width:420px;margin:24px auto 8px;text-align:left;}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;}
+  .step-ic{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);}
+  .step-ic.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .step b{display:block;font-size:15px;color:var(--ink);}
+  .step .sub{font-size:13px;color:var(--muted);margin-top:2px;}
+  .done-cta{display:flex;flex-direction:column;gap:10px;max-width:360px;margin:6px auto 0;}
 </style>
 </head>
 <body>
@@ -143,14 +150,26 @@
       <div class="plan-note" id="paidNote" style="display:none;">这是付费配套。提交后我们会先 WhatsApp 联系你确认与付款，付款后才会刊登。</div>
 
       <button type="submit" class="btn btn-brand btn-lg" id="submitBtn" style="width:100%;">提交登记</button>
-      <p class="hint" style="text-align:center;margin-top:12px;">提交后我们会审核你的资料，通过后刊登在 OpenToday。<br>我们不保证 Google 排名或 AI 推荐。</p>
+      <p class="hint" style="text-align:center;margin-top:12px;">👀 想先看成品？<a href="business.html?id=13" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;">看看完成后的商家主页 ›</a></p>
+      <p class="hint" style="text-align:center;margin-top:4px;">提交后我们会审核你的资料，通过后刊登在 OpenToday。<br>我们不保证 Google 排名或 AI 推荐。</p>
     </form>
 
     <div class="done-card" id="doneCard">
       <div class="ic">✅</div>
       <h2 style="margin:14px 0 8px;">提交成功！</h2>
-      <p class="lead" id="doneMsg">我们已收到你的资料，审核通过后就会刊登。<br>感谢你使用 OpenToday。</p>
-      <a class="btn btn-outline" href="index.html" style="margin-top:18px;">返回首页</a>
+      <p class="lead" id="doneMsg">我们已收到你的资料。<br>感谢你选择 OpenToday。</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-ic on">✓</div><div><b>我们已收到你的资料</b><div class="sub">刚刚</div></div></div>
+        <div class="step"><div class="step-ic">2</div><div><b>审核 + 帮你整理档案</b><div class="sub">1–2 个工作日内</div></div></div>
+        <div class="step"><div class="step-ic">3</div><div><b>上线，并 WhatsApp 通知你</b><div class="sub">完成后马上通知你</div></div></div>
+      </div>
+
+      <div class="done-cta">
+        <a class="btn btn-brand btn-lg" id="waBtn" href="https://wa.me/60123456789" target="_blank" rel="noopener">● 现在就 WhatsApp 我们</a>
+        <a class="btn btn-outline" href="business.html?id=13" target="_blank" rel="noopener">👀 看看完成后的商家主页</a>
+        <a href="index.html" style="color:var(--muted);font-size:14px;margin-top:4px;">返回首页</a>
+      </div>
     </div>
   </div>
 </main>
@@ -266,7 +285,14 @@
       };
       var ins=await fetch(SB_URL+"/rest/v1/customers",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});
       if(!ins.ok){ throw new Error("提交失败 "+ins.status); }
-      if(tier!=="free"){ $("doneMsg").innerHTML="我们已收到你的资料。这是付费配套，我们会尽快 WhatsApp 联系你确认与付款，付款后即刊登。<br>感谢你选择 OpenToday。"; }
+      var bizName=(data.business_name||data.name||"");
+      var waMsg="Hi OpenToday，我刚提交了商家登记（"+bizName+"，配套："+plan+"），想跟进后续。";
+      var wb=$("waBtn");
+      if(wb) wb.href="https://wa.me/60123456789?text="+encodeURIComponent(waMsg);
+      if(tier!=="free"){
+        $("doneMsg").innerHTML="我们已收到你的资料。这是付费配套，<b>请现在 WhatsApp 我们确认与付款</b>，付款后即刊登。<br>感谢你选择 OpenToday。";
+        if(wb) wb.textContent="● 现在就 WhatsApp 我们确认付款";
+      }
       $("sform").style.display="none"; $("smsg").style.display="none"; $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
     }catch(err){ msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="提交登记"; }
   });
