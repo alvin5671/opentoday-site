@@ -6,6 +6,11 @@
 <title>套餐价格 — OpenToday｜今日开业</title>
 <meta name="description" content="OpenToday 商家套餐：免费收录、Opening Profile、Featured Opening、Launch Boost、Premium Brand Launch。" />
 <link rel="stylesheet" href="style.css" />
+<style>
+  .price-grid{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:920px){ .price-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:600px){ .price-grid{grid-template-columns:1fr;} }
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -19,7 +24,7 @@
     </div>
 
     <section style="padding-top:24px;">
-      <div class="price-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="price-grid">
         <div class="price">
           <div class="tag">🔥 创始商家 · 限首 100 家</div>
           <div class="pname">Free Listing</div>
