@@ -132,6 +132,28 @@
 <script>window.CURRENT_PAGE="home";</script>
 <script src="site.js"></script>
 <script>
+// Hero 品牌图轮播（两张交替淡入淡出）
+(function(){
+  var $=function(x){return document.getElementById(x);};
+  var slides=[
+    {img:"hero-1.jpg", title:"发现最新开业的店", meta:"专注 Johor · 每日更新"},
+    {img:"hero-2.jpg", title:"每一天，都有新店开业", meta:"OpenToday · 记录每一个新的开始"}
+  ];
+  slides.forEach(function(s){ var im=new Image(); im.src=s.img; });
+  var A=$("slideA"), B=$("slideB");
+  if(!A||!B) return;
+  var front=A, back=B, i=0;
+  function show(s){ if($("heroName")) $("heroName").textContent=s.title; if($("heroMeta")) $("heroMeta").textContent=s.meta; }
+  front.style.backgroundImage="url('"+slides[0].img+"')"; front.classList.add("on"); show(slides[0]);
+  setInterval(function(){
+    i=(i+1)%slides.length; var s=slides[i];
+    back.style.backgroundImage="url('"+s.img+"')";
+    back.classList.add("on"); front.classList.remove("on");
+    var t=front; front=back; back=t; show(s);
+  },4500);
+})();
+</script>
+<script>
 (function(){
   var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
@@ -153,28 +175,6 @@
       var today=new Date().toISOString().slice(0,10);
       rows.forEach(function(b){ b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
       rows.sort(function(a,c){ return (c._feat?1:0)-(a._feat?1:0); });
-
-      // Hero 单图幻灯片（一家公司换下一家公司）
-      var biz=rows.filter(function(b){return b.image_url;});
-      biz.forEach(function(b){ var im=new Image(); im.src=b.image_url; }); // 预加载全部封面
-      var A=$("slideA"), B=$("slideB");
-      if(biz.length && A && B){
-        var front=A, back=B, i=0;
-        function setOverlay(b){
-          if($("heroName")) $("heroName").textContent=b.business_name;
-          if($("heroMeta")) $("heroMeta").textContent=[b.category,b.area||b.city].filter(Boolean).join(" · ")+" · 新开业";
-          if($("heroImg")) $("heroImg").setAttribute("href","business.html?id="+b.id);
-        }
-        front.style.backgroundImage="url('"+biz[0].image_url+"')"; front.classList.add("on"); setOverlay(biz[0]);
-        if(biz.length>1){
-          setInterval(function(){
-            i=(i+1)%biz.length; var b=biz[i];
-            back.style.backgroundImage="url('"+b.image_url+"')";
-            back.classList.add("on"); front.classList.remove("on");
-            var t=front; front=back; back=t; setOverlay(b);
-          },4000);
-        }
-      }
 
       // 平台数据
       if($("statBiz")) $("statBiz").textContent = rows.length;
