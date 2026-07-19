@@ -110,6 +110,19 @@
 
       <!-- ===== 付费配套：更丰富内容 ===== -->
       <div class="grp tierbox" data-min="opening">
+        <h3>商家 Logo</h3>
+        <div class="gsub">可选。会显示在你的商家名字旁 / Premium 品牌主页（自动裁正方形）。没有也没关系，会用店名首字母。</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div id="logoPrev" style="width:64px;height:64px;border-radius:14px;background:#f3f3f3 center/cover no-repeat;border:1px solid var(--line);flex:0 0 auto;"></div>
+          <div>
+            <div class="photo-drop" id="logoDrop" style="margin:0;">🏷️ 上传 Logo</div>
+            <button type="button" id="logoRm" style="display:none;margin-top:6px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;text-decoration:underline;">移除</button>
+          </div>
+        </div>
+        <input id="f_logo" type="file" accept="image/*" style="display:none;" />
+      </div>
+
+      <div class="grp tierbox" data-min="opening">
         <h3>更多照片</h3>
         <div class="gsub">店内、产品、菜单…最多 8 张（自动裁 4:3）。</div>
         <div class="photo-drop" id="moreDrop">➕ 添加更多照片</div>
@@ -200,7 +213,7 @@
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var BUCKET="business-photos";
   var $=function(id){return document.getElementById(id);};
-  var cropper=null, extras=[];
+  var cropper=null, extras=[], logoBlob=null;
   if(window.buildHoursPicker) buildHoursPicker('hoursPicker');
   var TIER={"Free Listing":"free","Opening Profile":"opening","Launch Boost":"launch","Premium Brand Launch":"premium"};
   var RANK={free:0,opening:1,launch:2,premium:3};
@@ -248,6 +261,14 @@
   function renderExtras(){ $("morePrev").innerHTML=extras.map(function(x,i){return '<div class="mp" style="background-image:url(\''+x.url+'\')"><button type="button" data-rm="'+i+'">×</button></div>';}).join(""); $("moreDrop").textContent=extras.length>=8?"已达 8 张上限":("➕ 添加更多照片（已选 "+extras.length+" 张）"); }
   $("morePrev").addEventListener("click",function(e){ var i=e.target.getAttribute&&e.target.getAttribute("data-rm"); if(i!==null&&i!==undefined&&i!==""){ extras.splice(+i,1); renderExtras(); } });
 
+  // ── logo ──
+  function cropSquare(file){ return new Promise(function(res){ var img=new Image(); img.onload=function(){ var s=Math.min(img.width,img.height),sx=(img.width-s)/2,sy=(img.height-s)/2,d=400; var c=document.createElement("canvas");c.width=d;c.height=d;c.getContext("2d").drawImage(img,sx,sy,s,s,0,0,d,d);c.toBlob(function(b){res(b);},"image/jpeg",0.9);}; img.onerror=function(){res(null);}; img.src=URL.createObjectURL(file); }); }
+  if($("logoDrop")){
+    $("logoDrop").addEventListener("click",function(){ $("f_logo").click(); });
+    $("f_logo").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; var b=await cropSquare(f); if(b){ logoBlob=b; $("logoPrev").style.backgroundImage="url('"+URL.createObjectURL(b)+"')"; $("logoRm").style.display=""; $("logoDrop").textContent="🏷️ 已选 Logo（点击可换）"; } e.target.value=""; });
+    $("logoRm").addEventListener("click",function(){ logoBlob=null; $("logoPrev").style.backgroundImage=""; $("logoRm").style.display="none"; $("logoDrop").textContent="🏷️ 上传 Logo"; });
+  }
+
   // ── repeatable rows ──
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
   window.addProduct=function(){ var d=document.createElement("div"); d.className="rowitem"; d.innerHTML='<button type="button" class="del" onclick="this.parentNode.remove()">删除</button><div class="fld"><label>名称</label><input class="p-name"/></div><div class="fld" style="margin:0;"><label>说明</label><input class="p-desc"/></div>'; $("products").appendChild(d); };
@@ -267,6 +288,7 @@
     try{
       var imageUrl=await uploadBlob(await coverBlob(),"cover");
       var galleryUrls=[]; for(var i=0;i<extras.length;i++){ try{ galleryUrls.push(await uploadBlob(extras[i].blob,"g"+i)); }catch(x){} }
+      var logoUrl=null; if(logoBlob){ try{ logoUrl=await uploadBlob(logoBlob,"logo"); }catch(x){} }
       var data={
         business_name:$("f_name").value.trim(), name:$("f_name").value.trim(),
         category:$("f_cat").value, opening_type:$("f_type").value,
@@ -275,7 +297,7 @@
         google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
         phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
         instagram_url:$("f_ig").value.trim()||null, short_description:$("f_desc").value.trim()||null,
-        image_url:imageUrl, gallery:galleryUrls,
+        image_url:imageUrl, gallery:galleryUrls, logo_url:logoUrl,
         hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("f_story").value.trim()||null,
         products:collect("products",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}]),
         faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}]),
