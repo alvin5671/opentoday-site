@@ -154,6 +154,12 @@
       </div>
 
       <div class="grp tierbox" data-min="premium">
+        <h3>品牌标语 / Slogan</h3>
+        <div class="gsub">Premium 专属：显示在品牌主页名字下方的一句话。例：每一天，从一杯好咖啡开始。</div>
+        <input id="f_slogan" type="text" maxlength="60" placeholder="一句代表品牌的话…" />
+      </div>
+
+      <div class="grp tierbox" data-min="premium">
         <h3>分店</h3>
         <div class="gsub">Premium 专属：多个分店。</div>
         <div id="branches"></div>
@@ -298,6 +304,7 @@
         phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
         instagram_url:$("f_ig").value.trim()||null, short_description:$("f_desc").value.trim()||null,
         image_url:imageUrl, gallery:galleryUrls, logo_url:logoUrl,
+        slogan:($("f_slogan")&&$("f_slogan").value.trim())||null,
         hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("f_story").value.trim()||null,
         products:collect("products",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}]),
         faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}]),

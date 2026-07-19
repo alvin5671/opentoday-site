@@ -70,6 +70,7 @@
     // ── Premium 品牌 Banner ──
     if(premium){
       var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
+      var slogan=(b.slogan||"").trim();
       var lead=teaser(b.short_description||b.brand_story,54);
       var heroImg=cover?("background:#eee url('"+esc(cover)+"') center/cover;"):"";
       var blogo=logo?'<div class="brand-logo" style="background:#fff center/contain no-repeat;background-image:url(\''+esc(logo)+'\');border:1px solid var(--line);"></div>':'<div class="brand-logo">'+esc(initial)+'</div>';
@@ -78,7 +79,7 @@
         +'<span class="eyebrow" style="margin-top:12px;">⭐ PREMIUM · 品牌主页</span>'
         +'<h1 style="margin:10px 0 6px;">'+esc(name)+'</h1>'
         +(subbits.length?'<p class="muted" style="margin:0 0 10px;">'+esc(subbits.join(" · "))+'</p>':'')
-        +(lead?'<p class="lead">'+esc(lead)+'</p>':'')
+        +(slogan?'<p style="font-size:21px;font-weight:600;line-height:1.4;color:var(--ink);margin:2px 0 8px;">'+esc(slogan)+'</p>':(lead?'<p class="lead">'+esc(lead)+'</p>':''))
         +'<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">'
           +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp</a>':'')
           +(map?'<a class="btn btn-outline btn-lg" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 地图</a>':'')

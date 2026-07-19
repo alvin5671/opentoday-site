@@ -124,6 +124,12 @@
     </div>
 
     <div class="sec tsec" data-min="premium">
+      <h3>品牌标语 / Slogan</h3>
+      <div class="hint" style="margin-bottom:8px;">显示在 Premium 品牌主页名字下方的一句话。留空就用简介。例：每一天，从一杯好咖啡开始。</div>
+      <input id="slogan" type="text" maxlength="60" placeholder="一句代表品牌的话…" />
+    </div>
+
+    <div class="sec tsec" data-min="premium">
       <h3>分店</h3>
       <div id="branches"></div>
       <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
@@ -201,7 +207,7 @@ function loadBiz(){
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
     var b=rows[0]; current=b;
-    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","short_description","hours","brand_story"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","short_description","hours","brand_story","slogan"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
@@ -262,6 +268,7 @@ function save(){
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
     short_description:$("short_description").value.trim()||null,
     hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("brand_story").value.trim()||null,
+    slogan:($("slogan")&&$("slogan").value.trim())||null,
     image_url:current.image_url||null, gallery:current.gallery||[], logo_url:current.logo_url||null,
     products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
     faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
