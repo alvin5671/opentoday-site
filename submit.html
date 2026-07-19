@@ -147,6 +147,16 @@
       </div>
 
       <div class="grp tierbox" data-min="launch">
+        <h3>🎁 开业优惠券（可选）</h3>
+        <div class="gsub">填了会在你的商家页显示优惠券，顾客可「领取」并计数。</div>
+        <div class="fld"><label>优惠标题</label><input id="f_offer_title" placeholder="例：开业全场 8 折" /></div>
+        <div class="row2">
+          <div class="fld"><label>说明（可选）</label><input id="f_offer_desc" placeholder="例：堂食即可" /></div>
+          <div class="fld"><label>有效期至（可选）</label><input id="f_offer_until" type="date" /></div>
+        </div>
+      </div>
+
+      <div class="grp tierbox" data-min="launch">
         <h3>品牌故事</h3>
         <textarea id="f_story" style="min-height:110px;" placeholder="讲讲你的品牌理念、由来…"></textarea>
       </div>
@@ -310,6 +320,7 @@
         image_url:imageUrl, gallery:galleryUrls, logo_url:logoUrl,
         slogan:($("f_slogan")&&$("f_slogan").value.trim())||null,
         hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("f_story").value.trim()||null,
+        offer_title:$("f_offer_title").value.trim()||null, offer_desc:$("f_offer_desc").value.trim()||null, offer_until:$("f_offer_until").value||null,
         products:collect("products",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}]),
         faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}]),
         branches:collect("branches",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}]),

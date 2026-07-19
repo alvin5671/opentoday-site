@@ -36,7 +36,21 @@
   function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
   function fmtDate(d){ var m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/); return m?parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业":""; }
 
-  document.getElementById("page").addEventListener("click",function(e){ var d=e.target.closest(".th"); if(d){ var c=document.getElementById("bCover"); if(c && c.tagName==="IMG"){ c.src=d.getAttribute("data-u"); } else if(c){ c.style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } } });
+  document.getElementById("page").addEventListener("click",function(e){
+    var d=e.target.closest(".th"); if(d){ var c=document.getElementById("bCover"); if(c && c.tagName==="IMG"){ c.src=d.getAttribute("data-u"); } else if(c){ c.style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } return; }
+    var ob=e.target.closest("#offerBtn");
+    if(ob){
+      var card=document.getElementById("offerCard"); if(!card) return;
+      var bid=card.getAttribute("data-bid"); var key="ot_claim_"+bid;
+      var rev=document.getElementById("offerReveal"); if(rev) rev.style.display="block";
+      ob.style.display="none";
+      if(!localStorage.getItem(key)){
+        try{ localStorage.setItem(key,"1"); }catch(x){}
+        fetch(SB_URL+"/rest/v1/rpc/claim_offer",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({bid:parseInt(bid,10)})})
+          .then(function(r){return r.json();}).then(function(n){ var el=document.getElementById("offerCount"); if(el && typeof n==="number") el.textContent="已 "+n+" 人领取"; }).catch(function(){});
+      }
+    }
+  });
   if(!id){ $("page").innerHTML='<p class="muted" style="padding:40px 0;">请从探索页选择商家。</p>'; return; }
   fetch(SB_URL+"/rest/v1/public_customers?id=eq."+encodeURIComponent(id)+"&select=*",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
@@ -99,6 +113,27 @@
       html+='<div id="bThumbs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:10px;">'
         +uimgs.map(function(u){return '<div class="th" data-u="'+esc(u)+'" style="aspect-ratio:4/3;border-radius:10px;background:#eee center/cover no-repeat;background-image:url(\''+esc(u)+'\');cursor:pointer;border:2px solid transparent;"></div>';}).join("")
         +'</div>';
+    }
+
+    // ── 优惠券（Launch+，带领取计数）──
+    var offerTitle=(b.offer_title||"").trim();
+    var offerActive=offerTitle && rank>=2 && (!b.offer_until || String(b.offer_until)>=today);
+    if(offerActive){
+      var claims=parseInt(b.offer_claims,10)||0;
+      var offerWa=wa?(wa+"?text="+encodeURIComponent("你好，我想领取「"+offerTitle+"」优惠。")):"";
+      html+='<div id="offerCard" data-bid="'+b.id+'" style="margin:16px 0 4px;border:1.5px dashed var(--brand);background:var(--brand-soft);border-radius:16px;padding:18px 20px;">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">'
+          +'<div><div style="font-size:12px;font-weight:800;color:var(--brand);letter-spacing:.05em;">🎁 开业优惠</div>'
+            +'<div style="font-size:21px;font-weight:800;color:var(--ink-strong);margin-top:5px;">'+esc(offerTitle)+'</div>'
+            +(b.offer_desc?'<div class="muted" style="font-size:14px;margin-top:5px;">'+esc(b.offer_desc)+'</div>':'')
+            +(b.offer_until?'<div class="muted" style="font-size:12px;margin-top:7px;">有效期至 '+esc(b.offer_until)+'</div>':'')
+            +'<div class="muted" style="font-size:12px;margin-top:6px;" id="offerCount">已 '+claims+' 人领取</div></div>'
+          +'<button id="offerBtn" class="btn btn-brand btn-lg" style="white-space:nowrap;">领取优惠</button>'
+        +'</div>'
+        +'<div id="offerReveal" style="display:none;margin-top:14px;border-top:1px dashed var(--brand);padding-top:14px;">'
+          +'<div style="font-weight:700;color:var(--ink-strong);">✓ 已领取！到店出示此画面给店员即可。</div>'
+          +(offerWa?'<a class="btn btn-outline" style="margin-top:12px;" href="'+offerWa+'" target="_blank" rel="noopener">● WhatsApp 通知商家</a>':'')
+        +'</div></div>';
     }
 
     // ── Detail 双栏 ──
@@ -176,6 +211,9 @@
     }
 
     $("page").innerHTML=html;
+    // 已领取过就直接显示领取状态
+    var oc=document.getElementById("offerCard");
+    if(oc){ try{ if(localStorage.getItem("ot_claim_"+oc.getAttribute("data-bid"))){ var ob=document.getElementById("offerBtn"); var rv=document.getElementById("offerReveal"); if(ob) ob.style.display="none"; if(rv) rv.style.display="block"; } }catch(x){} }
   }
 })();
 </script>

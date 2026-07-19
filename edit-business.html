@@ -115,6 +115,14 @@
     </div>
 
     <div class="sec tsec" data-min="launch">
+      <h3>🎁 开业优惠券</h3>
+      <div class="hint" style="margin-bottom:8px;">填了就会在商家页显示一张优惠券，顾客可「领取」（自动计数）。留空则不显示。</div>
+      <div class="fld"><label>优惠标题</label><input id="offer_title" placeholder="例：开业全场 8 折" /></div>
+      <div class="fld"><label>说明（可选）</label><input id="offer_desc" placeholder="例：堂食即可，不含饮料" /></div>
+      <div class="fld" style="margin:0;"><label>有效期至（可选）</label><input id="offer_until" type="date" /></div>
+    </div>
+
+    <div class="sec tsec" data-min="launch">
       <h3>品牌故事</h3>
       <textarea id="brand_story" style="min-height:110px;"></textarea>
     </div>
@@ -209,7 +217,7 @@ function loadBiz(){
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
     var b=rows[0]; current=b;
-    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
@@ -272,6 +280,9 @@ function save(){
     short_description:$("short_description").value.trim()||null,
     hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("brand_story").value.trim()||null,
     slogan:($("slogan")&&$("slogan").value.trim())||null,
+    offer_title:($("offer_title")&&$("offer_title").value.trim())||null,
+    offer_desc:($("offer_desc")&&$("offer_desc").value.trim())||null,
+    offer_until:($("offer_until")&&$("offer_until").value)||null,
     image_url:current.image_url||null, gallery:current.gallery||[], logo_url:current.logo_url||null,
     products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
     faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
