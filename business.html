@@ -97,21 +97,11 @@
     html+='<div class="detail"><div>';
     if(!premium){
       var badges='<span class="badge-inline b-verified">✓ 已刊登</span>';
-      if(isFeat) badges+=' <span class="badge-inline b-featured">★ 精选</span> <span class="badge-inline b-new">持续曝光中</span>';
+      if(isFeat) badges+=' <span class="badge-inline b-featured">★ 精选</span>';
       html+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h1 style="font-size:32px;">'+esc(name)+'</h1>'+badges+'</div>';
       if(metaStr) html+='<p class="muted" style="margin-top:6px;">'+esc(metaStr)+'</p>';
     } else if(metaStr){
       html+='<p class="muted" style="margin:0 0 4px;">'+esc(metaStr)+'</p>';
-    }
-
-    // 曝光条（精选中）
-    if(isFeat){
-      html+='<h3 style="margin:22px 0 10px;">此商家正在这些位置曝光</h3><div class="exposure">'
-        +'<div class="exp"><div class="ic">🏠</div><b>首页精选</b><span>Home</span></div>'
-        +'<div class="exp"><div class="ic">🆕</div><b>最新开业</b><span>Latest</span></div>'
-        +'<div class="exp"><div class="ic">🔎</div><b>探索页推荐</b><span>Explore</span></div>'
-        +'<div class="exp"><div class="ic">⭐</div><b>精选置顶</b><span>Featured</span></div>'
-        +'</div>';
     }
 
     // Tabs
@@ -150,7 +140,6 @@
     html+='<div style="border-top:1px solid var(--line);margin:14px 0;"></div>';
     html+='<div class="info-row" style="border:none;padding-top:0;"><span class="k">分类</span><span>'+esc(b.category||"—")+'</span></div>';
     html+='<div class="info-row"><span class="k">地区</span><span>'+esc(b.area||b.city||"—")+'</span></div>';
-    if(isFeat) html+='<div class="info-row"><span class="k">曝光</span><span>精选中'+(b.featured_until?'（至 '+esc(b.featured_until)+'）':'')+'</span></div>';
     var soc='';
     if(b.facebook_url) soc+='<a href="'+esc(b.facebook_url)+'" target="_blank" rel="noopener">f</a>';
     if(b.instagram_url) soc+='<a href="'+esc(b.instagram_url)+'" target="_blank" rel="noopener">◎</a>';
