@@ -33,7 +33,7 @@
 </style>
 </head>
 <body>
-<div id="gate"><div class="box"><h2>🔒 后台编辑</h2><input id="gpw" type="password" placeholder="输入密码…" /><button class="btn btn-brand" style="width:100%;" onclick="doGate()">进入</button></div></div>
+<div id="gate" style="display:none;"><div class="box"><h2>🔒 后台编辑</h2><input id="gpw" type="password" placeholder="输入密码…" /><button class="btn btn-brand" style="width:100%;" onclick="doGate()">进入</button></div></div>
 
 <div class="toast" id="toast">已保存 ✓</div>
 
@@ -187,8 +187,8 @@ function doGate(){
   else { $("gpw").value=""; $("gpw").placeholder="密码错误"; }
 }
 document.addEventListener("keydown",function(e){ if(e.key==="Enter" && $("gate").style.display!=="none") doGate(); });
-// 输过一次密码就记住，之后查看不再需要输
-try{ if(localStorage.getItem("ot_admin")==="1"){ document.addEventListener("DOMContentLoaded",unlock); } }catch(e){}
+// 查看/编辑不再需要密码（只能从后台 CRM 进来）
+document.addEventListener("DOMContentLoaded",unlock);
 
 function toast(t){ var el=$("toast"); el.textContent=t; el.style.display="block"; setTimeout(function(){el.style.display="none";},2200); }
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
