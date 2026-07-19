@@ -50,6 +50,7 @@
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var $=function(x){return document.getElementById(x);};
   var grid=$("bizGrid"); if(!grid) return;
+  var todayMode=new URLSearchParams(location.search).get("today");
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
   var today=new Date().toISOString().slice(0,10);
   function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
@@ -98,6 +99,11 @@
     .then(function(r){return r.json();})
     .then(function(rows){
       allRows=Array.isArray(rows)?rows:[];
+      if(todayMode){
+        allRows=allRows.filter(function(b){ return b.show_today; });
+        var h1=document.querySelector("h1"); if(h1) h1.textContent="今日开业 · Today Opening";
+        var ld=document.querySelector(".lead"); if(ld) ld.innerHTML='近期开业的新店。<a href="explore.html" style="color:var(--brand);font-weight:600;">查看全部商家 ›</a>';
+      }
       if(!allRows.length){
         var cnt=$("bizCount"); if(cnt) cnt.textContent=0;
         grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家。<br><span style="font-size:13px;">在后台把商家状态改成「已刊登」，这里就会自动显示。</span></div>';

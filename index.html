@@ -60,7 +60,7 @@
   <!-- 今日开业 -->
   <section id="today" style="scroll-margin-top:80px;">
     <div class="container">
-      <div class="sec-head"><div><h2>今日开业 · Today Opening</h2><p class="muted" style="font-size:13px;margin-top:4px;">近期开业的新店，每天更新</p></div><a href="explore.html">查看全部 ›</a></div>
+      <div class="sec-head"><div><h2>今日开业 · Today Opening</h2><p class="muted" style="font-size:13px;margin-top:4px;">近期开业的新店，每天更新</p></div><a href="explore.html?today=1">查看全部 ›</a></div>
       <div class="grid g-5 biz-grid" id="todayGrid"><p class="muted">加载中…</p></div>
     </div>
   </section>
@@ -195,18 +195,16 @@
       var areas={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; });
       if($("statArea")) $("statArea").textContent = Object.keys(areas).length || "–";
 
-      // 本周精选 + 今日开业（按开业日期：过去 14 天 ~ 未来 7 天）
+      // 本周精选 + 今日开业（后台勾选 show_today 才显示）
       var featured=rows.filter(function(b){return b._feat;});
       var others=rows.filter(function(b){return !b._feat;});
-      function daysDiff(d){ if(!d) return null; var m=String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return null; var dt=new Date(+m[1],+m[2]-1,+m[3]); var t0=new Date(); t0.setHours(0,0,0,0); return Math.round((dt-t0)/86400000); }
       var tg=$("todayGrid");
       if(!rows.length){ if(tg) tg.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家，后台批准后这里自动显示。</div>'; }
       else{
         if(featured.length){ if($("featuredGrid")) $("featuredGrid").innerHTML=featured.slice(0,3).map(featuredCard).join(""); if($("featuredSec")) $("featuredSec").style.display=""; }
-        var recentList=others.filter(function(b){ var dd=daysDiff(b.opening_date); return dd!==null && dd>=-14 && dd<=7; });
-        recentList.sort(function(a,c){ return String(c.opening_date||"").localeCompare(String(a.opening_date||"")); });
+        var todayList=others.filter(function(b){ return b.show_today; });
         if(tg){
-          if(recentList.length) tg.innerHTML=recentList.slice(0,10).map(card).join("");
+          if(todayList.length) tg.innerHTML=todayList.slice(0,10).map(card).join("");
           else tg.innerHTML='<div style="grid-column:1/-1;padding:36px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">近期暂无新店开业。<a href="explore.html" style="color:var(--brand);font-weight:600;">探索全部商家 ›</a></div>';
         }
       }

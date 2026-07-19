@@ -126,6 +126,12 @@
       </div>
     </div>
 
+    <div class="sec">
+      <h3>🆕 首页「今日开业」</h3>
+      <div class="hint" style="margin-bottom:10px;">勾选后，此商家会出现在首页「今日开业」专区。适合真的近期开业的店，由你手动控制。</div>
+      <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" id="show_today" style="width:auto;"> 显示在首页「今日开业」</label>
+    </div>
+
     <div class="savebar">
       <select id="listing_status" style="width:auto;">
         <option value="待审核">待审核（不显示）</option>
@@ -185,6 +191,7 @@ function loadBiz(){
     if(b.opening_date) $("opening_date").value=b.opening_date;
     if(b.listing_status) $("listing_status").value=b.listing_status;
     if($("featured")) $("featured").checked=!!b.featured;
+    if($("show_today")) $("show_today").checked=!!b.show_today;
     if(b.featured_start && $("featured_start")) $("featured_start").value=b.featured_start;
     if(b.featured_until && $("featured_until")) $("featured_until").value=b.featured_until;
     if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
@@ -242,6 +249,7 @@ function save(){
     branches:collect("branch",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}],"branches"),
     listing_status:$("listing_status").value,
     featured:$("featured")?$("featured").checked:false,
+    show_today:$("show_today")?$("show_today").checked:false,
     featured_start:($("featured_start")&&$("featured_start").value)||null,
     featured_until:($("featured_until")&&$("featured_until").value)||null
   };
