@@ -149,16 +149,16 @@
     html+='<div style="border-top:1px solid var(--line);margin:14px 0;"></div>';
     html+='<div class="info-row" style="border:none;padding-top:0;"><span class="k">分类</span><span>'+esc(b.category||"—")+'</span></div>';
     html+='<div class="info-row"><span class="k">地区</span><span>'+esc(b.area||b.city||"—")+'</span></div>';
-    var FB='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.7 1.4-3.7 3.9V11H7v3h3v8h3z"/></svg>';
-    var IG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>';
-    var GG='<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.1 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.9 6.1C12.3 13.2 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.1 5.3-4.6 6.9l7.1 5.5C43.9 37.4 46.1 31.4 46.1 24.5z"/><path fill="#FBBC05" d="M10.4 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-7.9-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.5 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.1 0 11.3-2 15-5.5l-7.1-5.5c-2 1.3-4.6 2.1-7.9 2.1-6.4 0-11.7-3.7-13.6-8.9l-7.9 6.1C6.4 42.6 14.6 48 24 48z"/></svg>';
-    var WEB='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.8 2.6 15.2 0 18M12 3c-2.6 2.8-2.6 15.2 0 18"/></svg>';
-    function socIcon(href,style,inner,label){ return '<a href="'+esc(href)+'" target="_blank" rel="noopener" style="text-decoration:none;text-align:center;width:58px;flex:0 0 auto;"><span style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 1px 5px rgba(0,0,0,.14);'+style+'">'+inner+'</span><span style="display:block;font-size:12px;color:var(--muted);margin-top:7px;">'+label+'</span></a>'; }
+    var FB='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>';
+    var IG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>';
+    var GG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9.5 9 9"/></svg>';
+    var WEB='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+    function socIcon(href,inner,label){ return '<a href="'+esc(href)+'" target="_blank" rel="noopener" style="text-decoration:none;text-align:center;width:60px;flex:0 0 auto;"><span style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);">'+inner+'</span><span style="display:block;font-size:12px;color:var(--muted);margin-top:7px;">'+label+'</span></a>'; }
     var soc='';
-    if(b.facebook_url) soc+=socIcon(b.facebook_url,'background:#1877F2;color:#fff;',FB,'Facebook');
-    if(b.instagram_url) soc+=socIcon(b.instagram_url,'background:radial-gradient(circle at 30% 107%,#fdf497,#fd5949 45%,#d6249f 60%,#285AEB 90%);color:#fff;',IG,'Instagram');
-    if(b.google_review_url) soc+=socIcon(b.google_review_url,'background:#fff;',GG,'Google 评价');
-    if(b.website_url) soc+=socIcon(b.website_url,'background:var(--ink-strong);color:#fff;',WEB,'官网');
+    if(b.facebook_url) soc+=socIcon(b.facebook_url,FB,'Facebook');
+    if(b.instagram_url) soc+=socIcon(b.instagram_url,IG,'Instagram');
+    if(b.google_review_url) soc+=socIcon(b.google_review_url,GG,'Google 评价');
+    if(b.website_url) soc+=socIcon(b.website_url,WEB,'官网');
     if(soc) html+='<div style="margin-top:16px;"><div style="font-size:13px;color:var(--muted);margin-bottom:12px;">社交主页</div><div style="display:flex;gap:16px;flex-wrap:wrap;">'+soc+'</div></div>';
     html+='</div></aside>';
 
