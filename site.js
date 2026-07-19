@@ -24,13 +24,13 @@
     '<nav class="nav-links">' + navHtml + "</nav>" +
     '<div class="nav-cta">' +
     '<a class="btn btn-brand" href="submit.html">免费提交</a>' +
-    '<a class="btn btn-dark" href="#">● WhatsApp</a></div>' +
+    '<a class="btn btn-dark" href="https://wa.me/601175938168" target="_blank" rel="noopener">● WhatsApp</a></div>' +
     '<button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>' +
     '</div>' +
     '<div class="mobile-menu" id="mobileMenu"><div class="container" style="padding:0;">' +
     navHtml.replace(/class="[^"]*"/g, "") +
     '<div class="mcta"><a class="btn btn-brand btn-block" href="submit.html">免费提交</a>' +
-    '<a class="btn btn-dark btn-block" href="#">● WhatsApp 咨询</a></div></div></div></header>';
+    '<a class="btn btn-dark btn-block" href="https://wa.me/601175938168" target="_blank" rel="noopener">● WhatsApp 咨询</a></div></div></div></header>';
 
   var footer =
     '<footer class="site"><div class="container"><div class="foot-grid">' +

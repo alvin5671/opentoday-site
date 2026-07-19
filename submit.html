@@ -90,7 +90,7 @@
         <div class="fld"><label>地址</label><input id="f_addr" placeholder="完整地址" /></div>
         <div class="fld"><label>Google 地图链接</label><input id="f_map" placeholder="https://maps.google.com/..." /></div>
         <div class="row2">
-          <div class="fld"><label>WhatsApp <span class="req">*</span></label><input id="f_wa" required placeholder="例如：60123456789" /><div class="hint">只填数字，含国码（60）</div></div>
+          <div class="fld"><label>WhatsApp <span class="req">*</span></label><input id="f_wa" required placeholder="例如：601175938168" /><div class="hint">只填数字，含国码（60）</div></div>
           <div class="fld"><label>电话</label><input id="f_phone" placeholder="例如：07-1234567" /></div>
         </div>
         <div class="row2">
@@ -166,7 +166,7 @@
       </div>
 
       <div class="done-cta">
-        <a class="btn btn-brand btn-lg" id="waBtn" href="https://wa.me/60123456789" target="_blank" rel="noopener">● 现在就 WhatsApp 我们</a>
+        <a class="btn btn-brand btn-lg" id="waBtn" href="https://wa.me/601175938168" target="_blank" rel="noopener">● 现在就 WhatsApp 我们</a>
         <a class="btn btn-outline" href="business.html?id=13" target="_blank" rel="noopener">👀 看看完成后的商家主页</a>
         <a href="index.html" style="color:var(--muted);font-size:14px;margin-top:4px;">返回首页</a>
       </div>
@@ -288,7 +288,7 @@
       var bizName=(data.business_name||data.name||"");
       var waMsg="Hi OpenToday，我刚提交了商家登记（"+bizName+"，配套："+plan+"），想跟进后续。";
       var wb=$("waBtn");
-      if(wb) wb.href="https://wa.me/60123456789?text="+encodeURIComponent(waMsg);
+      if(wb) wb.href="https://wa.me/601175938168?text="+encodeURIComponent(waMsg);
       if(tier!=="free"){
         $("doneMsg").innerHTML="我们已收到你的资料。这是付费配套，<b>请现在 WhatsApp 我们确认与付款</b>，付款后即刊登。<br>感谢你选择 OpenToday。";
         if(wb) wb.textContent="● 现在就 WhatsApp 我们确认付款";
