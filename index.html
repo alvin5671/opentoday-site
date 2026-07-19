@@ -49,6 +49,14 @@
     </div>
   </div>
 
+  <!-- 本周精选 -->
+  <section id="featuredSec" style="display:none;padding-bottom:0;">
+    <div class="container">
+      <div class="sec-head"><h2>⭐ 本周精选 · Featured</h2><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-3 biz-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
   <!-- 今日开业 -->
   <section>
     <div class="container">
@@ -168,6 +176,12 @@
     var dt=fmtDate(b.opening_date);
     return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
   }
+  function featuredCard(b,i){
+    var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+    var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
+    var dt=fmtDate(b.opening_date);
+    return '<a class="biz" href="business.html?id='+b.id+'" style="border:1px solid rgba(249,115,22,.3);box-shadow:0 6px 20px rgba(249,115,22,.12);"><div class="biz-img" style="'+bg+'"><span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+  }
   fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
@@ -181,12 +195,16 @@
       var areas={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; });
       if($("statArea")) $("statArea").textContent = Object.keys(areas).length || "–";
 
-      // 今日开业 / 最近开业
+      // 本周精选 + 今日开业 / 最近开业
+      var featured=rows.filter(function(b){return b._feat;});
+      var others=rows.filter(function(b){return !b._feat;});
       var tg=$("todayGrid");
       if(!rows.length){ if(tg) tg.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家，后台批准后这里自动显示。</div>'; }
       else{
-        if(tg) tg.innerHTML=rows.slice(0,5).map(card).join("");
-        var rest=rows.slice(5,10);
+        if(featured.length){ if($("featuredGrid")) $("featuredGrid").innerHTML=featured.slice(0,3).map(featuredCard).join(""); if($("featuredSec")) $("featuredSec").style.display=""; }
+        var todayList=others.length?others:rows;
+        if(tg) tg.innerHTML=todayList.slice(0,5).map(card).join("");
+        var rest=todayList.slice(5,10);
         if(rest.length){ $("recentGrid").innerHTML=rest.map(card).join(""); $("recentSec").style.display=""; }
       }
 
