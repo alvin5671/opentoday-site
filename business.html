@@ -50,10 +50,12 @@
     var name=b.business_name||"";
     var initial=(name.trim().charAt(0)||"O").toUpperCase();
     var cover=b.image_url||"";
+    var logo="";
     var gal=arr(b.gallery), prods=arr(b.products), faqs=arr(b.faq), branches=arr(b.branches);
     var TIER={"Free Listing":0,"Opening Profile":1,"Launch Boost":2,"Premium Brand Launch":3};
     var rank=TIER[b.project]||0;
     var premium=rank>=3;
+    logo=(rank>=1 && b.logo_url)?b.logo_url:"";
     var today=new Date().toISOString().slice(0,10);
     var isFeat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today);
     var wa=b.whatsapp?("https://wa.me/"+String(b.whatsapp).replace(/[^0-9]/g,"")):"";
@@ -70,8 +72,9 @@
       var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
       var lead=teaser(b.short_description||b.brand_story,54);
       var heroImg=cover?("background:#eee url('"+esc(cover)+"') center/cover;"):"";
+      var blogo=logo?'<div class="brand-logo" style="background:#fff center/contain no-repeat;background-image:url(\''+esc(logo)+'\');border:1px solid var(--line);"></div>':'<div class="brand-logo">'+esc(initial)+'</div>';
       html+='<div class="brand-hero" style="padding:6px 0 22px;"><div>'
-        +'<div class="brand-logo">'+esc(initial)+'</div>'
+        +blogo
         +'<span class="eyebrow" style="margin-top:12px;">⭐ PREMIUM · 品牌主页</span>'
         +'<h1 style="margin:10px 0 6px;">'+esc(name)+'</h1>'
         +(subbits.length?'<p class="muted" style="margin:0 0 10px;">'+esc(subbits.join(" · "))+'</p>':'')
@@ -98,7 +101,8 @@
     if(!premium){
       var badges='<span class="badge-inline b-verified">✓ 已刊登</span>';
       if(isFeat) badges+=' <span class="badge-inline b-featured">★ 精选</span>';
-      html+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h1 style="font-size:32px;">'+esc(name)+'</h1>'+badges+'</div>';
+      var nameLogo=logo?'<img src="'+esc(logo)+'" alt="" style="width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid var(--line);flex:0 0 auto;" />':'';
+      html+='<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'+nameLogo+'<h1 style="font-size:32px;margin:0;">'+esc(name)+'</h1>'+badges+'</div>';
       if(metaStr) html+='<p class="muted" style="margin-top:6px;">'+esc(metaStr)+'</p>';
     } else if(metaStr){
       html+='<p class="muted" style="margin:0 0 4px;">'+esc(metaStr)+'</p>';

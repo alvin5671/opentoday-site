@@ -81,6 +81,19 @@
     </div>
 
     <div class="sec tsec" data-min="opening">
+      <h3>商家 Logo（可选，正方形）</h3>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div id="logoPrev" style="width:72px;height:72px;border-radius:14px;background:#f3f3f3 center/cover no-repeat;border:1px solid #eee;flex:0 0 auto;"></div>
+        <div>
+          <input id="logoFile" type="file" accept="image/*" style="display:none;" />
+          <button type="button" class="addbtn" onclick="document.getElementById('logoFile').click()">🏷️ 上传 Logo（自动裁正方形）</button>
+          <button type="button" class="addbtn" id="logoDel" style="display:none;margin-left:8px;" onclick="delLogo()">移除</button>
+          <div class="hint" style="margin-top:6px;">没有 Logo 也没关系，会自动用商家名字首字母。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec tsec" data-min="opening">
       <h3>更多照片（4:3）</h3>
       <div class="thumbs" id="galThumbs"></div>
       <input id="galFile" type="file" accept="image/*" multiple style="display:none;" />
@@ -166,7 +179,7 @@ var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
 var H={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY};
 var $=function(id){return document.getElementById(id);};
 var ID=new URLSearchParams(location.search).get("id");
-var current={image_url:"",gallery:[]};
+var current={image_url:"",gallery:[],logo_url:""};
 
 function doGate(){
   if($("gpw").value.trim()==="opentoday888"){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
@@ -195,6 +208,7 @@ function loadBiz(){
     if(b.featured_start && $("featured_start")) $("featured_start").value=b.featured_start;
     if(b.featured_until && $("featured_until")) $("featured_until").value=b.featured_until;
     if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
+    if(b.logo_url && $("logoPrev")){ $("logoPrev").style.backgroundImage="url('"+b.logo_url+"')"; $("logoDel").style.display=""; }
     current.gallery=arr(b.gallery); renderGal();
     if(window.buildHoursPicker){ buildHoursPicker('hoursPicker'); setHoursValue('hoursPicker', b.hours); }
     arr(b.products).forEach(function(p){ addProduct(p); });
@@ -227,6 +241,8 @@ $("coverFile").addEventListener("change",async function(e){ var f=e.target.files
 $("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e.target.files); toast("上传照片中…"); for(var i=0;i<fs.length;i++){ var b=await centerCrop(fs[i],1200,900); if(b){ var u=await uploadBlob(b); current.gallery.push(u); } } renderGal(); toast("照片已加（记得按保存）"); e.target.value=""; });
 function renderGal(){ $("galThumbs").innerHTML=current.gallery.map(function(u,i){return '<div class="t" style="background-image:url(\''+esc(u)+'\')"><button type="button" onclick="delGal('+i+')">×</button></div>';}).join(""); }
 function delGal(i){ current.gallery.splice(i,1); renderGal(); }
+if($("logoFile")){ $("logoFile").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; toast("上传 Logo 中…"); var b=await centerCrop(f,400,400); var u=await uploadBlob(b); current.logo_url=u; $("logoPrev").style.backgroundImage="url('"+u+"')"; $("logoDel").style.display=""; toast("Logo 已更新（记得按保存）"); e.target.value=""; }); }
+function delLogo(){ current.logo_url=""; $("logoPrev").style.backgroundImage=""; $("logoDel").style.display="none"; toast("已移除 Logo（记得按保存）"); }
 
 if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked){ var t=new Date(); if($("featured_start") && !$("featured_start").value){ $("featured_start").value=t.toISOString().slice(0,10); } if($("featured_until") && !$("featured_until").value){ var days=(current&&current.project==="Premium Brand Launch")?56:28; var d=new Date(); d.setDate(d.getDate()+days); $("featured_until").value=d.toISOString().slice(0,10); } } }); }
 
@@ -243,7 +259,7 @@ function save(){
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
     short_description:$("short_description").value.trim()||null,
     hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("brand_story").value.trim()||null,
-    image_url:current.image_url||null, gallery:current.gallery||[],
+    image_url:current.image_url||null, gallery:current.gallery||[], logo_url:current.logo_url||null,
     products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
     faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
     branches:collect("branch",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}],"branches"),
