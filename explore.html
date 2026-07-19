@@ -4,75 +4,39 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>探索商家 — OpenToday｜今日开业</title>
-<meta name="description" content="发现 Johor 最值得去的好店。按分类、状态、地区筛选新开业商家。" />
+<meta name="description" content="发现 Johor 最新开业商家。按分类、状态、地区筛选。" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="demo-banner">静态设计预览 · 示范资料均为 Demo · 可点击浏览各页面</div>
 <div id="site-header"></div>
 
 <main>
   <div class="container">
     <div style="padding:36px 0 8px;">
       <h1>探索商家</h1>
-      <p class="lead" style="margin-top:8px;">发现 Johor 最值得去的好店。</p>
+      <p class="lead" style="margin-top:8px;">发现 Johor 最新开业的好店。</p>
       <div class="search" style="margin-top:20px;max-width:560px;">
-        <input placeholder="搜索商家名称、分类或地区…" />
-        <button class="btn btn-brand">搜索</button>
+        <input id="searchInput" placeholder="搜索商家名称、分类或地区…" />
+        <button class="btn btn-brand" id="searchBtn">搜索</button>
       </div>
 
-      <div style="font-size:12px;color:var(--muted);margin-top:22px;">分类</div>
-      <div class="filters">
-        <span class="chip active" data-group="cat">全部</span>
-        <span class="chip" data-group="cat">美食餐饮</span>
-        <span class="chip" data-group="cat">咖啡馆</span>
-        <span class="chip" data-group="cat">甜品烘焙</span>
-        <span class="chip" data-group="cat">饮料奶茶</span>
-        <span class="chip" data-group="cat">美容美发</span>
-        <span class="chip" data-group="cat">美甲美睫</span>
-        <span class="chip" data-group="cat">零售购物</span>
-        <span class="chip" data-group="cat">服装时尚</span>
-        <span class="chip" data-group="cat">健身运动</span>
-        <span class="chip" data-group="cat">健康医疗</span>
-        <span class="chip" data-group="cat">生活服务</span>
-        <span class="chip" data-group="cat">教育培训</span>
-        <span class="chip" data-group="cat">宠物服务</span>
+      <div id="catGroup" style="display:none;">
+        <div style="font-size:12px;color:var(--muted);margin-top:22px;">分类</div>
+        <div class="filters" id="catChips"></div>
       </div>
       <div style="display:flex;gap:40px;flex-wrap:wrap;">
-        <div><div style="font-size:12px;color:var(--muted);">状态</div>
-          <div class="filters">
-            <span class="chip active" data-group="status">全部</span>
-            <span class="chip" data-group="status">现已开业</span>
-            <span class="chip" data-group="status">即将开业</span>
-            <span class="chip" data-group="status">近期开业</span>
-          </div>
+        <div id="statusGroup" style="display:none;"><div style="font-size:12px;color:var(--muted);">状态</div>
+          <div class="filters" id="statusChips"></div>
         </div>
-        <div><div style="font-size:12px;color:var(--muted);">地区</div>
-          <div class="filters">
-            <span class="chip active" data-group="area">全部</span>
-            <span class="chip" data-group="area">JB Town</span>
-            <span class="chip" data-group="area">Mount Austin</span>
-            <span class="chip" data-group="area">Bukit Indah</span>
-            <span class="chip" data-group="area">Skudai</span>
-          </div>
+        <div id="areaGroup" style="display:none;"><div style="font-size:12px;color:var(--muted);">地区</div>
+          <div class="filters" id="areaChips"></div>
         </div>
       </div>
       <p class="muted" style="font-size:14px;margin:8px 0 4px;">共 <b style="color:var(--ink);" id="bizCount">0</b> 家已刊登商家</p>
     </div>
 
     <section style="padding-top:16px;">
-      <div class="grid g-3 biz-grid" id="bizGrid">
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#e7ddd4;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Brew &amp; Co. Café</b><div class="meta">咖啡馆 · JB Town</div></div></a>
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#d9ccc0;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Good Grill House</b><div class="meta">美食餐饮 · Mount Austin</div></div></a>
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#d9e0dc;"><span class="badge badge-new">近期开业</span></div><div class="biz-body"><b>Glow Studio</b><div class="meta">美容美发 · Bukit Indah</div></div></a>
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#d7ddd9;"><span class="badge badge-soon">即将开业</span></div><div class="biz-body"><b>The Green Corner</b><div class="meta">零售购物 · Permas Jaya</div></div></a>
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#e6e2d6;"><span class="badge badge-open">现已开业</span></div><div class="biz-body"><b>Paw Hills</b><div class="meta">生活服务 · Skudai</div></div></a>
-        <a class="biz" href="business.html"><div class="biz-img" style="background:#e9dfd0;"><span class="badge badge-new">近期开业</span></div><div class="biz-body"><b>Little Joy Bakery</b><div class="meta">美食餐饮 · Taman Molek</div></div></a>
-      </div>
-
-      <div style="display:flex;justify-content:center;gap:6px;margin-top:36px;">
-        <span class="chip active">1</span><span class="chip">2</span><span class="chip">3</span><span class="chip">下一页 ›</span>
-      </div>
+      <div class="grid g-3 biz-grid" id="bizGrid"><p class="muted" style="padding:20px 0;">加载中…</p></div>
     </section>
   </div>
 </main>
@@ -84,30 +48,68 @@
 (function(){
   var SB_URL="https://jumzzfvgkqsfeypbpgcq.supabase.co";
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
-  var grid=document.getElementById("bizGrid");
-  if(!grid) return;
+  var $=function(x){return document.getElementById(x);};
+  var grid=$("bizGrid"); if(!grid) return;
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  var today=new Date().toISOString().slice(0,10);
+  function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
+  var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
+  function card(b,i){
+    var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+    var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
+    var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
+    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
+  }
+  var allRows=[];
+  function activeVal(id){ var c=document.querySelector("#"+id+" .chip.active"); return c?c.getAttribute("data-val"):""; }
+  function render(){
+    var q=(($("searchInput")&&$("searchInput").value)||"").trim().toLowerCase();
+    var cat=activeVal("catChips"), st=activeVal("statusChips"), ar=activeVal("areaChips");
+    var list=allRows.filter(function(b){
+      if(cat && b.category!==cat) return false;
+      if(st && b.opening_type!==st) return false;
+      if(ar && (b.area||b.city)!==ar) return false;
+      if(q){ var hay=[b.business_name,b.category,b.area,b.city].filter(Boolean).join(" ").toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    var cnt=$("bizCount"); if(cnt) cnt.textContent=list.length;
+    if(!list.length){ grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">没有符合条件的商家，试试其他筛选。</div>'; return; }
+    grid.innerHTML=list.map(card).join("");
+  }
+  function uniq(arr){ var s={},o=[]; arr.forEach(function(x){ if(x && !s[x]){ s[x]=1; o.push(x); } }); return o; }
+  function buildChips(chipsId,groupId,values){
+    if(values.length<2) return; // 少于 2 个选项就不显示这个筛选
+    var wrap=$(chipsId);
+    wrap.innerHTML='<span class="chip active" data-val="">全部</span>'+values.map(function(v){return '<span class="chip" data-val="'+esc(v)+'">'+esc(v)+'</span>';}).join("");
+    var g=$(groupId); if(g) g.style.display="";
+  }
+  // 单选：点 chip → 组内高亮切换 + 重新筛选
+  document.addEventListener("click",function(e){
+    var chip=e.target.closest(".chip[data-val]"); if(!chip) return;
+    var wrap=chip.parentNode;
+    wrap.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("active"); });
+    chip.classList.add("active");
+    render();
+  });
+  if($("searchBtn")) $("searchBtn").addEventListener("click",render);
+  if($("searchInput")){ $("searchInput").addEventListener("input",render); $("searchInput").addEventListener("keydown",function(e){ if(e.key==="Enter") render(); }); }
+
   fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
-      if(!Array.isArray(rows)) return;
-      var cnt=document.getElementById("bizCount"); if(cnt) cnt.textContent=rows.length;
-      if(rows.length===0){
+      allRows=Array.isArray(rows)?rows:[];
+      if(!allRows.length){
+        var cnt=$("bizCount"); if(cnt) cnt.textContent=0;
         grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家。<br><span style="font-size:13px;">在后台把商家状态改成「已刊登」，这里就会自动显示。</span></div>';
         return;
       }
-      var today=new Date().toISOString().slice(0,10);
-      function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
-      rows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
-      var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
-      grid.innerHTML=rows.map(function(b,i){
-        var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
-        var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
-        var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
-        return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div></div></a>';
-      }).join("");
+      allRows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
+      buildChips("catChips","catGroup",uniq(allRows.map(function(b){return b.category;})));
+      buildChips("statusChips","statusGroup",uniq(allRows.map(function(b){return b.opening_type;})));
+      buildChips("areaChips","areaGroup",uniq(allRows.map(function(b){return b.area||b.city;})));
+      render();
     })
-    .catch(function(){});
+    .catch(function(){ grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);">加载失败，请稍后重试。</div>'; });
 })();
 </script>
 </body>
