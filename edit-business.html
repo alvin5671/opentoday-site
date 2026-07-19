@@ -69,6 +69,8 @@
       <div class="row2">
         <div class="fld"><label>Facebook</label><input id="facebook_url" /></div>
         <div class="fld"><label>Instagram</label><input id="instagram_url" /></div>
+        <div class="fld"><label>官网</label><input id="website_url" placeholder="https://..." /></div>
+        <div class="fld"><label>Google 评价链接</label><input id="google_review_url" placeholder="Google 商家 / 评价链接" /></div>
       </div>
       <div class="fld"><label>简介 / 关于</label><textarea id="short_description"></textarea></div>
     </div>
@@ -207,7 +209,7 @@ function loadBiz(){
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
     var b=rows[0]; current=b;
-    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","short_description","hours","brand_story","slogan"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
@@ -266,6 +268,7 @@ function save(){
     address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
     whatsapp:$("whatsapp").value.replace(/[^0-9]/g,"")||null, phone:$("phone").value.trim()||null,
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
+    website_url:($("website_url")&&$("website_url").value.trim())||null, google_review_url:($("google_review_url")&&$("google_review_url").value.trim())||null,
     short_description:$("short_description").value.trim()||null,
     hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("brand_story").value.trim()||null,
     slogan:($("slogan")&&$("slogan").value.trim())||null,

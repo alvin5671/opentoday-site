@@ -97,6 +97,10 @@
           <div class="fld"><label>Facebook 链接</label><input id="f_fb" placeholder="https://facebook.com/..." /></div>
           <div class="fld"><label>Instagram 链接</label><input id="f_ig" placeholder="https://instagram.com/..." /></div>
         </div>
+        <div class="row2">
+          <div class="fld"><label>官网（如果有）</label><input id="f_web" placeholder="https://..." /></div>
+          <div class="fld"><label>Google 评价链接（如果有）</label><input id="f_greview" placeholder="Google 商家 / 评价链接" /></div>
+        </div>
         <div class="fld"><label>商家简介 / 关于</label><textarea id="f_desc" placeholder="简单介绍你的店、招牌产品或服务…"></textarea></div>
       </div>
 
@@ -302,6 +306,7 @@
         google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
         phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
         instagram_url:$("f_ig").value.trim()||null, short_description:$("f_desc").value.trim()||null,
+        website_url:$("f_web").value.trim()||null, google_review_url:$("f_greview").value.trim()||null,
         image_url:imageUrl, gallery:galleryUrls, logo_url:logoUrl,
         slogan:($("f_slogan")&&$("f_slogan").value.trim())||null,
         hours:(window.buildHoursValue?buildHoursValue("hoursPicker"):"")||null, brand_story:$("f_story").value.trim()||null,
