@@ -37,12 +37,12 @@
   .smsg.err{background:#fdeeee;border:1px solid #f3caca;color:#b3261e;}
   .done-card{display:none;text-align:center;padding:44px 20px;}
   .done-card .ic{font-size:52px;}
-  .steps{max-width:420px;margin:24px auto 8px;text-align:left;}
-  .step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;}
+  .dsteps{display:block;max-width:420px;margin:24px auto 8px;text-align:left;}
+  .dstep{display:flex;gap:12px;align-items:flex-start;padding:10px 0;}
   .step-ic{flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);}
   .step-ic.on{background:var(--brand);border-color:var(--brand);color:#fff;}
-  .step b{display:block;font-size:15px;color:var(--ink);}
-  .step .sub{font-size:13px;color:var(--muted);margin-top:2px;}
+  .dstep b{display:block;font-size:15px;color:var(--ink);}
+  .dstep .sub{font-size:13px;color:var(--muted);margin-top:2px;}
   .done-cta{display:flex;flex-direction:column;gap:10px;max-width:360px;margin:6px auto 0;}
 </style>
 </head>
@@ -178,10 +178,10 @@
       <h2 style="margin:14px 0 8px;">提交成功！</h2>
       <p class="lead" id="doneMsg">我们已收到你的资料。<br>感谢你选择 OpenToday。</p>
 
-      <div class="steps">
-        <div class="step"><div class="step-ic on">✓</div><div><b>我们已收到你的资料</b><div class="sub">刚刚</div></div></div>
-        <div class="step"><div class="step-ic">2</div><div><b>审核 + 帮你整理档案</b><div class="sub">1–2 个工作日内</div></div></div>
-        <div class="step"><div class="step-ic">3</div><div><b>上线，并 WhatsApp 通知你</b><div class="sub">完成后马上通知你</div></div></div>
+      <div class="dsteps">
+        <div class="dstep"><div class="step-ic on">✓</div><div><b>我们已收到你的资料</b><div class="sub">刚刚</div></div></div>
+        <div class="dstep"><div class="step-ic">2</div><div><b>审核 + 帮你整理档案</b><div class="sub">1–2 个工作日内</div></div></div>
+        <div class="dstep"><div class="step-ic">3</div><div><b>上线，并 WhatsApp 通知你</b><div class="sub">完成后马上通知你</div></div></div>
       </div>
 
       <div class="done-cta">
