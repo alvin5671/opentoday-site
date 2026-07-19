@@ -4,9 +4,8 @@
   var page = window.CURRENT_PAGE || "";
   var links = [
     { label: "首页", href: "index.html", key: "home" },
+    { label: "今日开业", href: "index.html#today", key: "today" },
     { label: "探索商家", href: "explore.html", key: "explore" },
-    { label: "分类", href: "explore.html#categories", key: "cat" },
-    { label: "最新开业", href: "explore.html", key: "latest" },
     { label: "为商家服务", href: "pricing.html", key: "services" },
     { label: "关于我们", href: "about.html", key: "about" },
   ];
