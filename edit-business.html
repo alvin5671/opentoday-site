@@ -274,7 +274,10 @@ function save(){
   };
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID),{method:"PATCH",headers:Object.assign({},H,{"Content-Type":"application/json"}),body:JSON.stringify(data)}).then(function(r){
     btn.disabled=false; btn.textContent="保存";
-    if(r.ok){ toast("已保存 ✓"); } else { toast("保存失败，请重试"); }
+    if(r.ok){
+      toast("已保存 ✓ 返回后台…");
+      setTimeout(function(){ try{ window.close(); }catch(e){} setTimeout(function(){ if(!window.closed) location.href="admin.html"; },300); }, 650);
+    } else { toast("保存失败，请重试"); }
   }).catch(function(){ btn.disabled=false; btn.textContent="保存"; toast("保存失败"); });
 }
 </script>
