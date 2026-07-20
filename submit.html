@@ -16,6 +16,8 @@
   .sform input:focus,.sform select:focus,.sform textarea:focus{border-color:var(--brand);}
   .sform textarea{min-height:80px;resize:vertical;}
   .sform .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .sform .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media(max-width:700px){.sform .row3{grid-template-columns:1fr;}}
   @media(max-width:560px){.sform .row2{grid-template-columns:1fr;}}
   .sform .hint{font-size:12px;color:var(--muted);margin-top:5px;}
   .grp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;}
@@ -75,9 +77,12 @@
       <div class="grp">
         <h3>基本资料</h3>
         <div class="fld"><label>商家名称 <span class="req">*</span></label><input id="f_name" required placeholder="例如：早尚好 Good Morning" /></div>
-        <div class="row2">
+        <div class="row3">
           <div class="fld"><label>分类 <span class="req">*</span></label>
-            <select id="f_cat" required><option value="">请选择</option><option>美食餐饮</option><option>咖啡馆</option><option>甜品烘焙</option><option>饮料奶茶</option><option>酒吧夜生活</option><option>零售购物</option><option>服装时尚</option><option>超市杂货</option><option>美容美发</option><option>美甲美睫</option><option>按摩SPA</option><option>健身运动</option><option>健康医疗</option><option>诊所药房</option><option>生活服务</option><option>维修服务</option><option>汽车服务</option><option>家居家具</option><option>宠物服务</option><option>教育培训</option><option>母婴亲子</option><option>娱乐休闲</option><option>旅游住宿</option><option>专业服务</option><option>房产</option><option>其他</option></select>
+            <select id="f_cat" required></select>
+          </div>
+          <div class="fld"><label>细分 <span class="muted" style="font-weight:400;font-size:12px;">（顾客用这个找你）</span></label>
+            <select id="f_sub"></select>
           </div>
           <div class="fld"><label>开业状态</label>
             <select id="f_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option></select>
@@ -208,6 +213,7 @@
 
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="submit";</script>
+<script src="categories.js"></script>
 <script src="site.js"></script>
 <script>
 (function(){
@@ -310,7 +316,7 @@
       var logoUrl=null; if(logoBlob){ try{ logoUrl=await uploadBlob(logoBlob,"logo"); }catch(x){} }
       var data={
         business_name:$("f_name").value.trim(), name:$("f_name").value.trim(),
-        category:$("f_cat").value, opening_type:$("f_type").value,
+        category:$("f_cat").value, subcategory:$("f_sub").value||null, opening_type:$("f_type").value,
         area:$("f_area").value.trim()||null, city:"Johor Bahru",
         opening_date:$("f_date").value||null, address:$("f_addr").value.trim()||null,
         google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
@@ -341,6 +347,10 @@
     }catch(err){ msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="提交登记"; }
   });
 })();
+</script>
+<script>
+(function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var r=OT_bindSub(c,s,"请选择（可留空）");r("");};
+if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>
 </html>

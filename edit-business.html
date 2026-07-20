@@ -13,6 +13,8 @@
   .ed input:focus,.ed select:focus,.ed textarea:focus{border-color:var(--brand);}
   .ed textarea{min-height:72px;resize:vertical;}
   .ed .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .ed .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  @media(max-width:700px){.ed .row3{grid-template-columns:1fr;}}
   @media(max-width:560px){.ed .row2{grid-template-columns:1fr;}}
   .sec{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;}
   .sec h3{margin:0 0 12px;font-size:16px;}
@@ -48,9 +50,12 @@
     <div class="sec">
       <h3>基本资料</h3>
       <div class="fld"><label>商家名称</label><input id="business_name" /></div>
-      <div class="row2">
+      <div class="row3">
         <div class="fld"><label>分类</label>
-          <select id="category"><option value="">—</option><option>美食餐饮</option><option>咖啡馆</option><option>甜品烘焙</option><option>饮料奶茶</option><option>酒吧夜生活</option><option>零售购物</option><option>服装时尚</option><option>超市杂货</option><option>美容美发</option><option>美甲美睫</option><option>按摩SPA</option><option>健身运动</option><option>健康医疗</option><option>诊所药房</option><option>生活服务</option><option>维修服务</option><option>汽车服务</option><option>家居家具</option><option>宠物服务</option><option>教育培训</option><option>母婴亲子</option><option>娱乐休闲</option><option>旅游住宿</option><option>专业服务</option><option>房产</option><option>其他</option></select>
+          <select id="category"></select>
+        </div>
+        <div class="fld"><label>细分</label>
+          <select id="subcategory"></select>
         </div>
         <div class="fld"><label>开业状态</label>
           <select id="opening_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option><option value="Grand Opening">Grand Opening</option></select>
@@ -173,6 +178,7 @@
   </div>
 </div>
 
+<script src="categories.js"></script>
 <script>
 (function(){
   var HDAYS=["周一","周二","周三","周四","周五","周六","周日"];
@@ -219,6 +225,7 @@ function loadBiz(){
     var b=rows[0]; current=b;
     ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
+    if(window.OT_refreshSub) window.OT_refreshSub(b.subcategory||"");
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
     if(b.listing_status) $("listing_status").value=b.listing_status;
@@ -271,7 +278,7 @@ function save(){
   var btn=$("saveBtn"); btn.disabled=true; btn.textContent="保存中…";
   var data={
     business_name:$("business_name").value.trim(), name:$("business_name").value.trim(),
-    category:$("category").value||null, opening_type:$("opening_type").value||null,
+    category:$("category").value||null, subcategory:$("subcategory").value||null, opening_type:$("opening_type").value||null,
     area:$("area").value.trim()||null, opening_date:$("opening_date").value||null,
     address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
     whatsapp:$("whatsapp").value.replace(/[^0-9]/g,"")||null, phone:$("phone").value.trim()||null,
@@ -301,6 +308,10 @@ function save(){
     } else { toast("保存失败，请重试"); }
   }).catch(function(){ btn.disabled=false; btn.textContent="保存"; toast("保存失败"); });
 }
+</script>
+<script>
+(function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");window.OT_refreshSub=OT_bindSub(c,s,"—");window.OT_refreshSub("");};
+if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>
 </html>

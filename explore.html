@@ -55,17 +55,11 @@
   var today=new Date().toISOString().slice(0,10);
   function isFeat(b){ if(!b.featured) return false; if(b.featured_start && String(b.featured_start)>today) return false; if(b.featured_until && String(b.featured_until)<today) return false; return true; }
   var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0","#dfe3ea"];
-  function brief(b){
-    var s=(b.short_description||"").replace(/[\r\n]+/g," · ").replace(/\s{2,}/g," ").trim();
-    if(!s) return "";
-    if(s.length>70) s=s.slice(0,70).replace(/[\s·,，、|]+$/,"")+"…";
-    return '<div class="desc">'+esc(s)+'</div>';
-  }
   function card(b,i){
-    var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
+    var meta=[b.subcategory||b.category,b.area||b.city].filter(Boolean).join(" · ");
     var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
     var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
-    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+brief(b)+'</div></a>';
+    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+'</div></a>';
   }
   var allRows=[];
   function activeVal(id){ var c=document.querySelector("#"+id+" .chip.active"); return c?c.getAttribute("data-val"):""; }
@@ -76,7 +70,7 @@
       if(cat && b.category!==cat) return false;
       if(st && b.opening_type!==st) return false;
       if(ar && (b.area||b.city)!==ar) return false;
-      if(q){ var hay=[b.business_name,b.category,b.area,b.city].filter(Boolean).join(" ").toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      if(q){ var hay=[b.business_name,b.category,b.subcategory,b.area,b.city].filter(Boolean).join(" ").toLowerCase(); if(hay.indexOf(q)<0) return false; }
       return true;
     });
     var cnt=$("bizCount"); if(cnt) cnt.textContent=list.length;
