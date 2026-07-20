@@ -91,6 +91,32 @@
     return refresh;
   };
 
+  // ===== WhatsApp 号码自动补国码 =====
+  // 016xxxxxxx / 16xxxxxxx / 60xxxxxxxxx / +60 16-123 4567 -> 60xxxxxxxxx
+  window.OT_normPhone = function (raw) {
+    var d = String(raw || "").replace(/\D/g, "");
+    if (!d) return "";
+    if (d.indexOf("0060") === 0) d = d.slice(2);          // 0060... -> 60...
+    if (d.indexOf("60") === 0 && d.length >= 10) return d; // 已含大马国码
+    if (d.indexOf("65") === 0 && d.length >= 10) return d; // 新加坡号码放行
+    if (d.charAt(0) === "0") d = d.slice(1);               // 016... -> 16...
+    return "60" + d;
+  };
+
+  // 绑定输入框：实时在下方显示最终会保存的号码
+  window.OT_bindPhone = function (input, hintEl) {
+    if (!input) return;
+    function show() {
+      if (!hintEl) return;
+      var v = window.OT_normPhone(input.value);
+      hintEl.textContent = input.value.trim() ? "将保存为：" + v : "只填数字，系统会自动补上国码 60";
+      hintEl.style.color = (input.value.trim() && v.length < 11) ? "#b3261e" : "";
+    }
+    input.addEventListener("input", show);
+    input.addEventListener("blur", function () { if (input.value.trim()) input.value = window.OT_normPhone(input.value); show(); });
+    show();
+  };
+
   // 取最终小区值（选了「其他」就用文字框内容）
   window.OT_areaValue = function (areaSel, otherInput) {
     if (!areaSel) return "";

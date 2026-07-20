@@ -96,7 +96,7 @@
         <div class="fld"><label>地址</label><input id="f_addr" placeholder="完整地址" /></div>
         <div class="fld"><label>Google 地图链接</label><input id="f_map" placeholder="https://maps.google.com/..." /></div>
         <div class="row2">
-          <div class="fld"><label>WhatsApp <span class="req">*</span></label><input id="f_wa" required placeholder="例如：601175938168" /><div class="hint">只填数字，含国码（60）</div></div>
+          <div class="fld"><label>WhatsApp <span class="req">*</span></label><input id="f_wa" required placeholder="例如：016-123 4567" inputmode="tel" /><div class="hint" id="f_wa_hint">只填数字，系统会自动补上国码 60</div></div>
           <div class="fld"><label>电话</label><input id="f_phone" placeholder="例如：07-1234567" /></div>
         </div>
         <div class="row2">
@@ -320,7 +320,7 @@
         category:$("f_cat").value, subcategory:$("f_sub").value||null, opening_type:$("f_type").value,
         area:(window.OT_areaValue?OT_areaValue($("f_area"),$("f_area_other")):"")||null, city:$("f_city").value||null,
         opening_date:$("f_date").value||null, address:$("f_addr").value.trim()||null,
-        google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
+        google_maps_url:$("f_map").value.trim()||null, whatsapp:(window.OT_normPhone?OT_normPhone($("f_wa").value):$("f_wa").value.replace(/[^0-9]/g,"")),
         phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
         instagram_url:$("f_ig").value.trim()||null, short_description:$("f_desc").value.trim()||null,
         website_url:$("f_web").value.trim()||null, google_review_url:$("f_greview").value.trim()||null,
@@ -352,7 +352,8 @@
 <script>
 (function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var r=OT_bindSub(c,s,"请选择（可留空）");r("");
  var rc=document.getElementById("f_city"),ra=document.getElementById("f_area"),ro=document.getElementById("f_area_other");
- OT_fillRegions(rc,"请选择");var ra2=OT_bindArea(rc,ra,ro,"请选择（可留空）");ra2("");};
+ OT_fillRegions(rc,"请选择");var ra2=OT_bindArea(rc,ra,ro,"请选择（可留空）");ra2("");
+ if(window.OT_bindPhone) OT_bindPhone(document.getElementById("f_wa"),document.getElementById("f_wa_hint"));};
 if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>
