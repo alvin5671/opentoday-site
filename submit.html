@@ -215,7 +215,7 @@
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="submit";</script>
 <script src="categories.js?v=2"></script>
-<script src="site.js"></script>
+<script src="site.js?v=2"></script>
 <script>
 (function(){
   var HDAYS=["周一","周二","周三","周四","周五","周六","周日"];
@@ -331,7 +331,7 @@
         products:collect("products",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}]),
         faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}]),
         branches:collect("branches",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}]),
-        project:plan, listing_status:"待审核", status:"未完成", progress:"待制作",
+        project:plan, agent:(window.OT_getRef?OT_getRef():"")||null, listing_status:"待审核", status:"未完成", progress:"待制作",
         submit_date:new Date().toISOString().slice(0,10)
       };
       var ins=await fetch(SB_URL+"/rest/v1/customers",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(data)});

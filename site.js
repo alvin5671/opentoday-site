@@ -1,5 +1,28 @@
 // Shared Header + Footer for all OpenToday pages.
 // Each page sets window.CURRENT_PAGE = "home" | "explore" | "services" ...
+
+// ===== 代理推荐追踪 =====
+// 任何页面带 ?ref=代码 进来就记下，30 天内提交表单会自动带上，存进 customers.agent
+(function () {
+  var KEY = "ot_ref", DAYS = 30;
+  try {
+    var v = new URLSearchParams(location.search).get("ref");
+    if (v) {
+      v = String(v).trim().slice(0, 32).replace(/[^A-Za-z0-9_\-]/g, "");
+      if (v) localStorage.setItem(KEY, JSON.stringify({ code: v, t: Date.now() }));
+    }
+  } catch (e) {}
+  window.OT_getRef = function () {
+    try {
+      var raw = localStorage.getItem(KEY); if (!raw) return "";
+      var o = JSON.parse(raw);
+      if (!o || !o.code) return "";
+      if (Date.now() - o.t > DAYS * 864e5) { localStorage.removeItem(KEY); return ""; }
+      return o.code;
+    } catch (e) { return ""; }
+  };
+})();
+
 (function () {
   var page = window.CURRENT_PAGE || "";
   var links = [
