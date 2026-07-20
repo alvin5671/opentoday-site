@@ -61,8 +61,9 @@
           <select id="opening_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option><option value="Grand Opening">Grand Opening</option></select>
         </div>
       </div>
-      <div class="row2">
-        <div class="fld"><label>地区</label><input id="area" /></div>
+      <div class="row3">
+        <div class="fld"><label>大区</label><select id="city"></select></div>
+        <div class="fld"><label>地区</label><select id="area"></select><input id="area_other" placeholder="填写地区名称" style="display:none;margin-top:8px;" /></div>
         <div class="fld"><label>开业日期</label><input id="opening_date" type="date" /></div>
       </div>
       <div class="fld"><label>地址</label><input id="address" /></div>
@@ -223,9 +224,11 @@ function loadBiz(){
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
     var b=rows[0]; current=b;
-    ["business_name","area","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    ["business_name","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(window.OT_refreshSub) window.OT_refreshSub(b.subcategory||"");
+    if($("city")) $("city").value=b.city||"";
+    if(window.OT_refreshArea) window.OT_refreshArea(b.area||"");
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
     if(b.listing_status) $("listing_status").value=b.listing_status;
@@ -279,7 +282,7 @@ function save(){
   var data={
     business_name:$("business_name").value.trim(), name:$("business_name").value.trim(),
     category:$("category").value||null, subcategory:$("subcategory").value||null, opening_type:$("opening_type").value||null,
-    area:$("area").value.trim()||null, opening_date:$("opening_date").value||null,
+    area:(window.OT_areaValue?OT_areaValue($("area"),$("area_other")):"")||null, city:$("city").value||null, opening_date:$("opening_date").value||null,
     address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
     whatsapp:$("whatsapp").value.replace(/[^0-9]/g,"")||null, phone:$("phone").value.trim()||null,
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
@@ -310,7 +313,9 @@ function save(){
 }
 </script>
 <script>
-(function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");window.OT_refreshSub=OT_bindSub(c,s,"—");window.OT_refreshSub("");};
+(function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");window.OT_refreshSub=OT_bindSub(c,s,"—");window.OT_refreshSub("");
+ var rc=document.getElementById("city"),ra=document.getElementById("area"),ro=document.getElementById("area_other");
+ OT_fillRegions(rc,"—");window.OT_refreshArea=OT_bindArea(rc,ra,ro,"—");window.OT_refreshArea("");};
 if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>

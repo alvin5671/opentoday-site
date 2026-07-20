@@ -69,7 +69,7 @@
     var list=allRows.filter(function(b){
       if(cat && b.category!==cat) return false;
       if(st && b.opening_type!==st) return false;
-      if(ar && (b.area||b.city)!==ar) return false;
+      if(ar && (b.city||b.area)!==ar) return false;
       if(q){ var hay=[b.business_name,b.category,b.subcategory,b.area,b.city].filter(Boolean).join(" ").toLowerCase(); if(hay.indexOf(q)<0) return false; }
       return true;
     });
@@ -112,7 +112,7 @@
       allRows.sort(function(a,c){ return (isFeat(c)?1:0)-(isFeat(a)?1:0); });
       buildChips("catChips","catGroup",uniq(allRows.map(function(b){return b.category;})));
       buildChips("statusChips","statusGroup",uniq(allRows.map(function(b){return b.opening_type;})));
-      buildChips("areaChips","areaGroup",uniq(allRows.map(function(b){return b.area||b.city;})));
+      buildChips("areaChips","areaGroup",uniq(allRows.map(function(b){return b.city||b.area;})));
       render();
     })
     .catch(function(){ grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);">加载失败，请稍后重试。</div>'; });

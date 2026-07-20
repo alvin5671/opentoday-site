@@ -88,8 +88,9 @@
             <select id="f_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option></select>
           </div>
         </div>
-        <div class="row2">
-          <div class="fld"><label>地区</label><input id="f_area" placeholder="例如：Mount Austin" /></div>
+        <div class="row3">
+          <div class="fld"><label>大区 <span class="req">*</span></label><select id="f_city" required></select></div>
+          <div class="fld"><label>地区</label><select id="f_area"></select><input id="f_area_other" placeholder="填写地区名称" style="display:none;margin-top:8px;" /></div>
           <div class="fld"><label>开业日期</label><input id="f_date" type="date" /></div>
         </div>
         <div class="fld"><label>地址</label><input id="f_addr" placeholder="完整地址" /></div>
@@ -317,7 +318,7 @@
       var data={
         business_name:$("f_name").value.trim(), name:$("f_name").value.trim(),
         category:$("f_cat").value, subcategory:$("f_sub").value||null, opening_type:$("f_type").value,
-        area:$("f_area").value.trim()||null, city:"Johor Bahru",
+        area:(window.OT_areaValue?OT_areaValue($("f_area"),$("f_area_other")):"")||null, city:$("f_city").value||null,
         opening_date:$("f_date").value||null, address:$("f_addr").value.trim()||null,
         google_maps_url:$("f_map").value.trim()||null, whatsapp:$("f_wa").value.replace(/[^0-9]/g,""),
         phone:$("f_phone").value.trim()||null, facebook_url:$("f_fb").value.trim()||null,
@@ -349,7 +350,9 @@
 })();
 </script>
 <script>
-(function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var r=OT_bindSub(c,s,"请选择（可留空）");r("");};
+(function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var r=OT_bindSub(c,s,"请选择（可留空）");r("");
+ var rc=document.getElementById("f_city"),ra=document.getElementById("f_area"),ro=document.getElementById("f_area_other");
+ OT_fillRegions(rc,"请选择");var ra2=OT_bindArea(rc,ra,ro,"请选择（可留空）");ra2("");};
 if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>
