@@ -49,11 +49,19 @@
     </div>
   </div>
 
-  <!-- 本周精选 -->
+  <!-- 本周焦点 -->
+  <section id="spotlightSec" style="display:none;padding-bottom:0;">
+    <div class="container">
+      <div class="sec-head"><div><h2>🔥 本周焦点 · Spotlight</h2><p class="muted" style="font-size:13px;margin-top:4px;">本周重点推介的新开业商家</p></div><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="spotlightGrid"></div>
+    </div>
+  </section>
+
+  <!-- 精选商家 -->
   <section id="featuredSec" style="display:none;padding-bottom:0;">
     <div class="container">
-      <div class="sec-head"><h2>⭐ 本周精选 · Featured</h2><a href="explore.html">查看全部 ›</a></div>
-      <div class="grid g-3 biz-grid" id="featuredGrid"></div>
+      <div class="sec-head"><h2>⭐ 精选商家 · Featured</h2><a href="explore.html">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="featuredGrid"></div>
     </div>
   </section>
 
@@ -177,32 +185,44 @@
     var dt=fmtDate(b.opening_date);
     return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
   }
-  function featuredCard(b,i){
+  function tierCard(b,i,tier){
     var meta=[b.category,b.area||b.city].filter(Boolean).join(" · ");
     var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
     var dt=fmtDate(b.opening_date);
-    return '<a class="biz" href="business.html?id='+b.id+'" style="border:1px solid rgba(249,115,22,.3);box-shadow:0 6px 20px rgba(249,115,22,.12);"><div class="biz-img" style="'+bg+'"><span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span></div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+    var hot=tier==="spotlight";
+    var frame=hot
+      ? 'border:1px solid rgba(249,115,22,.55);box-shadow:0 8px 24px rgba(249,115,22,.18);'
+      : 'border:1px solid rgba(249,115,22,.3);box-shadow:0 6px 20px rgba(249,115,22,.12);';
+    var badge=hot
+      ? '<span class="badge" style="background:#F97316;color:#fff;">🔥 本周焦点</span>'
+      : '<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>';
+    return '<a class="biz" href="business.html?id='+b.id+'" style="'+frame+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
   }
   fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
     .then(function(rows){
       if(!Array.isArray(rows)) rows=[];
       var today=new Date().toISOString().slice(0,10);
-      rows.forEach(function(b){ b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today); });
-      rows.sort(function(a,c){ return (c._feat?1:0)-(a._feat?1:0); });
+      rows.forEach(function(b){
+        b._feat=!!b.featured && (!b.featured_start||String(b.featured_start)<=today) && (!b.featured_until||String(b.featured_until)>=today);
+        b._tier=b._feat ? (b.feature_tier==="spotlight" ? "spotlight" : "featured") : "";
+      });
+      rows.sort(function(a,c){ var w=function(b){return b._tier==="spotlight"?2:(b._tier==="featured"?1:0);}; return w(c)-w(a); });
 
       // 平台数据
       if($("statBiz")) $("statBiz").textContent = rows.length;
       var areas={}; rows.forEach(function(b){ var a=b.area||b.city; if(a) areas[a]=1; });
       if($("statArea")) $("statArea").textContent = Object.keys(areas).length || "–";
 
-      // 本周精选 + 今日开业（后台勾选 show_today 才显示）
-      var featured=rows.filter(function(b){return b._feat;});
+      // 本周焦点 + 精选商家 + 今日开业（后台勾选 show_today 才显示）
+      var spotlight=rows.filter(function(b){return b._tier==="spotlight";});
+      var featured=rows.filter(function(b){return b._tier==="featured";});
       var others=rows.filter(function(b){return !b._feat;});
       var tg=$("todayGrid");
       if(!rows.length){ if(tg) tg.innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">还没有已刊登的商家，后台批准后这里自动显示。</div>'; }
       else{
-        if(featured.length){ if($("featuredGrid")) $("featuredGrid").innerHTML=featured.slice(0,3).map(featuredCard).join(""); if($("featuredSec")) $("featuredSec").style.display=""; }
+        if(spotlight.length){ if($("spotlightGrid")) $("spotlightGrid").innerHTML=spotlight.slice(0,5).map(function(b,i){return tierCard(b,i,"spotlight");}).join(""); if($("spotlightSec")) $("spotlightSec").style.display=""; }
+        if(featured.length){ if($("featuredGrid")) $("featuredGrid").innerHTML=featured.slice(0,5).map(function(b,i){return tierCard(b,i,"featured");}).join(""); if($("featuredSec")) $("featuredSec").style.display=""; }
         var todayList=others.filter(function(b){ return b.show_today; });
         if(tg){
           if(todayList.length) tg.innerHTML=todayList.slice(0,10).map(card).join("");
