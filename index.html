@@ -49,6 +49,14 @@
     </div>
   </div>
 
+  <!-- 今日开业 -->
+  <section id="today" style="scroll-margin-top:80px;padding-bottom:0;">
+    <div class="container">
+      <div class="sec-head"><div><h2>今日开业 · Today Opening</h2><p class="muted" style="font-size:13px;margin-top:4px;">近期开业的新店，每天更新</p></div><a href="explore.html?today=1">查看全部 ›</a></div>
+      <div class="grid g-5 biz-grid" id="todayGrid"><p class="muted">加载中…</p></div>
+    </div>
+  </section>
+
   <!-- 本周焦点 -->
   <section id="spotlightSec" style="display:none;padding-bottom:0;">
     <div class="container">
@@ -58,18 +66,10 @@
   </section>
 
   <!-- 精选商家 -->
-  <section id="featuredSec" style="display:none;padding-bottom:0;">
+  <section id="featuredSec" style="display:none;">
     <div class="container">
       <div class="sec-head"><h2>⭐ 精选商家 · Featured</h2><a href="explore.html">查看全部 ›</a></div>
       <div class="grid g-5 biz-grid" id="featuredGrid"></div>
-    </div>
-  </section>
-
-  <!-- 今日开业 -->
-  <section id="today" style="scroll-margin-top:80px;">
-    <div class="container">
-      <div class="sec-head"><div><h2>今日开业 · Today Opening</h2><p class="muted" style="font-size:13px;margin-top:4px;">近期开业的新店，每天更新</p></div><a href="explore.html?today=1">查看全部 ›</a></div>
-      <div class="grid g-5 biz-grid" id="todayGrid"><p class="muted">加载中…</p></div>
     </div>
   </section>
 
@@ -224,9 +224,11 @@
         if(spotlight.length){ if($("spotlightGrid")) $("spotlightGrid").innerHTML=spotlight.slice(0,5).map(function(b,i){return tierCard(b,i,"spotlight");}).join(""); if($("spotlightSec")) $("spotlightSec").style.display=""; }
         if(featured.length){ if($("featuredGrid")) $("featuredGrid").innerHTML=featured.slice(0,5).map(function(b,i){return tierCard(b,i,"featured");}).join(""); if($("featuredSec")) $("featuredSec").style.display=""; }
         var todayList=others.filter(function(b){ return b.show_today; });
-        if(tg){
-          if(todayList.length) tg.innerHTML=todayList.slice(0,10).map(card).join("");
-          else tg.innerHTML='<div style="grid-column:1/-1;padding:36px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;">近期暂无新店开业。<a href="explore.html" style="color:var(--brand);font-weight:600;">探索全部商家 ›</a></div>';
+        if(todayList.length){
+          if(tg) tg.innerHTML=todayList.slice(0,10).map(card).join("");
+        }else{
+          // 没有今日开业时整块隐藏，让「本周焦点」自然补上第一位
+          if($("today")) $("today").style.display="none";
         }
       }
 
