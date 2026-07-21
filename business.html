@@ -34,7 +34,12 @@
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
   function arr(v){ try{ return Array.isArray(v)?v:(v?JSON.parse(v):[]); }catch(e){ return []; } }
   function teaser(s,n){ s=String(s||"").replace(/\s+/g," ").trim(); return s.length>n?s.slice(0,n).trim()+"…":s; }
-  function fmtDate(d){ var m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/); return m?parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业":""; }
+  function fmtDate(d){ var m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return "";
+    var y=+m[1], mo=+m[2], da=+m[3], now=new Date();
+    var age=(now-new Date(y,mo-1,da))/864e5;
+    if(age>400) return "";                       // 开业超过约 12 个月就不显示日期
+    if(y!==now.getFullYear()) return y+"年"+mo+"月"+da+"日开业";  // 不是今年就写出年份，避免误导
+    return mo+"月"+da+"日开业"; }
 
   document.getElementById("page").addEventListener("click",function(e){
     var d=e.target.closest(".th"); if(d){ var c=document.getElementById("bCover"); if(c && c.tagName==="IMG"){ c.src=d.getAttribute("data-u"); } else if(c){ c.style.backgroundImage="url('"+d.getAttribute("data-u")+"')"; } return; }

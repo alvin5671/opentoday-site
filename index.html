@@ -176,7 +176,12 @@
   var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var $=function(x){return document.getElementById(x);};
   function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
-  function fmtDate(d){ if(!d) return ""; var m=String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return ""; return parseInt(m[2],10)+"月"+parseInt(m[3],10)+"日开业"; }
+  function fmtDate(d){ var m=String(d||"").match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return "";
+    var y=+m[1], mo=+m[2], da=+m[3], now=new Date();
+    var age=(now-new Date(y,mo-1,da))/864e5;
+    if(age>400) return "";                       // 开业超过约 12 个月就不显示日期
+    if(y!==now.getFullYear()) return y+"年"+mo+"月"+da+"日开业";  // 不是今年就写出年份，避免误导
+    return mo+"月"+da+"日开业"; }
   var colors=["#e7ddd4","#d9ccc0","#d9e0dc","#e6e2d6","#e9dfd0"];
   function card(b,i){
     var meta=[b.subcategory||b.category,b.area||b.city].filter(Boolean).join(" · ");
