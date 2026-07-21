@@ -82,7 +82,7 @@
             <select id="f_cat" required></select>
           </div>
           <div class="fld"><label>细分 <span class="muted" style="font-weight:400;font-size:12px;">（顾客用这个找你）</span></label>
-            <select id="f_sub"></select>
+            <select id="f_sub"></select><input id="f_sub_other" placeholder="填写细分名称" style="display:none;margin-top:8px;" />
           </div>
           <div class="fld"><label>开业状态</label>
             <select id="f_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option></select>
@@ -240,7 +240,7 @@
 
 <div id="site-footer"></div>
 <script>window.CURRENT_PAGE="submit";</script>
-<script src="categories.js?v=2"></script>
+<script src="categories.js?v=3"></script>
 <script src="site.js?v=2"></script>
 <script>
 (function(){
@@ -365,7 +365,7 @@
     var v=function(id){ return ($(id)&&$(id).value||"").trim(); };
     try{ var cb=await coverBlob(); $("cfCover").style.backgroundImage="url('"+URL.createObjectURL(cb)+"')"; }catch(x){}
     $("cfName").textContent=v("f_name")||"（未填写店名）";
-    var sub=$("f_sub").value, cat=$("f_cat").value;
+    var sub=(window.OT_subValue?OT_subValue($("f_sub"),$("f_sub_other")):$("f_sub").value), cat=$("f_cat").value;
     var areaV=window.OT_areaValue?OT_areaValue($("f_area"),$("f_area_other")):"";
     $("cfMeta").textContent=[sub||cat, areaV||$("f_city").value].filter(Boolean).join(" · ");
     var wa=window.OT_normPhone?OT_normPhone(v("f_wa")):v("f_wa");
@@ -415,7 +415,7 @@
       var logoUrl=null; if(logoBlob){ try{ logoUrl=await uploadBlob(logoBlob,"logo"); }catch(x){} }
       var data={
         business_name:$("f_name").value.trim(), name:$("f_name").value.trim(),
-        category:$("f_cat").value, subcategory:$("f_sub").value||null, opening_type:$("f_type").value,
+        category:$("f_cat").value, subcategory:(window.OT_subValue?OT_subValue($("f_sub"),$("f_sub_other")):$("f_sub").value)||null, opening_type:$("f_type").value,
         area:(window.OT_areaValue?OT_areaValue($("f_area"),$("f_area_other")):"")||null, city:$("f_city").value||null,
         opening_date:$("f_date").value||null, address:$("f_addr").value.trim()||null,
         google_maps_url:$("f_map").value.trim()||null, whatsapp:(window.OT_normPhone?OT_normPhone($("f_wa").value):$("f_wa").value.replace(/[^0-9]/g,"")),
@@ -448,7 +448,7 @@
 })();
 </script>
 <script>
-(function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var r=OT_bindSub(c,s,"请选择（可留空）");r("");
+(function(){var f=function(){var c=document.getElementById("f_cat"),s=document.getElementById("f_sub");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"请选择");var so=document.getElementById("f_sub_other");var r=OT_bindSub(c,s,so,"请选择（可留空）");r("");
  var rc=document.getElementById("f_city"),ra=document.getElementById("f_area"),ro=document.getElementById("f_area_other");
  OT_fillRegions(rc,"请选择");var ra2=OT_bindArea(rc,ra,ro,"请选择（可留空）");ra2("");
  if(window.OT_bindPhone) OT_bindPhone(document.getElementById("f_wa"),document.getElementById("f_wa_hint"));};

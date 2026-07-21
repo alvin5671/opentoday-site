@@ -55,7 +55,7 @@
           <select id="category"></select>
         </div>
         <div class="fld"><label>细分</label>
-          <select id="subcategory"></select>
+          <select id="subcategory"></select><input id="subcategory_other" placeholder="填写细分名称" style="display:none;margin-top:8px;" />
         </div>
         <div class="fld"><label>开业状态</label>
           <select id="opening_type"><option>现已开业</option><option>即将开业</option><option>近期开业</option><option value="Grand Opening">Grand Opening</option></select>
@@ -167,7 +167,7 @@
   </div>
 </div>
 
-<script src="categories.js?v=2"></script>
+<script src="categories.js?v=3"></script>
 <script>
 (function(){
   var HDAYS=["周一","周二","周三","周四","周五","周六","周日"];
@@ -275,7 +275,7 @@ function save(){
   var btn=$("saveBtn"); btn.disabled=true; btn.textContent="保存中…";
   var data={
     business_name:$("business_name").value.trim(), name:$("business_name").value.trim(),
-    category:$("category").value||null, subcategory:$("subcategory").value||null, opening_type:$("opening_type").value||null,
+    category:$("category").value||null, subcategory:(window.OT_subValue?OT_subValue($("subcategory"),$("subcategory_other")):$("subcategory").value)||null, opening_type:$("opening_type").value||null,
     area:(window.OT_areaValue?OT_areaValue($("area"),$("area_other")):"")||null, city:$("city").value||null, opening_date:$("opening_date").value||null,
     address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
     whatsapp:(window.OT_normPhone?OT_normPhone($("whatsapp").value):$("whatsapp").value.replace(/[^0-9]/g,""))||null, phone:$("phone").value.trim()||null,
@@ -303,7 +303,7 @@ function save(){
 }
 </script>
 <script>
-(function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");window.OT_refreshSub=OT_bindSub(c,s,"—");window.OT_refreshSub("");
+(function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");var so=document.getElementById("subcategory_other");window.OT_refreshSub=OT_bindSub(c,s,so,"—");window.OT_refreshSub("");
  var rc=document.getElementById("city"),ra=document.getElementById("area"),ro=document.getElementById("area_other");
  OT_fillRegions(rc,"—");window.OT_refreshArea=OT_bindArea(rc,ra,ro,"—");window.OT_refreshArea("");
  if(window.OT_bindPhone) OT_bindPhone(document.getElementById("whatsapp"),document.getElementById("whatsapp_hint"));};

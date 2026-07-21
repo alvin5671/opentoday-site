@@ -47,17 +47,37 @@
     if (sel) fill(sel, Object.keys(window.OT_CATS), placeholder, false);
   };
 
-  // 子类 select 跟着大类联动；返回 refresh(已有值)
-  window.OT_bindSub = function (catSel, subSel, placeholder) {
+  // 子类 select 跟着大类联动，另有「其他（自己填）」；返回 refresh(已有值)
+  window.OT_bindSub = function (catSel, subSel, otherInput, placeholder) {
     if (!catSel || !subSel) return function () {};
+    function syncOther() {
+      var isOther = subSel.value === OTHER;
+      if (otherInput) {
+        otherInput.style.display = isOther ? "" : "none";
+        if (!isOther) otherInput.value = "";
+      }
+    }
     function refresh(keep) {
       var subs = window.OT_SUBS(catSel.value);
-      fill(subSel, subs, placeholder || "请选择（可留空）", false);
+      fill(subSel, subs, placeholder || "请选择（可留空）", subs.length > 0);
       subSel.disabled = subs.length === 0;
-      if (keep && subs.indexOf(keep) > -1) subSel.value = keep;
+      if (keep) {
+        if (subs.indexOf(keep) > -1) subSel.value = keep;
+        else if (subs.length) subSel.value = OTHER;
+      }
+      syncOther();
+      if (keep && subSel.value === OTHER && otherInput) otherInput.value = keep;
     }
     catSel.addEventListener("change", function () { refresh(""); });
+    subSel.addEventListener("change", syncOther);
     return refresh;
+  };
+
+  // 取最终子类值（选了「其他」就用文字框内容）
+  window.OT_subValue = function (subSel, otherInput) {
+    if (!subSel) return "";
+    if (subSel.value === OTHER) return otherInput ? otherInput.value.trim() : "";
+    return subSel.value;
   };
 
   // 大区 select
