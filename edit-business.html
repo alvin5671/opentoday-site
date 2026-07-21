@@ -151,21 +151,7 @@
       <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
     </div>
 
-    <div class="sec admin-only">
-      <h3>⭐ 精选曝光（Featured）</h3>
-      <div class="hint" style="margin-bottom:10px;">勾选后此商家在探索页会置顶 + 显示 ⭐ 标签。适合 Launch Boost / Premium。设到期日后，过期自动取消置顶（勾选时自动填 4 周后）。</div>
-      <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px;"><input type="checkbox" id="featured" style="width:auto;"> 设为精选（置顶 + ⭐）</label>
-      <div class="row2" style="margin:0;">
-        <div class="fld" style="margin:0;"><label>精选开始日</label><input id="featured_start" type="date" /></div>
-        <div class="fld" style="margin:0;"><label>精选到期日</label><input id="featured_until" type="date" /></div>
-      </div>
-    </div>
 
-    <div class="sec admin-only">
-      <h3>🆕 首页「今日开业」</h3>
-      <div class="hint" style="margin-bottom:10px;">勾选后，此商家会出现在首页「今日开业」专区。适合真的近期开业的店，由你手动控制。</div>
-      <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" id="show_today" style="width:auto;"> 显示在首页「今日开业」</label>
-    </div>
 
     <div class="savebar">
       <select id="listing_status" class="admin-only" style="width:auto;">
@@ -243,10 +229,6 @@ function loadBiz(){
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
     if(b.listing_status) $("listing_status").value=b.listing_status;
-    if($("featured")) $("featured").checked=!!b.featured;
-    if($("show_today")) $("show_today").checked=!!b.show_today;
-    if(b.featured_start && $("featured_start")) $("featured_start").value=b.featured_start;
-    if(b.featured_until && $("featured_until")) $("featured_until").value=b.featured_until;
     if(b.image_url) $("coverPrev").style.backgroundImage="url('"+b.image_url+"')";
     if(b.logo_url && $("logoPrev")){ $("logoPrev").style.backgroundImage="url('"+b.logo_url+"')"; $("logoDel").style.display=""; }
     current.gallery=arr(b.gallery); renderGal();
@@ -284,7 +266,6 @@ function delGal(i){ current.gallery.splice(i,1); renderGal(); }
 if($("logoFile")){ $("logoFile").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; toast("上传 Logo 中…"); var b=await centerCrop(f,400,400); var u=await uploadBlob(b); current.logo_url=u; $("logoPrev").style.backgroundImage="url('"+u+"')"; $("logoDel").style.display=""; toast("Logo 已更新（记得按保存）"); e.target.value=""; }); }
 function delLogo(){ current.logo_url=""; $("logoPrev").style.backgroundImage=""; $("logoDel").style.display="none"; toast("已移除 Logo（记得按保存）"); }
 
-if($("featured")){ $("featured").addEventListener("change",function(){ if(this.checked){ var t=new Date(); if($("featured_start") && !$("featured_start").value){ $("featured_start").value=t.toISOString().slice(0,10); } if($("featured_until") && !$("featured_until").value){ var days=(current&&current.project==="Premium Brand Launch")?56:28; var d=new Date(); d.setDate(d.getDate()+days); $("featured_until").value=d.toISOString().slice(0,10); } } }); }
 
 function collect(cls,keys,root){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
 
@@ -308,11 +289,7 @@ function save(){
     products:collect("product",[{cls:"p-name",key:"name"},{cls:"p-desc",key:"desc"}],"products"),
     faq:collect("faq",[{cls:"f-q",key:"q"},{cls:"f-a",key:"a"}],"faq"),
     branches:collect("branch",[{cls:"br-name",key:"name"},{cls:"br-area",key:"area"},{cls:"br-address",key:"address"},{cls:"br-maps",key:"maps"}],"branches"),
-    listing_status:$("listing_status").value,
-    featured:$("featured")?$("featured").checked:false,
-    show_today:$("show_today")?$("show_today").checked:false,
-    featured_start:($("featured_start")&&$("featured_start").value)||null,
-    featured_until:($("featured_until")&&$("featured_until").value)||null
+    listing_status:$("listing_status").value
   };
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID),{method:"PATCH",headers:Object.assign({},H,{"Content-Type":"application/json"}),body:JSON.stringify(data)}).then(function(r){
     btn.disabled=false; btn.textContent="保存";
