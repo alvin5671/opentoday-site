@@ -123,7 +123,7 @@
       var offerWa=wa?(wa+"?text="+encodeURIComponent("你好，我想领取「"+offerTitle+"」优惠。")):"";
       html+='<div id="offerCard" data-bid="'+b.id+'" style="margin:16px 0 4px;border:1.5px dashed var(--brand);background:var(--brand-soft);border-radius:16px;padding:18px 20px;">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">'
-          +'<div><div style="font-size:12px;font-weight:800;color:var(--brand);letter-spacing:.05em;">🎁 开业优惠</div>'
+          +'<div><div style="font-size:12px;font-weight:800;color:var(--brand);letter-spacing:.05em;">🎁 OpenToday 专属优惠</div>'
             +'<div style="font-size:21px;font-weight:800;color:var(--ink-strong);margin-top:5px;">'+esc(offerTitle)+'</div>'
             +(b.offer_desc?'<div class="muted" style="font-size:14px;margin-top:5px;">'+esc(b.offer_desc)+'</div>':'')
             +(b.offer_until?'<div class="muted" style="font-size:12px;margin-top:7px;">有效期至 '+esc(b.offer_until)+'</div>':'')
