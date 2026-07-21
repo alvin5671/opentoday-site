@@ -296,10 +296,11 @@
   $("photoDrop").addEventListener("click",function(){ $("f_photo").click(); });
   $("f_photo").addEventListener("change",function(e){
     var f=e.target.files[0]; if(!f) return;
+    resetCoverCache();                 // 换了照片就重新裁
     $("cropImg").src=URL.createObjectURL(f); $("cropWrap").style.display="block";
     $("photoDrop").textContent="📷 已选择封面（点击可重新选择）";
     if(cropper){ cropper.destroy(); cropper=null; }
-    if(typeof Cropper!=="undefined"){ cropper=new Cropper($("cropImg"),{aspectRatio:21/9,viewMode:1,autoCropArea:1,background:false}); }
+    if(typeof Cropper!=="undefined"){ cropper=new Cropper($("cropImg"),{aspectRatio:21/9,viewMode:1,autoCropArea:1,background:false,cropend:resetCoverCache,zoom:resetCoverCache}); }
   });
 
   // ── more photos ──
@@ -329,7 +330,27 @@
   function collect(root,keys){ return [].slice.call(document.querySelectorAll("#"+root+" .rowitem")).map(function(d){ var o={}; keys.forEach(function(k){ var el=d.querySelector("."+k.cls); o[k.key]=el?el.value.trim():""; }); return o; }).filter(function(o){ return Object.keys(o).some(function(k){return o[k];}); }); }
 
   function msg(t){ var m=$("smsg"); m.textContent=t; m.className="smsg err"; m.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); }
-  function coverBlob(){ return new Promise(function(resolve,reject){ if(cropper&&cropper.getCroppedCanvas){ var c=cropper.getCroppedCanvas({width:1680,height:720,imageSmoothingQuality:"high"}); if(!c) return reject(new Error("no canvas")); c.toBlob(function(b){b?resolve(b):reject(new Error("blob"));},"image/jpeg",0.85);} else { var f=$("f_photo").files[0]; f?resolve(f):reject(new Error("no file")); } }); }
+  var coverCache=null;              // 裁一次就好，手机内存有限，重复裁会失败
+  function resetCoverCache(){ coverCache=null; }
+  function coverBlob(){
+    if(coverCache) return Promise.resolve(coverCache);
+    return new Promise(function(resolve,reject){
+      var orig=$("f_photo").files[0];
+      function done(b){ coverCache=b; resolve(b); }
+      if(cropper&&cropper.getCroppedCanvas){
+        var c=null;
+        try{
+          c=cropper.getCroppedCanvas({width:1400,height:600,maxWidth:1400,maxHeight:600,imageSmoothingQuality:"medium",fillColor:"#fff"});
+        }catch(e){ c=null; }
+        if(!c){ return orig?done(orig):reject(new Error("请重新选一张封面照片")); }
+        try{
+          c.toBlob(function(b){ b?done(b):(orig?done(orig):reject(new Error("请重新选一张封面照片"))); },"image/jpeg",0.82);
+        }catch(e){ orig?done(orig):reject(new Error("请重新选一张封面照片")); }
+      } else {
+        orig?done(orig):reject(new Error("请上传一张封面照片"));
+      }
+    });
+  }
   async function uploadBlob(blob,tag){ var p="biz_"+Date.now()+"_"+tag+"_"+Math.random().toString(36).slice(2,6)+".jpg"; var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+p,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},body:blob}); if(!up.ok) throw new Error("upload "+up.status); return SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+p; }
 
   function row(label,val,warn){
@@ -422,7 +443,7 @@
         if(wb) wb.textContent="● 现在就 WhatsApp 我们确认付款";
       }
       $("sform").style.display="none"; $("confirmCard").style.display="none"; $("smsg").style.display="none"; $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
-    }catch(err){ $("confirmCard").style.display="none"; $("sform").style.display=""; msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="确认提交"; window.scrollTo({top:0,behavior:"smooth"}); }
+    }catch(err){ $("confirmCard").style.display="none"; $("sform").style.display=""; msg("提交失败："+(err&&err.message&&/[\u4e00-\u9fa5]/.test(err.message)?err.message:"网络或图片处理出了问题，请再试一次。")); btn.disabled=false; btn.textContent="确认提交"; window.scrollTo({top:0,behavior:"smooth"}); }
   });
 })();
 </script>
