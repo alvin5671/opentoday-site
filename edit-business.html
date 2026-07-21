@@ -151,7 +151,7 @@
       <button type="button" class="addbtn" onclick="addBranch()">➕ 加一个分店</button>
     </div>
 
-    <div class="sec">
+    <div class="sec admin-only">
       <h3>⭐ 精选曝光（Featured）</h3>
       <div class="hint" style="margin-bottom:10px;">勾选后此商家在探索页会置顶 + 显示 ⭐ 标签。适合 Launch Boost / Premium。设到期日后，过期自动取消置顶（勾选时自动填 4 周后）。</div>
       <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-bottom:12px;"><input type="checkbox" id="featured" style="width:auto;"> 设为精选（置顶 + ⭐）</label>
@@ -161,14 +161,14 @@
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec admin-only">
       <h3>🆕 首页「今日开业」</h3>
       <div class="hint" style="margin-bottom:10px;">勾选后，此商家会出现在首页「今日开业」专区。适合真的近期开业的店，由你手动控制。</div>
       <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" id="show_today" style="width:auto;"> 显示在首页「今日开业」</label>
     </div>
 
     <div class="savebar">
-      <select id="listing_status" style="width:auto;">
+      <select id="listing_status" class="admin-only" style="width:auto;">
         <option value="待审核">待审核（不显示）</option>
         <option value="已刊登">已刊登（上线）</option>
         <option value="询价">询价（lead）</option>
@@ -203,6 +203,9 @@ var H={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY};
 var $=function(id){return document.getElementById(id);};
 var ID=new URLSearchParams(location.search).get("id");
 var TOKEN=new URLSearchParams(location.search).get("t")||"";
+var IS_ADMIN=(function(){ try{ if(localStorage.getItem("ot_admin")==="1") return true; }catch(e){} return /admin\.html/i.test(document.referrer||""); })();
+if(IS_ADMIN){ try{ localStorage.setItem("ot_admin","1"); }catch(e){} }
+document.addEventListener("DOMContentLoaded",function(){ if(!IS_ADMIN){ document.querySelectorAll(".admin-only").forEach(function(el){ el.style.display="none"; }); } });
 var current={image_url:"",gallery:[],logo_url:""};
 
 function unlock(){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
