@@ -9,7 +9,8 @@
 <link rel="stylesheet" href="demo.css" />
 <style>
   /* Premium 品牌区块 — OpenToday 白底橙色 */
-  #page .brand-logo{background:var(--ink-strong);color:#fff;}
+  #page .brand-logo{background:var(--ink-strong);color:#fff;flex:0 0 auto;}
+  @media(max-width:560px){ #page .brand-hero h1{font-size:26px;} #page .brand-logo{width:52px;height:52px;font-size:21px;} }
   #page .branch.gold-accent{border-top-color:var(--brand);}
   #page #bThumbs .th:hover{border-color:var(--brand)!important;}
 </style>
@@ -86,13 +87,19 @@
       var slogan=(b.slogan||"").trim();
       var lead=teaser(b.short_description||b.brand_story,54);
       var blogo=logo?'<div class="brand-logo" style="background:#fff center/contain no-repeat;background-image:url(\''+esc(logo)+'\');border:1px solid var(--line);"></div>':'<div class="brand-logo">'+esc(initial)+'</div>';
-      html+='<div class="brand-hero" style="display:block;padding:6px 0 22px;"><div style="max-width:760px;">'
-        +blogo
-        +'<span class="eyebrow" style="margin-top:12px;">⭐ PREMIUM · 品牌主页</span>'
-        +'<h1 style="margin:10px 0 6px;">'+esc(name)+'</h1>'
-        +(subbits.length?'<p class="muted" style="margin:0 0 10px;">'+esc(subbits.join(" · "))+'</p>':'')
-        +(slogan?'<p style="font-size:21px;font-weight:600;line-height:1.4;color:var(--ink);margin:2px 0 8px;">'+esc(slogan)+'</p>':(lead?'<p class="lead">'+esc(lead)+'</p>':''))
-        +'<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">'
+      html+='<div class="brand-hero" style="display:block;padding:4px 0 28px;max-width:820px;">'
+        +'<div style="display:flex;align-items:center;gap:16px;">'
+          +blogo
+          +'<div style="min-width:0;">'
+            +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">'
+              +'<h1 style="margin:0;line-height:1.15;">'+esc(name)+'</h1>'
+              +'<span class="eyebrow" style="margin:0;flex:0 0 auto;">⭐ PREMIUM</span>'
+            +'</div>'
+            +(subbits.length?'<p class="muted" style="margin:5px 0 0;font-size:14px;">'+esc(subbits.join(" · "))+'</p>':'')
+          +'</div>'
+        +'</div>'
+        +(slogan?'<p style="font-size:17px;font-weight:500;line-height:1.55;color:var(--ink);margin:16px 0 0;">'+esc(slogan)+'</p>':(lead?'<p class="lead" style="margin:16px 0 0;">'+esc(lead)+'</p>':''))
+        +'<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">'
           +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp</a>':'')
           +(map?'<a class="btn btn-outline btn-lg" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 地图</a>':'')
         +'</div></div>';
