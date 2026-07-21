@@ -92,11 +92,13 @@
       <h3>商家 Logo（可选，正方形）</h3>
       <div style="display:flex;align-items:center;gap:14px;">
         <div id="logoPrev" style="width:72px;height:72px;border-radius:14px;background:#f3f3f3 center/cover no-repeat;border:1px solid #eee;flex:0 0 auto;"></div>
-        <div>
+        <div style="flex:1;min-width:0;">
           <input id="logoFile" type="file" accept="image/*" style="display:none;" />
-          <button type="button" class="addbtn" onclick="document.getElementById('logoFile').click()">🏷️ 上传 Logo（自动裁正方形）</button>
-          <button type="button" class="addbtn" id="logoDel" style="display:none;margin-left:8px;" onclick="delLogo()">移除</button>
-          <div class="hint" style="margin-top:6px;">没有 Logo 也没关系，会自动用商家名字首字母。</div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <button type="button" style="background:#eef4ff;color:#2563EB;border:1px solid #cfe0ff;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;" onclick="document.getElementById('logoFile').click()">上传 Logo</button>
+            <button type="button" id="logoDel" style="display:none;background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;padding:0;" onclick="delLogo()">移除</button>
+          </div>
+          <div class="hint" style="margin-top:8px;">自动裁成正方形。没有也没关系，会用商家名字首字母。</div>
         </div>
       </div>
     </div>
