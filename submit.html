@@ -193,6 +193,32 @@
       <p class="hint" style="text-align:center;margin-top:4px;">提交后我们会审核你的资料，通过后刊登在 OpenToday。</p>
     </form>
 
+    <div id="confirmCard" style="display:none;">
+      <div style="text-align:center;padding:8px 0 18px;">
+        <h2 style="margin:0 0 6px;">确认你的资料</h2>
+        <p class="hint" style="margin:0;">请核对以下内容，尤其是<b>电话和 WhatsApp</b>。确认后我们才开始处理。</p>
+      </div>
+
+      <div class="grp" style="padding:0;overflow:hidden;">
+        <div id="cfCover" style="width:100%;aspect-ratio:21/9;background:#eee center/cover no-repeat;"></div>
+        <div style="padding:16px 18px;">
+          <b id="cfName" style="font-size:20px;color:var(--ink);display:block;"></b>
+          <div id="cfMeta" class="hint" style="margin-top:4px;font-size:13px;"></div>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3 style="margin-bottom:12px;">填写的资料</h3>
+        <div id="cfList"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-lg" id="backEditBtn" style="flex:1;min-width:150px;background:#fff;border:1px solid var(--line);color:var(--ink);">← 返回修改</button>
+        <button type="button" class="btn btn-brand btn-lg" id="confirmBtn" style="flex:2;min-width:180px;">确认提交</button>
+      </div>
+      <p class="hint" style="text-align:center;margin-top:12px;">提交后我们会审核你的资料，通过后刊登在 OpenToday。</p>
+    </div>
+
     <div class="done-card" id="doneCard">
       <div class="ic">✅</div>
       <h2 style="margin:14px 0 8px;">提交成功！</h2>
@@ -306,11 +332,62 @@
   function coverBlob(){ return new Promise(function(resolve,reject){ if(cropper&&cropper.getCroppedCanvas){ var c=cropper.getCroppedCanvas({width:1680,height:720,imageSmoothingQuality:"high"}); if(!c) return reject(new Error("no canvas")); c.toBlob(function(b){b?resolve(b):reject(new Error("blob"));},"image/jpeg",0.85);} else { var f=$("f_photo").files[0]; f?resolve(f):reject(new Error("no file")); } }); }
   async function uploadBlob(blob,tag){ var p="biz_"+Date.now()+"_"+tag+"_"+Math.random().toString(36).slice(2,6)+".jpg"; var up=await fetch(SB_URL+"/storage/v1/object/"+BUCKET+"/"+p,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"image/jpeg"},body:blob}); if(!up.ok) throw new Error("upload "+up.status); return SB_URL+"/storage/v1/object/public/"+BUCKET+"/"+p; }
 
-  $("sform").addEventListener("submit",async function(e){
+  function row(label,val,warn){
+    if(!val) return "";
+    return '<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;">'
+      +'<span style="color:var(--muted);flex:0 0 108px;">'+label+'</span>'
+      +'<span style="flex:1;color:'+(warn?"var(--brand)":"var(--ink)")+';font-weight:'+(warn?"600":"400")+';word-break:break-word;">'+esc2(val)+'</span></div>';
+  }
+  function esc2(x){ return String(x==null?"":x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  async function showConfirm(){
+    var v=function(id){ return ($(id)&&$(id).value||"").trim(); };
+    try{ var cb=await coverBlob(); $("cfCover").style.backgroundImage="url('"+URL.createObjectURL(cb)+"')"; }catch(x){}
+    $("cfName").textContent=v("f_name")||"（未填写店名）";
+    var sub=$("f_sub").value, cat=$("f_cat").value;
+    var areaV=window.OT_areaValue?OT_areaValue($("f_area"),$("f_area_other")):"";
+    $("cfMeta").textContent=[sub||cat, areaV||$("f_city").value].filter(Boolean).join(" · ");
+    var wa=window.OT_normPhone?OT_normPhone(v("f_wa")):v("f_wa");
+    var html="";
+    html+=row("配套",$("f_plan").options[$("f_plan").selectedIndex].text);
+    html+=row("商家名称",v("f_name"));
+    html+=row("分类",[cat,sub].filter(Boolean).join(" · "));
+    html+=row("开业状态",$("f_type").value);
+    html+=row("地区",[$("f_city").value,areaV].filter(Boolean).join(" · "));
+    html+=row("开业日期",v("f_date"));
+    html+=row("地址",v("f_addr"));
+    html+=row("WhatsApp",wa,true);
+    html+=row("电话",v("f_phone"),true);
+    html+=row("Google 地图",v("f_map"));
+    html+=row("Facebook",v("f_fb"));
+    html+=row("Instagram",v("f_ig"));
+    html+=row("官网",v("f_web"));
+    html+=row("Google 评价",v("f_greview"));
+    html+=row("简介",v("f_desc"));
+    html+=row("其他照片",extras.length?(extras.length+" 张"):"");
+    html+=row("Logo",logoBlob?"已上传":"");
+    $("cfList").innerHTML=html;
+    $("sform").style.display="none";
+    $("confirmCard").style.display="block";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  $("sform").addEventListener("submit",function(e){
     e.preventDefault();
     if(!$("f_photo").files[0]){ msg("请上传一张封面照片。"); return; }
+    showConfirm();
+  });
+
+  $("backEditBtn").addEventListener("click",function(){
+    $("confirmCard").style.display="none";
+    $("sform").style.display="";
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  $("confirmBtn").addEventListener("click",async function(e){
+    e.preventDefault();
     var plan=$("f_plan").value, tier=TIER[plan]||"free";
-    var btn=$("submitBtn"); btn.disabled=true; btn.textContent="提交中…";
+    var btn=$("confirmBtn"); btn.disabled=true; btn.textContent="提交中…";
     try{
       var imageUrl=await uploadBlob(await coverBlob(),"cover");
       var galleryUrls=[]; for(var i=0;i<extras.length;i++){ try{ galleryUrls.push(await uploadBlob(extras[i].blob,"g"+i)); }catch(x){} }
@@ -344,8 +421,8 @@
         $("doneMsg").innerHTML="我们已收到你的资料。这是付费配套，<b>请现在 WhatsApp 我们确认与付款</b>，付款后即刊登。<br>感谢你选择 OpenToday。";
         if(wb) wb.textContent="● 现在就 WhatsApp 我们确认付款";
       }
-      $("sform").style.display="none"; $("smsg").style.display="none"; $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
-    }catch(err){ msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="提交登记"; }
+      $("sform").style.display="none"; $("confirmCard").style.display="none"; $("smsg").style.display="none"; $("doneCard").style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
+    }catch(err){ $("confirmCard").style.display="none"; $("sform").style.display=""; msg("提交失败，请稍后再试。("+err.message+")"); btn.disabled=false; btn.textContent="确认提交"; window.scrollTo({top:0,behavior:"smooth"}); }
   });
 })();
 </script>
