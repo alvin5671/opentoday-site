@@ -105,6 +105,7 @@
 
     <div class="sec tsec" data-min="opening">
       <h3>更多照片（4:3）</h3>
+      <div class="hint" style="margin-bottom:8px;">最多 8 张，连封面共 9 张。</div>
       <div class="thumbs" id="galThumbs"></div>
       <input id="galFile" type="file" accept="image/*" multiple style="display:none;" />
       <button type="button" class="addbtn" onclick="document.getElementById('galFile').click()" style="margin-top:10px;">➕ 添加照片</button>
@@ -262,7 +263,7 @@ function addBranch(br){ br=br||{}; var d=document.createElement("div"); d.classN
 function centerCrop(file,tw,th){ return new Promise(function(res){ var img=new Image(); img.onload=function(){ var tr=tw/th, sr=img.width/img.height, sw,sh,sx,sy; if(sr>tr){sh=img.height;sw=sh*tr;sx=(img.width-sw)/2;sy=0;}else{sw=img.width;sh=sw/tr;sx=0;sy=(img.height-sh)/2;} var c=document.createElement("canvas");c.width=tw;c.height=th;c.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);c.toBlob(function(b){res(b);},"image/jpeg",0.85);}; img.onerror=function(){res(null);}; img.src=URL.createObjectURL(file); }); }
 function uploadBlob(blob){ var path="biz_"+Date.now()+"_"+Math.random().toString(36).slice(2,7)+".jpg"; return fetch(SB_URL+"/storage/v1/object/business-photos/"+path,{method:"POST",headers:Object.assign({},H,{"Content-Type":"image/jpeg"}),body:blob}).then(function(r){ if(!r.ok) throw new Error("upload"); return SB_URL+"/storage/v1/object/public/business-photos/"+path; }); }
 $("coverFile").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; toast("上传封面中…"); var b=await centerCrop(f,1680,720); var u=await uploadBlob(b); current.image_url=u; $("coverPrev").style.backgroundImage="url('"+u+"')"; toast("封面已更新（记得按保存）"); });
-$("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e.target.files); toast("上传照片中…"); for(var i=0;i<fs.length;i++){ var b=await centerCrop(fs[i],1200,900); if(b){ var u=await uploadBlob(b); current.gallery.push(u); } } renderGal(); toast("照片已加（记得按保存）"); e.target.value=""; });
+$("galFile").addEventListener("change",async function(e){ var fs=[].slice.call(e.target.files); current.gallery=current.gallery||[]; if(current.gallery.length>=8){ alert("图库最多 8 张（连封面共 9 张）。请先移除再加。"); e.target.value=""; return; } toast("上传照片中…"); for(var i=0;i<fs.length;i++){ if(current.gallery.length>=8){ alert("已达上限，多出的照片没有加入。"); break; } var b=await centerCrop(fs[i],1200,900); if(b){ var u=await uploadBlob(b); current.gallery.push(u); } } renderGal(); toast("照片已加（记得按保存）"); e.target.value=""; });
 function renderGal(){ $("galThumbs").innerHTML=current.gallery.map(function(u,i){return '<div class="t" style="background-image:url(\''+esc(u)+'\')"><button type="button" onclick="delGal('+i+')">×</button></div>';}).join(""); }
 function delGal(i){ current.gallery.splice(i,1); renderGal(); }
 if($("logoFile")){ $("logoFile").addEventListener("change",async function(e){ var f=e.target.files[0]; if(!f) return; toast("上传 Logo 中…"); var b=await centerCrop(f,400,400); var u=await uploadBlob(b); current.logo_url=u; $("logoPrev").style.backgroundImage="url('"+u+"')"; $("logoDel").style.display=""; toast("Logo 已更新（记得按保存）"); e.target.value=""; }); }

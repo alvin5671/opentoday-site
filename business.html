@@ -10,7 +10,6 @@
 <style>
   /* Premium 品牌区块 — OpenToday 白底橙色 */
   #page .brand-logo{background:var(--ink-strong);color:#fff;}
-  #page .brand-hero-img{background:var(--surface);border:1px solid var(--line);}
   #page .branch.gold-accent{border-top-color:var(--brand);}
   #page #bThumbs .th:hover{border-color:var(--brand)!important;}
 </style>
@@ -86,9 +85,8 @@
       var subbits=[]; if(b.category) subbits.push(b.category); if(branches.length>=2) subbits.push(branches.length+" 家分店");
       var slogan=(b.slogan||"").trim();
       var lead=teaser(b.short_description||b.brand_story,54);
-      var heroImg=cover?("background:#eee url('"+esc(cover)+"') center/cover;"):"";
       var blogo=logo?'<div class="brand-logo" style="background:#fff center/contain no-repeat;background-image:url(\''+esc(logo)+'\');border:1px solid var(--line);"></div>':'<div class="brand-logo">'+esc(initial)+'</div>';
-      html+='<div class="brand-hero" style="padding:6px 0 22px;"><div>'
+      html+='<div class="brand-hero" style="display:block;padding:6px 0 22px;"><div style="max-width:760px;">'
         +blogo
         +'<span class="eyebrow" style="margin-top:12px;">⭐ PREMIUM · 品牌主页</span>'
         +'<h1 style="margin:10px 0 6px;">'+esc(name)+'</h1>'
@@ -97,12 +95,13 @@
         +'<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">'
           +(wa?'<a class="btn btn-brand btn-lg" href="'+wa+'" target="_blank" rel="noopener">● WhatsApp</a>':'')
           +(map?'<a class="btn btn-outline btn-lg" href="'+esc(map)+'" target="_blank" rel="noopener">🧭 地图</a>':'')
-        +'</div></div><div class="brand-hero-img" style="'+heroImg+'"></div></div>';
+        +'</div></div>';
     }
 
     // ── 大封面 + 可点缩略图 ──
-    var imgs=(premium?gal:[cover].concat(gal)).filter(Boolean);
+    var imgs=[cover].concat(gal).filter(Boolean);
     var seen={}, uimgs=[]; imgs.forEach(function(u){ if(!seen[u]){ seen[u]=1; uimgs.push(u); } });
+    uimgs=uimgs.slice(0,9);   // 封面 + 图库，最多 9 张
     var mainImg=uimgs[0]||cover||"";
     if(mainImg){
       html+='<div style="text-align:center;background:#f7f5f2;border-radius:14px;"><img id="bCover" alt="'+esc(name)+'" src="'+esc(mainImg)+'" style="display:block;width:auto;max-width:100%;max-height:560px;margin:0 auto;border-radius:14px;" /></div>';
