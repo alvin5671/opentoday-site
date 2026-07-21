@@ -202,6 +202,7 @@ var SB_KEY="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
 var H={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY};
 var $=function(id){return document.getElementById(id);};
 var ID=new URLSearchParams(location.search).get("id");
+var TOKEN=new URLSearchParams(location.search).get("t")||"";
 var current={image_url:"",gallery:[],logo_url:""};
 
 function unlock(){ $("gate").style.display="none"; $("editor").style.display=""; loadBiz(); }
@@ -223,7 +224,14 @@ function loadBiz(){
   $("viewLink").href="business.html?id="+ID;
   fetch(SB_URL+"/rest/v1/customers?id=eq."+encodeURIComponent(ID)+"&select=*",{headers:H}).then(function(r){return r.json();}).then(function(rows){
     if(!rows||!rows.length){ $("loadMsg").textContent="找不到该商家。"; return; }
-    var b=rows[0]; current=b;
+    var b=rows[0];
+    if(b.edit_token && TOKEN!==b.edit_token){
+      $("loadMsg").innerHTML='<b style="color:#b3261e;">链接无效或已失效。</b><br><span style="font-size:13px;">请使用我们发给你的专属编辑链接，或联络 OpenToday 重新取得。</span>';
+      var fm=$("form"); if(fm) fm.style.display="none";
+      var sb=document.querySelector(".savebar"); if(sb) sb.style.display="none";
+      return;
+    }
+    current=b;
     ["business_name","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(window.OT_refreshSub) window.OT_refreshSub(b.subcategory||"");
