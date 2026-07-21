@@ -69,7 +69,7 @@
       <div class="fld"><label>地址</label><input id="address" /></div>
       <div class="fld"><label>Google 地图链接</label><input id="google_maps_url" /></div>
       <div class="row2">
-        <div class="fld"><label>WhatsApp</label><input id="whatsapp" inputmode="tel" placeholder="例如：016-123 4567" /><div class="hint" id="whatsapp_hint"></div></div>
+        <div class="fld"><label>WhatsApp</label><div style="display:flex;gap:8px;"><select id="whatsapp_cc" style="width:104px;flex:0 0 auto;"></select><input id="whatsapp" inputmode="tel" placeholder="16-123 4567" style="flex:1;min-width:0;" /></div><div class="hint" id="whatsapp_hint"></div></div>
         <div class="fld"><label>电话</label><input id="phone" /></div>
       </div>
       <div class="row2">
@@ -168,7 +168,7 @@
   </div>
 </div>
 
-<script src="categories.js?v=3"></script>
+<script src="categories.js?v=4"></script>
 <script>
 (function(){
   var HDAYS=["周一","周二","周三","周四","周五","周六","周日"];
@@ -224,10 +224,11 @@ function loadBiz(){
       return;
     }
     current=b;
-    ["business_name","address","google_maps_url","whatsapp","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
+    ["business_name","address","google_maps_url","phone","facebook_url","instagram_url","website_url","google_review_url","short_description","hours","brand_story","slogan","offer_title","offer_desc","offer_until"].forEach(function(k){ if($(k)) $(k).value=b[k]||""; });
     if(b.category) $("category").value=b.category;
     if(window.OT_refreshSub) window.OT_refreshSub(b.subcategory||"");
     if($("city")) $("city").value=b.city||"";
+    if(window.OT_refreshWa) window.OT_refreshWa(b.whatsapp||"");
     if(window.OT_refreshArea) window.OT_refreshArea(b.area||"");
     if(b.opening_type) $("opening_type").value=b.opening_type;
     if(b.opening_date) $("opening_date").value=b.opening_date;
@@ -279,7 +280,7 @@ function save(){
     category:$("category").value||null, subcategory:(window.OT_subValue?OT_subValue($("subcategory"),$("subcategory_other")):$("subcategory").value)||null, opening_type:$("opening_type").value||null,
     area:(window.OT_areaValue?OT_areaValue($("area"),$("area_other")):"")||null, city:$("city").value||null, opening_date:$("opening_date").value||null,
     address:$("address").value.trim()||null, google_maps_url:$("google_maps_url").value.trim()||null,
-    whatsapp:(window.OT_normPhone?OT_normPhone($("whatsapp").value):$("whatsapp").value.replace(/[^0-9]/g,""))||null, phone:$("phone").value.trim()||null,
+    whatsapp:(window.OT_phoneValue?OT_phoneValue($("whatsapp_cc"),$("whatsapp")):$("whatsapp").value.replace(/[^0-9]/g,""))||null, phone:$("phone").value.trim()||null,
     facebook_url:$("facebook_url").value.trim()||null, instagram_url:$("instagram_url").value.trim()||null,
     website_url:($("website_url")&&$("website_url").value.trim())||null, google_review_url:($("google_review_url")&&$("google_review_url").value.trim())||null,
     short_description:$("short_description").value.trim()||null,
@@ -307,7 +308,7 @@ function save(){
 (function(){var f=function(){var c=document.getElementById("category"),s=document.getElementById("subcategory");if(!c||!window.OT_fillCats)return;OT_fillCats(c,"—");var so=document.getElementById("subcategory_other");window.OT_refreshSub=OT_bindSub(c,s,so,"—");window.OT_refreshSub("");
  var rc=document.getElementById("city"),ra=document.getElementById("area"),ro=document.getElementById("area_other");
  OT_fillRegions(rc,"—");window.OT_refreshArea=OT_bindArea(rc,ra,ro,"—");window.OT_refreshArea("");
- if(window.OT_bindPhone) OT_bindPhone(document.getElementById("whatsapp"),document.getElementById("whatsapp_hint"));};
+ window.OT_refreshWa=OT_bindPhoneCC?OT_bindPhoneCC(document.getElementById("whatsapp_cc"),document.getElementById("whatsapp"),document.getElementById("whatsapp_hint")):function(){};};
 if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
 </body>

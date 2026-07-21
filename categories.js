@@ -111,30 +111,67 @@
     return refresh;
   };
 
-  // ===== WhatsApp 号码自动补国码 =====
-  // 016xxxxxxx / 16xxxxxxx / 60xxxxxxxxx / +60 16-123 4567 -> 60xxxxxxxxx
+  // ===== WhatsApp 号码：国码下拉 + 本地号码 =====
+  window.OT_CC = [["60","🇲🇾 +60"],["65","🇸🇬 +65"]];
+
+  // 旧的自动侦测保留（后台/旧资料仍会用到）
   window.OT_normPhone = function (raw) {
     var d = String(raw || "").replace(/\D/g, "");
     if (!d) return "";
-    if (d.indexOf("0060") === 0) d = d.slice(2);          // 0060... -> 60...
-    if (d.indexOf("60") === 0 && d.length >= 10) return d; // 已含大马国码
-    if (d.indexOf("65") === 0 && d.length >= 10) return d; // 新加坡号码放行
-    if (d.charAt(0) === "0") d = d.slice(1);               // 016... -> 16...
+    if (d.indexOf("0060") === 0) d = d.slice(2);
+    if (d.indexOf("60") === 0 && d.length >= 10) return d;
+    if (d.indexOf("65") === 0 && d.length >= 10) return d;
+    if (d.charAt(0) === "0") d = d.slice(1);
     return "60" + d;
   };
 
-  // 绑定输入框：实时在下方显示最终会保存的号码
-  window.OT_bindPhone = function (input, hintEl) {
-    if (!input) return;
+  // 把完整号码拆成 [国码, 本地号码]
+  window.OT_splitPhone = function (raw) {
+    var d = String(raw || "").replace(/\D/g, "");
+    if (!d) return ["60", ""];
+    if (d.indexOf("0060") === 0) d = d.slice(2);
+    if (d.indexOf("65") === 0 && d.length >= 10) return ["65", d.slice(2)];
+    if (d.indexOf("60") === 0 && d.length >= 10) return ["60", d.slice(2)];
+    if (d.charAt(0) === "0") d = d.slice(1);
+    return ["60", d];
+  };
+
+  // 绑定：国码 select + 号码 input + 提示；返回 refresh(已有完整号码)
+  window.OT_bindPhoneCC = function (ccSel, input, hintEl) {
+    if (!ccSel || !input) return function () {};
+    ccSel.innerHTML = window.OT_CC.map(function (c) {
+      return '<option value="' + c[0] + '">' + c[1] + "</option>";
+    }).join("");
+    function val() {
+      var d = String(input.value || "").replace(/\D/g, "");
+      if (d.charAt(0) === "0") d = d.slice(1);
+      return d ? (ccSel.value + d) : "";
+    }
+    window.OT_phoneValueOf = window.OT_phoneValueOf || {};
     function show() {
       if (!hintEl) return;
-      var v = window.OT_normPhone(input.value);
-      hintEl.textContent = input.value.trim() ? "将保存为：" + v : "只填数字，系统会自动补上国码 60";
-      hintEl.style.color = (input.value.trim() && v.length < 11) ? "#b3261e" : "";
+      var v = val();
+      if (!input.value.trim()) { hintEl.textContent = "只填号码，不用打国码和开头的 0"; hintEl.style.color = ""; return; }
+      var bad = v.length < 10 || v.length > 13;
+      hintEl.textContent = "将保存为：" + v;
+      hintEl.style.color = bad ? "#b3261e" : "";
     }
     input.addEventListener("input", show);
-    input.addEventListener("blur", function () { if (input.value.trim()) input.value = window.OT_normPhone(input.value); show(); });
+    ccSel.addEventListener("change", show);
+    input._otValue = val;
     show();
+    return function (full) {
+      var p = window.OT_splitPhone(full);
+      ccSel.value = p[0]; input.value = p[1];
+      show();
+    };
+  };
+
+  // 取最终 WhatsApp 值
+  window.OT_phoneValue = function (ccSel, input) {
+    if (!input) return "";
+    if (input._otValue) return input._otValue();
+    return window.OT_normPhone(input.value);
   };
 
   // 取最终小区值（选了「其他」就用文字框内容）
