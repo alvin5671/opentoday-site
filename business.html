@@ -128,7 +128,7 @@
 
     // ── 优惠券（Launch+，带领取计数）──
     var offerTitle=(b.offer_title||"").trim();
-    var offerActive=offerTitle && rank>=2 && (!b.offer_until || String(b.offer_until)>=today);
+    var offerActive=offerTitle && rank>=3 && (!b.offer_until || String(b.offer_until)>=today);
     if(offerActive){
       var claims=parseInt(b.offer_claims,10)||0;
       var offerWa=wa?(wa+"?text="+encodeURIComponent("你好，我想领取「"+offerTitle+"」优惠。")):"";
