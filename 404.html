@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,follow">
-<title>商家详情 — OpenToday｜今日开业</title>
-<link rel="canonical" href="https://opentoday.my/explore.html">
+<title>OpenToday｜今日开业</title>
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/demo.css">
 <style>
@@ -32,10 +31,12 @@
 <script src="/biz-view.js"></script>
 <script>
 (function(){
-  var id = new URLSearchParams(location.search).get("id");
   var pageEl = document.getElementById("page");
-  if(!id){ pageEl.innerHTML = '<p class="muted" style="padding:40px 0;">请从探索页选择商家。</p>'; return; }
-  OT_view({ by:"id", value:id, pageEl:pageEl });
+  // 如果是还没生成的商家页 /business/{slug}/ → 现场渲染
+  var m = location.pathname.match(/^\/business\/([^\/]+)\/?$/);
+  if(m){ OT_view({ by:"slug", value:decodeURIComponent(m[1]), pageEl:pageEl }); return; }
+  // 其他 404
+  pageEl.innerHTML = '<div style="text-align:center;padding:80px 20px;"><div style="font-size:56px;font-weight:800;color:var(--ink-strong);">404</div><p class="muted" style="margin:12px 0 24px;">找不到这个页面。</p><a class="btn btn-brand" href="/">回首页</a></div>';
 })();
 </script>
 </body>
