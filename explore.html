@@ -59,7 +59,8 @@
     var meta=[b.subcategory||b.category,b.area||b.city].filter(Boolean).join(" · ");
     var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
     var badge=isFeat(b)?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-open">已刊登</span>';
-    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+'</div></a>';
+    var href=b.slug?("/business/"+b.slug+"/"):("business.html?id="+b.id);
+    return '<a class="biz" href="'+href+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+'</div></a>';
   }
   var allRows=[];
   function activeVal(id){ var c=document.querySelector("#"+id+" .chip.active"); return c?c.getAttribute("data-val"):""; }

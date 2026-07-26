@@ -188,7 +188,7 @@
     var bg=b.image_url?"background:#eee url('"+b.image_url+"') center/cover;":"background:"+colors[i%colors.length]+";";
     var badge=b._feat?'<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>':'<span class="badge badge-new">NEW</span>';
     var dt=fmtDate(b.opening_date);
-    return '<a class="biz" href="business.html?id='+b.id+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+    return '<a class="biz" href="'+(b.slug?("/business/"+b.slug+"/"):("business.html?id="+b.id))+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
   }
   function tierCard(b,i,tier){
     var meta=[b.subcategory||b.category,b.area||b.city].filter(Boolean).join(" · ");
@@ -201,7 +201,7 @@
     var badge=hot
       ? '<span class="badge" style="background:#F97316;color:#fff;">🔥 本周焦点</span>'
       : '<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>';
-    return '<a class="biz" href="business.html?id='+b.id+'" style="'+frame+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
+    return '<a class="biz" href="'+(b.slug?("/business/"+b.slug+"/"):("business.html?id="+b.id))+'" style="'+frame+'"><div class="biz-img" style="'+bg+'">'+badge+'</div><div class="biz-body"><b>'+esc(b.business_name)+'</b><div class="meta">'+esc(meta)+'</div>'+(dt?'<div class="date">'+esc(dt)+'</div>':'')+'</div></a>';
   }
   fetch(SB_URL+"/rest/v1/public_customers?select=*&order=opening_date.desc",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}})
     .then(function(r){return r.json();})
