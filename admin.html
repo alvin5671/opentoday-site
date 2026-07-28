@@ -652,7 +652,7 @@
     <div class="nav-item" onclick="showPage('customers',this)">
       <span class="nav-icon">👥</span> 客户
     </div>
-    <div class="nav-item" onclick="showPage('addcustomer',this)">
+    <div class="nav-item" style="display:none" onclick="showPage('addcustomer',this)">
       <span class="nav-icon">➕</span> 新增
     </div>
     <div class="nav-item" onclick="showPage('projects',this)">
@@ -883,7 +883,7 @@
         </div>
         <select class="filter-select" id="cust-proj-filter" onchange="filterByProject(this.value)"><option value="">项目内容</option></select>
         <select class="filter-select" id="month-filter-sel" onchange="filterByMonth(this.value)"><option value="">月份</option></select>
-        <button class="btn-primary" onclick="showPage('addcustomer',null)">➕ 新增客户</button>
+        <button class="btn-primary" style="display:none" onclick="showPage('addcustomer',null)">➕ 新增客户</button>
         <button class="btn-secondary" onclick="downloadCSV()" style="background:#0891b2;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">⬇ CSV</button>
         <button class="btn-secondary" onclick="downloadExcel()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">⬇ Excel</button>
       </div>
@@ -1235,7 +1235,7 @@
 <div class="bottom-nav">
   <div class="bnav-item active" onclick="showPage('dashboard',this)"><div class="bnav-icon">🏠</div><div>首页</div></div>
   <div class="bnav-item" onclick="showPage('customers',this)"><div class="bnav-icon">👥</div><div>客户</div></div>
-  <div class="bnav-center" onclick="showPage('addcustomer',null)"><div class="bnav-icon">➕</div><div>新增</div></div>
+  <div class="bnav-center" style="display:none" onclick="showPage('addcustomer',null)"><div class="bnav-icon">➕</div><div>新增</div></div>
   <div class="bnav-item" onclick="showPage('workorder',this)"><div class="bnav-icon">📝</div><div>工单</div></div>
   <div class="bnav-item" onclick="showPage('archive',this)"><div class="bnav-icon">🗂</div><div>归档</div></div>
   <div class="bnav-item" id="nav-claim-bottom" onclick="openClaimAccess(this)"><div class="bnav-icon">📝</div><div>申请报销</div></div>
