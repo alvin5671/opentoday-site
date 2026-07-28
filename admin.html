@@ -3646,5 +3646,180 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
   boot();
 })();
 </script>
+
+<!-- ===== OpenToday 手机版客户卡片（≤768px）独立模块，桌面表格与原版外观不动 ===== -->
+<script>
+(function(){
+  var U="https://jumzzfvgkqsfeypbpgcq.supabase.co", K="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var H={apikey:K,Authorization:"Bearer "+K};
+  var TIER=true; // feature_tier 列是否存在，失败自动降级
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+  var st=document.createElement('style');
+  st.textContent=
+    '#ot-mcards{display:none;}'+
+    '@media(max-width:768px){'+
+      '#page-customers #cust-table-wrap{display:none!important;}'+
+      '#page-customers .filter-bar .tab-group,#page-customers .filter-bar .filter-select{display:none!important;}'+
+      '#ot-mcards{display:block;margin-top:6px;}'+
+    '}'+
+    '.ot-mc{border:1px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:11px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.05);}'+
+    '.ot-mc-top{display:flex;gap:11px;align-items:flex-start;}'+
+    '.ot-mc-th{width:60px;height:60px;border-radius:10px;object-fit:cover;flex:none;background:#eee;}'+
+    '.ot-mc-name{font-size:15px;font-weight:700;color:#111;line-height:1.3;}'+
+    '.ot-mc-meta{font-size:12px;color:#6b7280;margin-top:3px;}'+
+    '.ot-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin:5px 6px 0 0;}'+
+    '.ot-mc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center;}'+
+    '.ot-mc-actions button,.ot-mc-actions a,.ot-mc-actions select{font-size:13px;font-weight:700;border-radius:9px;padding:9px 12px;cursor:pointer;border:1px solid #d1d5db;background:#fff;color:#111;text-decoration:none;font-family:inherit;}'+
+    '.ot-b-approve{background:#16A34A!important;color:#fff!important;border:none!important;}'+
+    '.ot-b-edit{background:#eef4ff!important;color:#2563EB!important;border-color:#cfe0ff!important;}'+
+    '.ot-b-unpub{background:#fff!important;color:#DC2626!important;border-color:#DC2626!important;}'+
+    '.ot-mc-sec{font-size:13px;font-weight:800;color:#374151;margin:16px 2px 9px;}'+
+    '.ot-mc-empty{color:#9ca3af;font-size:13px;margin:2px 2px 10px;}';
+  document.head.appendChild(st);
+
+  var box=null;
+  function ensureBox(){
+    if(box) return box;
+    var page=document.getElementById('page-customers'); if(!page) return null;
+    var wrap=document.getElementById('cust-table-wrap');
+    box=document.createElement('div'); box.id='ot-mcards';
+    if(wrap && wrap.parentNode && wrap.parentNode.parentNode){ wrap.parentNode.parentNode.insertBefore(box, wrap.parentNode); }
+    else page.appendChild(box);
+    return box;
+  }
+
+  function editUrlFor(b){
+    var base=location.href.replace(/[^/]*$/,"")+"edit-business.html?id="+b.id;
+    return b.edit_token?(base+"&t="+encodeURIComponent(b.edit_token)):base;
+  }
+  function statusBadge(ls){
+    if(ls==='已刊登') return '<span class="ot-badge" style="background:#dcfce7;color:#15803d;">✓ 已刊登</span>';
+    if(ls==='已下架') return '<span class="ot-badge" style="background:#f3f4f6;color:#6b7280;">已下架</span>';
+    return '<span class="ot-badge" style="background:#fef3c7;color:#b45309;">⏳ 待审核</span>';
+  }
+  function tierBadge(b){
+    if(!b.featured) return '';
+    var t=b.feature_tier==='spotlight'?'🔥 本周焦点':'⭐ 精选';
+    var d=b.featured_until?(' · 至 '+b.featured_until):'';
+    return '<span class="ot-badge" style="background:#fff7ed;color:#c2410c;">'+t+d+'</span>';
+  }
+  function pkgBadge(b){
+    if(!b.project) return '';
+    return '<span class="ot-badge" style="background:#eef2ff;color:#4338ca;">'+esc(b.project)+'</span>';
+  }
+
+  var DATA=[], q='';
+
+  function fetchData(cb){
+    var withT="id,business_name,name,category,subcategory,area,city,project,listing_status,image_url,show_today,featured,feature_tier,featured_until,edit_token";
+    var noT="id,business_name,name,category,subcategory,area,city,project,listing_status,image_url,show_today,featured,featured_until,edit_token";
+    fetch(U+"/rest/v1/customers?select="+(TIER?withT:noT)+"&order=id.desc",{headers:H})
+      .then(function(r){
+        if(!r.ok && TIER){ TIER=false; return fetch(U+"/rest/v1/customers?select="+noT+"&order=id.desc",{headers:H}).then(function(r2){return r2.json();}); }
+        return r.json();
+      })
+      .then(function(rows){ DATA=Array.isArray(rows)?rows:[]; if(cb)cb(); })
+      .catch(function(){ if(cb)cb(); });
+  }
+  function patch(id,body,after){
+    fetch(U+"/rest/v1/customers?id=eq."+id,{method:'PATCH',headers:Object.assign({},H,{'Content-Type':'application/json'}),body:JSON.stringify(body)})
+      .then(function(r){ if(!r.ok){alert('操作失败，请重试');return;} if(after)after(); })
+      .catch(function(){ alert('网络错误，请重试'); });
+  }
+  function countTier(v){ var n=0; DATA.forEach(function(x){ if(x.featured && (TIER?(x.feature_tier==='spotlight'?'spotlight':'featured'):'featured')===v) n++; }); return n; }
+
+  function cardHTML(b){
+    var name=b.business_name||b.name||'(未命名)';
+    var img=b.image_url?'<img class="ot-mc-th" src="'+esc(b.image_url)+'">':'<div class="ot-mc-th"></div>';
+    var meta=[b.subcategory||b.category,b.area||b.city].filter(Boolean).join(' · ');
+    var ls=b.listing_status||'待审核';
+    var expoSel='<select data-expo="'+b.id+'">'+
+      '<option value=""'+(!b.featured?' selected':'')+'>不曝光</option>'+
+      '<option value="spotlight"'+(b.featured&&b.feature_tier==='spotlight'?' selected':'')+'>🔥 本周焦点</option>'+
+      '<option value="featured"'+(b.featured&&b.feature_tier!=='spotlight'?' selected':'')+'>⭐ 精选</option>'+
+      '</select>';
+    var actBtn = (ls==='已刊登')
+      ? '<button class="ot-b-unpub" data-unpub="'+b.id+'">下架</button>'
+      : '<button class="ot-b-approve" data-approve="'+b.id+'">✓ 批准刊登</button>';
+    return '<div class="ot-mc">'+
+      '<div class="ot-mc-top">'+img+'<div style="flex:1;min-width:0;">'+
+        '<div class="ot-mc-name">'+esc(name)+'</div>'+
+        '<div class="ot-mc-meta">'+esc(meta||'—')+'</div>'+
+        '<div>'+statusBadge(ls)+pkgBadge(b)+tierBadge(b)+'</div>'+
+      '</div></div>'+
+      '<div class="ot-mc-actions">'+actBtn+expoSel+
+        '<a class="ot-b-edit" href="'+esc(editUrlFor(b))+'" target="_blank" rel="noopener">✏️ 编辑</a>'+
+      '</div></div>';
+  }
+
+  function render(){
+    if(!ensureBox()) return;
+    var kw=q;
+    var list=DATA.filter(function(b){
+      if(!kw) return true;
+      var s=[b.business_name,b.name,b.category,b.subcategory,b.area,b.city,b.project].filter(Boolean).join(' ').toLowerCase();
+      return s.indexOf(kw)>=0;
+    });
+    var pend=list.filter(function(b){var l=b.listing_status;return l!=='已刊登'&&l!=='已下架';});
+    var live=list.filter(function(b){return b.listing_status==='已刊登';});
+    var off=list.filter(function(b){return b.listing_status==='已下架';});
+    var h='';
+    h+='<div class="ot-mc-sec">⏳ 待审核 ('+pend.length+')</div>';
+    h+= pend.length? pend.map(cardHTML).join('') : '<div class="ot-mc-empty">暂无待审核商家</div>';
+    h+='<div class="ot-mc-sec">✓ 已刊登 ('+live.length+')</div>';
+    h+= live.length? live.map(cardHTML).join('') : '<div class="ot-mc-empty">暂无已刊登商家</div>';
+    if(off.length){ h+='<div class="ot-mc-sec">已下架 ('+off.length+')</div>'+off.map(cardHTML).join(''); }
+    box.innerHTML=h;
+  }
+
+  function reload(){ fetchData(render); }
+
+  function onClick(e){
+    var t=e.target.closest('[data-approve],[data-unpub]'); if(!t) return;
+    if(t.hasAttribute('data-approve')){
+      t.disabled=true; t.textContent='处理中…';
+      patch(t.getAttribute('data-approve'),{listing_status:'已刊登',progress:'已上线'},reload);
+    } else if(t.hasAttribute('data-unpub')){
+      if(!confirm('确定下架这个商家？下架后不再显示在网站，会退回待审核。')) return;
+      t.disabled=true; t.textContent='处理中…';
+      patch(t.getAttribute('data-unpub'),{listing_status:'待审核',progress:'待制作'},reload);
+    }
+  }
+  function onChange(e){
+    var s=e.target; if(!s.matches||!s.matches('select[data-expo]')) return;
+    var id=s.getAttribute('data-expo'), v=s.value;
+    if(v && TIER && countTier(v)>=5){
+      if(!confirm((v==='spotlight'?'本周焦点':'精选')+'已经有 5 家了，确定还要加？')){ reload(); return; }
+    }
+    var body;
+    if(v){
+      var a=new Date(), z=new Date(); z.setDate(z.getDate()+28);
+      var f=function(d){return d.toISOString().slice(0,10);};
+      body={featured:true,feature_tier:v,featured_start:f(a),featured_until:f(z)};
+      if(!TIER) delete body.feature_tier;
+    } else { body={featured:false,feature_tier:null,featured_start:null,featured_until:null}; if(!TIER) delete body.feature_tier; }
+    patch(id,body,reload);
+  }
+
+  function wire(){
+    if(!ensureBox()) return;
+    box.addEventListener('click',onClick);
+    box.addEventListener('change',onChange);
+    var search=document.getElementById('cust-search');
+    if(search) search.addEventListener('input',function(){ q=(search.value||'').trim().toLowerCase(); render(); });
+  }
+
+  var _sp=window.showPage;
+  if(typeof _sp==='function'){
+    window.showPage=function(id){ var r=_sp.apply(this,arguments); if(id==='customers'&&window.innerWidth<=768){ ensureBox(); reload(); } return r; };
+  }
+  var lastM=window.innerWidth<=768;
+  window.addEventListener('resize',function(){ var m=window.innerWidth<=768; if(m&&!lastM){ ensureBox(); reload(); } lastM=m; });
+
+  function boot(){ wire(); if(window.innerWidth<=768){ reload(); } }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,900);}); else setTimeout(boot,900);
+})();
+</script>
 </body>
 </html>
