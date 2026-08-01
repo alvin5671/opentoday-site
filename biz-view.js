@@ -131,6 +131,7 @@
       .then(function (rows) {
         if (!rows || !rows.length) { pageEl.innerHTML = '<p class="muted" style="padding:60px 0;text-align:center;">找不到该商家，可能尚未刊登。<br><a href="/explore.html" style="color:var(--brand);">去探索其他商家 ›</a></p>'; return; }
         var b = rows[0];
+        try{ var _tk=b.slug; if(_tk && !sessionStorage.getItem("otv_"+_tk)){ sessionStorage.setItem("otv_"+_tk,"1"); fetch("https://jumzzfvgkqsfeypbpgcq.supabase.co/rest/v1/rpc/bump_view",{method:"POST",headers:{apikey:"sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI",Authorization:"Bearer sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI","Content-Type":"application/json"},body:JSON.stringify({p_key:_tk})}).catch(function(){}); } }catch(e){}
         document.title = (b.business_name || "") + " — OpenToday｜今日开业";
         if (b.slug) { var cn = document.querySelector('link[rel="canonical"]'); if (cn) cn.href = "https://opentoday.my/business/" + b.slug + "/"; }
         pageEl.innerHTML = render(b);

@@ -124,4 +124,13 @@
       chip.classList.add("active");
     }
   });
+
+  // 浏览量埋点：本页打开 +1（同 session 去重防灌水）
+  try{
+    var _pk = "page:" + (window.CURRENT_PAGE || "other");
+    if(!sessionStorage.getItem("otv_"+_pk)){
+      sessionStorage.setItem("otv_"+_pk,"1");
+      fetch("https://jumzzfvgkqsfeypbpgcq.supabase.co/rest/v1/rpc/bump_view",{method:"POST",headers:{apikey:"sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI",Authorization:"Bearer sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI","Content-Type":"application/json"},body:JSON.stringify({p_key:_pk})}).catch(function(){});
+    }
+  }catch(e){}
 })();

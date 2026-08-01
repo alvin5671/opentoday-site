@@ -66,6 +66,12 @@
 
   <div class="kpis" id="kpis"></div>
 
+  <div class="card"><h2>👁 浏览量</h2>
+    <div id="viewTop" class="revtop"></div>
+    <div id="viewByBiz" style="margin-top:18px;"></div>
+    <div class="note">访客打开页面自动 +1（同一次访问不重复计）。后台/编辑页不计。数字随访客增长，刷新即最新。</div>
+  </div>
+
   <div class="card"><h2>💰 营收 (RM)</h2>
     <div id="revTop" class="revtop"></div>
     <div id="revByAgent" style="margin-top:18px;"></div>
@@ -111,8 +117,29 @@ function bars(el, items, total){
   }).join('') || '<div class="note">暂无数据</div>';
 }
 
+function renderViews(pv, slugName, curYm){
+  var total=0, month=0, bizTotal=0, bizAgg={};
+  pv.forEach(function(r){
+    var v=parseInt(r.views,10)||0; total+=v; if(r.ym===curYm) month+=v;
+    var k=r.pkey||''; if(k.indexOf('page:')===0) return;
+    bizTotal+=v; bizAgg[k]=(bizAgg[k]||0)+v;
+  });
+  var n=function(x){return x.toLocaleString('en-MY');};
+  document.getElementById('viewTop').innerHTML=
+    '<div class="revbox big"><div class="l">总浏览量</div><div class="v">'+n(total)+'</div></div>'+
+    '<div class="revbox"><div class="l">本月浏览</div><div class="v">'+n(month)+'</div></div>'+
+    '<div class="revbox"><div class="l">商家页浏览</div><div class="v">'+n(bizTotal)+'</div></div>';
+  var items=Object.keys(bizAgg).map(function(k){return {name:slugName[k]||k, n:bizAgg[k]};}).sort(function(a,b){return b.n-a.n;}).slice(0,15);
+  var el=document.getElementById('viewByBiz');
+  if(items.length){
+    var mx=Math.max.apply(null,items.map(function(i){return i.n;}));
+    el.innerHTML='<div style="font-size:13px;font-weight:800;color:#374151;margin-bottom:12px;">🏪 各商家页浏览排行（Top 15）</div>'+
+      items.map(function(i){return '<div class="row"><div class="name" title="'+esc(i.name)+'">'+esc(i.name)+'</div><div class="bar"><span style="width:'+(i.n/mx*100)+'%"></span></div><div class="num">'+i.n+'</div></div>';}).join('');
+  } else { el.innerHTML='<div class="note">还没有商家页浏览数据。等访客打开商家页，这里就会出数。</div>'; }
+}
+
 function load(){
-  var sel="id,business_name,project,listing_status,agent,show_today,featured,feature_tier,created_at,submit_date,pkg_fee,expo_fee";
+  var sel="id,business_name,slug,project,listing_status,agent,show_today,featured,feature_tier,created_at,submit_date,pkg_fee,expo_fee";
   fetch(SB+"/rest/v1/customers?select="+sel+"&order=id.desc",{headers:H})
     .then(function(r){return r.json();})
     .then(function(rows){ render(Array.isArray(rows)?rows:[]); })
@@ -132,6 +159,13 @@ function render(d){
     kpi('已刊登', live, '位','ok')+
     kpi('待审核', pend, '位','warn')+
     kpi('本月新增', monthNew, '位','');
+
+  // 浏览量（读 page_views，slug→商家名）
+  var slugName={}; d.forEach(function(x){ if(x.slug) slugName[x.slug]=x.business_name; });
+  fetch(SB+"/rest/v1/page_views?select=pkey,ym,views",{headers:H})
+    .then(function(r){return r.json();})
+    .then(function(pv){ renderViews(Array.isArray(pv)?pv:[], slugName, ym); })
+    .catch(function(){});
 
   // 营收
   var num=function(v){return parseFloat(v)||0;};
