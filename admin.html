@@ -3850,5 +3850,43 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,900);}); else setTimeout(boot,900);
 })();
 </script>
+
+<!-- ===== 把桌面客户表「编辑」栏(第23栏)换成「业绩 RM」(配套费+曝光费)。独立模块。 ===== -->
+<script>
+(function(){
+  var U="https://jumzzfvgkqsfeypbpgcq.supabase.co", K="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+  var H={apikey:K,Authorization:"Bearer "+K};
+  var rev={};
+  function fetchRev(){
+    return fetch(U+"/rest/v1/customers?select=id,pkg_fee,expo_fee",{headers:H})
+      .then(function(r){return r.json();})
+      .then(function(rows){ (rows||[]).forEach(function(r){ rev[r.id]=(parseFloat(r.pkg_fee)||0)+(parseFloat(r.expo_fee)||0); }); })
+      .catch(function(){});
+  }
+  function money(n){ return n>0 ? 'RM '+Math.round(n).toLocaleString('en-MY') : '<span style="color:#9ca3af;">—</span>'; }
+  function enhance(){
+    var ths=document.querySelectorAll('#cust-table-wrap table thead th');
+    if(ths[22] && ths[22].textContent.trim()==='编辑'){ ths[22].textContent='业绩 RM'; }
+    document.querySelectorAll('#cust-tbody tr').forEach(function(tr){
+      var id=tr.dataset.sbId; if(!id || String(id).startsWith('cust_')) return;
+      var tds=tr.querySelectorAll('td'); var cell=tds[22]; if(!cell) return;
+      var span=cell.querySelector('.ot-rev');
+      if(!span){
+        var btn=cell.querySelector('.edit-btn'); if(btn) btn.style.display='none';
+        span=document.createElement('span'); span.className='ot-rev';
+        span.style.cssText='font-weight:800;color:#111;font-size:13px;white-space:nowrap;';
+        cell.appendChild(span); cell.style.textAlign='center';
+      }
+      span.innerHTML=money(rev[id]||0);
+    });
+  }
+  function boot(){
+    var tb=document.getElementById('cust-tbody'); if(!tb){ return setTimeout(boot,600); }
+    fetchRev().then(function(){ enhance(); try{ new MutationObserver(enhance).observe(tb,{childList:true,subtree:true}); }catch(e){} });
+    setInterval(enhance,2500); setInterval(fetchRev,20000);
+  }
+  boot();
+})();
+</script>
 </body>
 </html>
