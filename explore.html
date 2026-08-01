@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#F97316" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="OpenToday" />
+<meta name="mobile-web-app-capable" content="yes" />
 <title>探索商家 — OpenToday｜今日开业</title>
 <meta name="description" content="发现 Johor 最新开业商家。按分类、状态、地区筛选。" />
 <link rel="stylesheet" href="style.css?v=3" />
@@ -119,5 +125,6 @@
     .catch(function(){ grid.innerHTML='<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--muted);">加载失败，请稍后重试。</div>'; });
 })();
 </script>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});}</script>
 </body>
 </html>

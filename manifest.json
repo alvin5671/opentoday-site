@@ -1,0 +1,17 @@
+{
+  "name": "OpenToday｜今日开业",
+  "short_name": "OpenToday",
+  "description": "发现马来西亚最新开业商家，帮新店被顾客、Google 和 AI 找到。",
+  "start_url": "/?src=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#F97316",
+  "lang": "zh-Hans-MY",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

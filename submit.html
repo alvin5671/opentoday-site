@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#F97316" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="OpenToday" />
+<meta name="mobile-web-app-capable" content="yes" />
 <title>登记你的商家 — OpenToday｜今日开业</title>
 <meta name="description" content="登记你的新开业商家，让顾客、Google 和 AI 找到你。选择配套并填写资料，审核后即可刊登。" />
 <link rel="stylesheet" href="style.css" />
@@ -453,5 +459,6 @@
  if(window.OT_bindPhoneCC) OT_bindPhoneCC(document.getElementById("f_wa_cc"),document.getElementById("f_wa"),document.getElementById("f_wa_hint"))("");};
 if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);})();
 </script>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});}</script>
 </body>
 </html>

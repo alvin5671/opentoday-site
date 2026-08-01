@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#F97316" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="OpenToday" />
+<meta name="mobile-web-app-capable" content="yes" />
 <title>OpenToday｜今日开业 — 发现 Johor 最新开业商家</title>
 <meta name="description" content="OpenToday 是马来西亚新开业商家资料库。帮新店第一时间被顾客、Google 和 AI 找到。专注 Johor。" />
 <link rel="stylesheet" href="style.css?v=2" />
@@ -249,5 +255,6 @@
     });
 })();
 </script>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});}</script>
 </body>
 </html>
