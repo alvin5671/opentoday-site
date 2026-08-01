@@ -678,6 +678,12 @@
 
     <!-- ══ PAGE: DASHBOARD ══ -->
     <div class="page active" id="page-dashboard">
+      <!-- OpenToday 业绩看板（内嵌 stats.html；代码在小文件里，方便维护）-->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;">📊 OpenToday 业绩看板</div>
+        <iframe id="ot-stats-iframe" src="/stats.html" title="业绩看板" style="width:100%;height:900px;border:none;border-radius:14px;background:#fff;display:block;"></iframe>
+      </div>
+      <script>window.addEventListener("message",function(e){ if(e.origin===location.origin && e.data && e.data.otStatsHeight){ var f=document.getElementById("ot-stats-iframe"); if(f) f.style.height=(e.data.otStatsHeight+24)+"px"; } });</script>
       <!-- Month picker -->
       <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;gap:8px;">
         <span style="font-size:13px;color:rgba(255,255,255,0.6);font-weight:600;">查看月份：</span>

@@ -104,7 +104,15 @@ function checkPw(){
   else{ document.getElementById('pwerr').style.display='block'; }
 }
 function enter(){ document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block'; load(); }
-try{ if(sessionStorage.getItem('ot_stats')==='1'){ enter(); } }catch(e){}
+// 被后台(同源)iframe 嵌入时免密码（你已经进过 admin 了）；直接访问仍需密码
+var _embedded=false;
+try{ _embedded = (window.self!==window.top) && window.top.location.host===window.location.host; }catch(e){ _embedded=false; }
+try{ if(_embedded || sessionStorage.getItem('ot_stats')==='1'){ enter(); } }catch(e){}
+if(_embedded){
+  var _postH=function(){ try{ window.parent.postMessage({otStatsHeight: document.documentElement.scrollHeight}, window.location.origin); }catch(e){} };
+  try{ new ResizeObserver(_postH).observe(document.body); }catch(e){ setInterval(_postH,1000); }
+  setTimeout(_postH,500);
+}
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') checkPw(); });
 
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
