@@ -98,7 +98,7 @@
     html += '</div></aside></div>';
 
     if (branches.length) {
-      html += '<section style="padding-top:8px;"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">' + branches.length + ' 家分店，统一品牌管理</span></div><div class="grid g-3">' + branches.map(function (br, i) { var bi = gal.length ? ("background:#eee url('" + esc(gal[(i + 1) % gal.length]) + "') center/cover;") : "background:var(--surface);"; var href = br.maps ? esc(br.maps) : "#"; return '<a class="branch gold-accent" href="' + href + '" target="_blank" rel="noopener"><div class="bi" style="' + bi + '"></div><div class="bb"><b>' + esc(br.name || "") + '</b><div class="m">' + esc([br.area, br.address].filter(Boolean).join(" · ")) + '</div></div></a>'; }).join("") + '</div></section>';
+      html += '<section style="padding-top:8px;"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">' + branches.length + ' 家分店，统一品牌管理</span></div><div class="grid g-3">' + branches.map(function (br, i) { var bi = gal.length ? ("background:#eee url('" + esc(gal[(i + 1) % gal.length]) + "') center/cover;") : "background:var(--surface);"; var braw = (br.maps && String(br.maps).trim()) || (br.address && String(br.address).trim()) || ""; var href = braw ? esc(/^https?:\/\//i.test(braw) ? braw : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(braw)) : "#"; return '<a class="branch gold-accent" href="' + href + '" target="_blank" rel="noopener"><div class="bi" style="' + bi + '"></div><div class="bb"><b>' + esc(br.name || "") + '</b><div class="m">' + esc([br.area, br.address].filter(Boolean).join(" · ")) + '</div></div></a>'; }).join("") + '</div></section>';
     }
     return html;
   }
