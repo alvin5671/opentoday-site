@@ -232,7 +232,7 @@ function renderPage(b) {
   if (branches.length) {
     html += `<section style="padding-top:8px;"><div class="sec-head"><h2>分店</h2><span class="muted" style="font-size:13px;">${branches.length} 家分店，统一品牌管理</span></div><div class="grid g-3">${branches.map((br, i) => {
       const bi = gal.length ? `background:#eee url('${esc(gal[(i + 1) % gal.length])}') center/cover;` : `background:var(--surface);`;
-      const href = nn(br.maps) ? esc(br.maps) : "#";
+      const braw = nn(br.maps) || nn(br.address) || ""; const href = braw ? esc(/^https?:\/\//i.test(braw) ? braw : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(braw)) : "#";
       return `<a class="branch gold-accent" href="${href}" target="_blank" rel="noopener"><div class="bi" style="${bi}"></div><div class="bb"><b>${esc(br.name || "")}</b><div class="m">${esc([nn(br.area), nn(br.address)].filter(Boolean).join(" · "))}</div></div></a>`;
     }).join("")}</div></section>`;
   }
