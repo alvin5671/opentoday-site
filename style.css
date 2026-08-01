@@ -210,3 +210,16 @@ footer.site{background:var(--surface);border-top:1px solid var(--line);padding:4
   .stats{grid-template-columns:1fr 1fr;} .timeline,.steps{grid-template-columns:1fr;}
   .foot-grid{grid-template-columns:1fr;}
 }
+/* 首页商家区块：手机横向滑轨（explore 完整列表页不受影响） */
+@media(max-width:640px){
+  #today .biz-grid,#spotlightSec .biz-grid,#featuredSec .biz-grid,#recentSec .biz-grid{
+    display:flex!important;grid-template-columns:none!important;
+    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    gap:14px;padding-bottom:8px;padding-right:16px;scrollbar-width:none;
+  }
+  #today .biz-grid::-webkit-scrollbar,#spotlightSec .biz-grid::-webkit-scrollbar,
+  #featuredSec .biz-grid::-webkit-scrollbar,#recentSec .biz-grid::-webkit-scrollbar{display:none;}
+  #today .biz-grid>*,#spotlightSec .biz-grid>*,#featuredSec .biz-grid>*,#recentSec .biz-grid>*{
+    flex:0 0 82%;scroll-snap-align:start;
+  }
+}
