@@ -63,6 +63,11 @@ document.addEventListener("click",function(e){
     fetch(SB+"/rest/v1/rpc/claim_offer",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},body:JSON.stringify({bid:parseInt(bid,10)})}).then(function(r){return r.json();}).then(function(n){ var el=document.getElementById("offerCount"); if(el&&typeof n==="number") el.textContent="已 "+n+" 人领取"; }).catch(function(){});
   });
 })();
+(function(){
+  var k="kopi-republic";
+  try{ if(!k||sessionStorage.getItem("otv_"+k)) return; sessionStorage.setItem("otv_"+k,"1"); }catch(e){}
+  fetch("https://jumzzfvgkqsfeypbpgcq.supabase.co/rest/v1/rpc/bump_view",{method:"POST",headers:{apikey:"sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI",Authorization:"Bearer sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI","Content-Type":"application/json"},body:JSON.stringify({p_key:k})}).catch(function(){});
+})();
 </script>
 </body>
 </html>
