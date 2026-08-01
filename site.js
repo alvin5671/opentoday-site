@@ -49,13 +49,15 @@
     '<span><span class="logo-name">OpenToday</span> <span class="logo-zh">今日开业</span></span></a>' +
     '<nav class="nav-links">' + navHtml + "</nav>" +
     '<div class="nav-cta">' +
+    '<button class="btn ot-install-btn" style="display:none;background:#fff;color:#F97316;border:1.5px solid #F97316;">📲 安装 App</button>' +
     '<a class="btn btn-brand" href="submit.html">免费提交</a>' +
     '<a class="btn btn-dark" href="https://wa.me/601175938168" target="_blank" rel="noopener">● WhatsApp</a></div>' +
     '<button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>' +
     '</div>' +
     '<div class="mobile-menu" id="mobileMenu"><div class="container" style="padding:0;">' +
     navHtml.replace(/class="[^"]*"/g, "") +
-    '<div class="mcta"><a class="btn btn-brand btn-block" href="submit.html">免费提交</a>' +
+    '<div class="mcta"><button class="btn btn-block ot-install-btn" style="display:none;background:#fff;color:#F97316;border:1.5px solid #F97316;">📲 安装 App</button>' +
+    '<a class="btn btn-brand btn-block" href="submit.html">免费提交</a>' +
     '<a class="btn btn-dark btn-block" href="https://wa.me/601175938168" target="_blank" rel="noopener">● WhatsApp 咨询</a></div></div></div></header>';
 
   var footer =
@@ -76,6 +78,29 @@
   var mb = document.getElementById("menuBtn");
   var mm = document.getElementById("mobileMenu");
   if (mb && mm) mb.addEventListener("click", function () { mm.classList.toggle("open"); });
+
+  // 「安装 App」按钮：安卓 Chrome 弹安装框；iOS Safari 弹教学；已安装/不支持则隐藏
+  (function () {
+    var installBtns = document.querySelectorAll(".ot-install-btn");
+    if (!installBtns.length) return;
+    var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone;
+    if (standalone) return;
+    var ua = navigator.userAgent || "";
+    var isIOS = /iphone|ipad|ipod/i.test(ua);
+    var isIOSSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|edgios/i.test(ua);
+    var deferred = null;
+    function show() { Array.prototype.forEach.call(installBtns, function (b) { b.style.display = ""; }); }
+    function hide() { Array.prototype.forEach.call(installBtns, function (b) { b.style.display = "none"; }); }
+    window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferred = e; show(); });
+    window.addEventListener("appinstalled", function () { hide(); });
+    if (isIOSSafari) show();
+    Array.prototype.forEach.call(installBtns, function (b) {
+      b.addEventListener("click", function () {
+        if (deferred) { deferred.prompt(); deferred.userChoice.then(function () { deferred = null; hide(); }); }
+        else { alert("在 iPhone 上安装 App：\n1. 点浏览器底部的「分享」按钮 ⬆️\n2. 选「加入主屏幕 / Add to Home Screen」\n3. 右上角点「加入」"); }
+      });
+    });
+  })();
 
   // Generic interactions used across pages
   document.addEventListener("click", function (e) {
