@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /stats.html
+Disallow: /edit-business.html
+Disallow: /business.html
+
+Sitemap: https://opentoday.my/sitemap.xml
