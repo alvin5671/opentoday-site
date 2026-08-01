@@ -88,7 +88,7 @@ const TIER = { "Free Listing": 0, "Opening Profile": 1, "Launch Boost": 2, "Prem
 // ---------- 数据 ----------
 async function fetchPublished() {
   const url = SB_URL + "/rest/v1/customers?listing_status=eq." + encodeURIComponent("已刊登") +
-    "&select=id,slug,business_name,name,category,subcategory,opening_type,opening_date,short_description,brand_story,address,area,city,hours,phone,whatsapp,website_url,google_maps_url,facebook_url,instagram_url,google_review_url,faq,products,image_url,gallery,slogan,logo_url,project,offer_title,offer_desc,offer_until,offer_claims,branches,featured,featured_start,featured_until,created_at&order=id.desc";
+    "&select=id,slug,business_name,name,category,subcategory,opening_type,opening_date,short_description,brand_story,address,area,city,hours,phone,whatsapp,website_url,google_maps_url,facebook_url,instagram_url,google_review_url,faq,products,image_url,gallery,slogan,logo_url,project,offer_title,offer_desc,offer_until,offer_claims,branches,featured,featured_start,featured_until,show_today,feature_tier,created_at&order=id.desc";
   const r = await fetch(url, { headers: H });
   if (!r.ok) throw new Error("fetch failed " + r.status);
   return r.json();
@@ -313,6 +313,95 @@ document.addEventListener("click",function(e){
 </html>`;
 }
 
+// ---------- 首页 / 探索页 卡片注入（爬虫可读）----------
+// 卡片标记严格照 index.html / explore.html 里的 card()/tierCard()，JS 加载后仍会用实时数据覆盖。
+const COLORS_HOME = ["#e7ddd4", "#d9ccc0", "#d9e0dc", "#e6e2d6", "#e9dfd0"];
+const COLORS_EXPLORE = ["#e7ddd4", "#d9ccc0", "#d9e0dc", "#e6e2d6", "#e9dfd0", "#dfe3ea"];
+
+const cardHref = (b) => b.slug ? ("/business/" + b.slug + "/") : ("business.html?id=" + b.id);
+const cardMeta = (b) => [nn(b.subcategory) || nn(b.category), nn(b.area) || nn(b.city)].filter(Boolean).join(" · ");
+const cardBg = (b, i, colors) => nn(b.image_url) ? ("background:#eee url('" + b.image_url + "') center/cover;") : ("background:" + colors[i % colors.length] + ";");
+
+function homeCard(b, i) {
+  const bg = cardBg(b, i, COLORS_HOME);
+  const badge = b._feat ? '<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>' : '<span class="badge badge-new">NEW</span>';
+  const dt = fmtDate(b.opening_date);
+  return '<a class="biz" href="' + cardHref(b) + '"><div class="biz-img" style="' + bg + '">' + badge + '</div><div class="biz-body"><b>' + esc(b.business_name) + '</b><div class="meta">' + esc(cardMeta(b)) + '</div>' + (dt ? '<div class="date">' + esc(dt) + '</div>' : '') + '</div></a>';
+}
+function homeTierCard(b, i, tier) {
+  const bg = cardBg(b, i, COLORS_HOME);
+  const dt = fmtDate(b.opening_date);
+  const hot = tier === "spotlight";
+  const frame = hot
+    ? 'border:1px solid rgba(249,115,22,.55);box-shadow:0 8px 24px rgba(249,115,22,.18);'
+    : 'border:1px solid rgba(249,115,22,.3);box-shadow:0 6px 20px rgba(249,115,22,.12);';
+  const badge = hot
+    ? '<span class="badge" style="background:#F97316;color:#fff;">🔥 本周焦点</span>'
+    : '<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>';
+  return '<a class="biz" href="' + cardHref(b) + '" style="' + frame + '"><div class="biz-img" style="' + bg + '">' + badge + '</div><div class="biz-body"><b>' + esc(b.business_name) + '</b><div class="meta">' + esc(cardMeta(b)) + '</div>' + (dt ? '<div class="date">' + esc(dt) + '</div>' : '') + '</div></a>';
+}
+function exploreCard(b, i) {
+  const bg = cardBg(b, i, COLORS_EXPLORE);
+  const badge = b._feat ? '<span class="badge" style="background:#F59E0B;color:#fff;">⭐ 精选</span>' : '<span class="badge badge-open">已刊登</span>';
+  return '<a class="biz" href="' + cardHref(b) + '"><div class="biz-img" style="' + bg + '">' + badge + '</div><div class="biz-body"><b>' + esc(b.business_name) + '</b><div class="meta">' + esc(cardMeta(b)) + '</div></div></a>';
+}
+
+// 开业日期新→旧（空值排最后），与前端 order=opening_date.desc 对齐
+const byOpeningDesc = (a, c) => String(c.opening_date || "").localeCompare(String(a.opening_date || ""));
+function markFeat(rows) {
+  const today = new Date().toISOString().slice(0, 10);
+  rows.forEach(b => {
+    b._feat = !!b.featured && (!nn(b.featured_start) || String(b.featured_start) <= today) && (!nn(b.featured_until) || String(b.featured_until) >= today);
+    b._tier = b._feat ? (b.feature_tier === "spotlight" ? "spotlight" : "featured") : "";
+  });
+  return rows;
+}
+
+// 替换 <!--OT:marker-->…<!--/OT:marker--> 之间的内容（用函数替换，避开 $ 转义坑）
+function replaceMarker(src, marker, content) {
+  const re = new RegExp("(<!--OT:" + marker + "-->)[\\s\\S]*?(<!--/OT:" + marker + "-->)");
+  return re.test(src) ? src.replace(re, (m, a, b) => a + content + b) : src;
+}
+function replaceNum(src, id, val) {
+  return src.replace(new RegExp('(id="' + id + '">)[^<]*(<)'), (m, a, b) => a + val + b);
+}
+
+function buildHomeAndExplore(list) {
+  // ---- 首页 index.html ----
+  const home = markFeat(list.slice().sort(byOpeningDesc));
+  const w = (b) => b._tier === "spotlight" ? 2 : (b._tier === "featured" ? 1 : 0);
+  home.sort((a, c) => w(c) - w(a)); // 稳定排序：焦点/精选靠前
+  const spotlight = home.filter(b => b._tier === "spotlight").slice(0, 5);
+  const featured = home.filter(b => b._tier === "featured").slice(0, 5);
+  const others = home.filter(b => !b._feat);
+  const todayList = others.filter(b => b.show_today).slice(0, 10);
+  const areas = {}; home.forEach(b => { const a = nn(b.area) || nn(b.city); if (a) areas[a] = 1; });
+
+  const idxPath = path.join(ROOT, "index.html");
+  if (fs.existsSync(idxPath)) {
+    let s = fs.readFileSync(idxPath, "utf8");
+    s = replaceMarker(s, "today", todayList.length ? todayList.map((b, i) => homeCard(b, i)).join("") : '<p class="muted">加载中…</p>');
+    s = replaceMarker(s, "spotlight", spotlight.map((b, i) => homeTierCard(b, i, "spotlight")).join(""));
+    s = replaceMarker(s, "featured", featured.map((b, i) => homeTierCard(b, i, "featured")).join(""));
+    s = replaceNum(s, "statBiz", home.length);
+    s = replaceNum(s, "statArea", Object.keys(areas).length || "–");
+    fs.writeFileSync(idxPath, s, "utf8");
+    console.log("  ✓ index.html 注入：今日" + todayList.length + " 焦点" + spotlight.length + " 精选" + featured.length);
+  }
+
+  // ---- 探索页 explore.html ----
+  const exp = markFeat(list.slice().sort(byOpeningDesc));
+  exp.sort((a, c) => (c._feat ? 1 : 0) - (a._feat ? 1 : 0)); // 精选靠前
+  const expPath = path.join(ROOT, "explore.html");
+  if (fs.existsSync(expPath)) {
+    let s = fs.readFileSync(expPath, "utf8");
+    s = replaceMarker(s, "explore", exp.length ? exp.map((b, i) => exploreCard(b, i)).join("") : '<p class="muted" style="padding:20px 0;">加载中…</p>');
+    s = replaceNum(s, "bizCount", exp.length);
+    fs.writeFileSync(expPath, s, "utf8");
+    console.log("  ✓ explore.html 注入：" + exp.length + " 家");
+  }
+}
+
 // ---------- sitemap / map ----------
 function buildSitemap(list) {
   const staticPages = ["/", "/explore.html", "/pricing.html", "/about.html", "/submit.html"];
@@ -338,8 +427,9 @@ async function main() {
     idSlug[b.id] = b.slug;
     console.log("  ✓ /business/" + b.slug + "/  (" + (b.business_name || b.name) + ")");
   }
+  buildHomeAndExplore(list);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), buildSitemap(list), "utf8");
   fs.writeFileSync(path.join(ROOT, "id-slug-map.json"), JSON.stringify(idSlug), "utf8");
-  console.log(`\n完成：${list.length} 页 + sitemap.xml + id-slug-map.json`);
+  console.log(`\n完成：${list.length} 页 + 首页/探索页注入 + sitemap.xml + id-slug-map.json`);
 }
 main().catch(e => { console.error("生成失败：", e); process.exit(1); });
