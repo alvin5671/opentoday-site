@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-MY">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>业绩看板 — OpenToday</title>
+<style>
+  :root{--brand:#F97316;--ink:#111;--muted:#6b7280;--line:#e5e7eb;--surface:#f7f7f8;--ok:#16A34A;--warn:#b45309;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px;margin:0 auto;padding:18px 16px 60px;}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .brand{font-size:20px;font-weight:800;}
+  .brand span{color:var(--brand);}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:18px;}
+  .upd{color:var(--muted);font-size:12px;}
+  button.refresh{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;}
+  .kpi .lbl{font-size:12px;color:var(--muted);margin-bottom:7px;}
+  .kpi .val{font-size:30px;font-weight:800;line-height:1;}
+  .kpi .val small{font-size:14px;font-weight:600;color:var(--muted);}
+  .kpi.warn .val{color:var(--warn);}
+  .kpi.ok .val{color:var(--ok);}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;}
+  .card h2{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .row{display:flex;align-items:center;gap:12px;margin-bottom:11px;}
+  .row:last-child{margin-bottom:0;}
+  .row .name{width:150px;flex:none;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar{flex:1;height:22px;background:var(--surface);border-radius:6px;overflow:hidden;}
+  .bar>span{display:block;height:100%;background:var(--brand);border-radius:6px;min-width:2px;}
+  .row .num{width:56px;flex:none;text-align:right;font-size:13px;font-weight:800;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6;}
+  #gate{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:99;padding:20px;}
+  #gate h1{font-size:20px;}#gate input{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;width:100%;max-width:280px;}
+  #gate button{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer;}
+  #app{display:none;}
+  @media(max-width:640px){.kpis{grid-template-columns:1fr 1fr;}.grid2{grid-template-columns:1fr;}.row .name{width:110px;}}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <h1>业绩看板 · <span style="color:#F97316">OpenToday</span></h1>
+  <input id="pw" type="password" placeholder="输入密码" autocomplete="off">
+  <button onclick="checkPw()">进入</button>
+  <div id="pwerr" style="color:#DC2626;font-size:13px;display:none;">密码不对</div>
+</div>
+
+<div id="app"><div class="wrap">
+  <header class="top">
+    <div class="brand"><span>OpenToday</span> 业绩看板</div>
+    <button class="refresh" onclick="load()">↻ 刷新</button>
+  </header>
+  <div class="sub">商家数据 + 代理业绩 · 数据实时读取 <span id="upd" class="upd"></span></div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid2">
+    <div class="card"><h2>📦 按配套</h2><div id="byPkg"></div></div>
+    <div class="card"><h2>🚦 按状态</h2><div id="byStatus"></div></div>
+  </div>
+
+  <div class="card"><h2>🧑‍💼 代理业绩（按 ref 带进商家数）</h2><div id="byAgent"></div>
+    <div class="note" id="agentNote"></div>
+  </div>
+
+  <div class="card"><h2>💰 付费曝光位（实收项）</h2><div id="expo"></div></div>
+
+  <div class="card"><h2>📅 每月新增商家</h2><div id="byMonth"></div></div>
+
+  <div class="note">看板只统计，不改动任何数据。付费曝光是实收项（🔥焦点 RM499 / ⭐精选 RM299 每 4 周）。配套目前多为创始免费（Free Listing）。</div>
+</div></div>
+
+<script>
+var SB="https://jumzzfvgkqsfeypbpgcq.supabase.co", K="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
+var H={apikey:K,Authorization:"Bearer "+K};
+
+function checkPw(){
+  var v=document.getElementById('pw').value;
+  if(v==='opentoday888'){ try{sessionStorage.setItem('ot_stats','1');}catch(e){} enter(); }
+  else{ document.getElementById('pwerr').style.display='block'; }
+}
+function enter(){ document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block'; load(); }
+try{ if(sessionStorage.getItem('ot_stats')==='1'){ enter(); } }catch(e){}
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') checkPw(); });
+
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function bars(el, items, total){
+  var max=Math.max(1, Math.max.apply(null, items.map(function(i){return i.n;})).valueOf());
+  el.innerHTML = items.map(function(i){
+    return '<div class="row"><div class="name" title="'+esc(i.name)+'">'+esc(i.name)+'</div>'+
+      '<div class="bar"><span style="width:'+(i.n/max*100)+'%;'+(i.color?'background:'+i.color:'')+'"></span></div>'+
+      '<div class="num">'+i.n+(total?' <small style="color:#9ca3af;font-weight:600">'+Math.round(i.n/total*100)+'%</small>':'')+'</div></div>';
+  }).join('') || '<div class="note">暂无数据</div>';
+}
+
+function load(){
+  var sel="id,business_name,project,listing_status,agent,show_today,featured,feature_tier,created_at,submit_date";
+  fetch(SB+"/rest/v1/customers?select="+sel+"&order=id.desc",{headers:H})
+    .then(function(r){return r.json();})
+    .then(function(rows){ render(Array.isArray(rows)?rows:[]); })
+    .catch(function(){ document.getElementById('kpis').innerHTML='<div class="note" style="color:#DC2626">加载失败，请刷新重试</div>'; });
+}
+
+function render(d){
+  var total=d.length;
+  var live=d.filter(function(x){return x.listing_status==='已刊登';}).length;
+  var pend=d.filter(function(x){return x.listing_status==='待审核';}).length;
+  var off=d.filter(function(x){return x.listing_status==='已下架';}).length;
+  var now=new Date(), ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var monthNew=d.filter(function(x){var dt=(x.created_at||x.submit_date||'')+''; return dt.slice(0,7)===ym;}).length;
+
+  document.getElementById('kpis').innerHTML=
+    kpi('商家总数', total, '位','')+
+    kpi('已刊登', live, '位','ok')+
+    kpi('待审核', pend, '位','warn')+
+    kpi('本月新增', monthNew, '位','');
+
+  // 配套
+  var pkgOrder=['Free Listing','Opening Profile','Launch Boost','Premium Brand Launch'];
+  var pkgMap={}; d.forEach(function(x){var p=x.project||'(未选)'; pkgMap[p]=(pkgMap[p]||0)+1;});
+  var pkgItems=[]; pkgOrder.forEach(function(p){ if(pkgMap[p]!=null){pkgItems.push({name:p,n:pkgMap[p]}); delete pkgMap[p];}});
+  Object.keys(pkgMap).forEach(function(p){pkgItems.push({name:p,n:pkgMap[p]});});
+  bars(document.getElementById('byPkg'), pkgItems, total);
+
+  // 状态
+  bars(document.getElementById('byStatus'), [
+    {name:'待审核',n:pend,color:'#f59e0b'},
+    {name:'已刊登',n:live,color:'#16A34A'},
+    {name:'已下架',n:off,color:'#9ca3af'}
+  ], total);
+
+  // 代理
+  var agMap={}; d.forEach(function(x){ var a=(x.agent||'').trim(); a=a||'直客（无 ref）'; agMap[a]=(agMap[a]||0)+1; });
+  var agItems=Object.keys(agMap).map(function(a){return {name:a,n:agMap[a]};}).sort(function(a,b){return b.n-a.n;});
+  bars(document.getElementById('byAgent'), agItems, total);
+  var direct=agMap['直客（无 ref）']||0;
+  document.getElementById('agentNote').innerHTML='注：'+direct+' 家没记录到代理 ref（直客或没用推荐链接提交）。想让代理业绩准确，务必让商家用「代理专属链接」在自己手机上提交。';
+
+  // 曝光
+  var spot=d.filter(function(x){return x.featured && x.feature_tier==='spotlight';}).length;
+  var feat=d.filter(function(x){return x.featured && x.feature_tier && x.feature_tier!=='spotlight';}).length;
+  var today=d.filter(function(x){return x.show_today;}).length;
+  bars(document.getElementById('expo'), [
+    {name:'🔥 本周焦点',n:spot,color:'#F97316'},
+    {name:'⭐ 精选商家',n:feat,color:'#F59E0B'},
+    {name:'今日开业(勾选)',n:today,color:'#111'}
+  ], 0);
+
+  // 每月新增
+  var mMap={}; d.forEach(function(x){var dt=((x.created_at||x.submit_date||'')+'').slice(0,7); if(dt) mMap[dt]=(mMap[dt]||0)+1;});
+  var months=Object.keys(mMap).sort().slice(-6);
+  bars(document.getElementById('byMonth'), months.map(function(m){return {name:m,n:mMap[m]};}), 0);
+
+  var t=new Date();
+  document.getElementById('upd').textContent='· 更新于 '+t.toLocaleString('zh-CN',{hour12:false});
+}
+
+function kpi(lbl,val,unit,cls){
+  return '<div class="kpi '+(cls||'')+'"><div class="lbl">'+lbl+'</div><div class="val">'+val+' <small>'+unit+'</small></div></div>';
+}
+</script>
+</body>
+</html>
