@@ -3863,7 +3863,6 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
       .then(function(rows){ (rows||[]).forEach(function(r){ rev[r.id]=(parseFloat(r.pkg_fee)||0)+(parseFloat(r.expo_fee)||0); }); })
       .catch(function(){});
   }
-  function money(n){ return n>0 ? 'RM '+Math.round(n).toLocaleString('en-MY') : '<span style="color:#9ca3af;">—</span>'; }
   function enhance(){
     var ths=document.querySelectorAll('#cust-table-wrap table thead th');
     if(ths[22] && ths[22].textContent.trim()==='编辑'){ ths[22].textContent='业绩 RM'; }
@@ -3874,16 +3873,23 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
       if(!span){
         var btn=cell.querySelector('.edit-btn'); if(btn) btn.style.display='none';
         span=document.createElement('span'); span.className='ot-rev';
-        span.style.cssText='font-weight:800;color:#111;font-size:13px;white-space:nowrap;';
+        span.style.cssText='font-weight:800;font-size:13px;white-space:nowrap;';
         cell.appendChild(span); cell.style.textAlign='center';
       }
-      span.innerHTML=money(rev[id]||0);
+      var val=rev[id]||0;
+      var txt=val>0 ? ('RM '+Math.round(val).toLocaleString('en-MY')) : '—';
+      // 只在变化时更新，避免触发 MutationObserver 造成死循环
+      if(span.getAttribute('data-v')!==txt){
+        span.textContent=txt;
+        span.style.color=val>0?'#111':'#9ca3af';
+        span.setAttribute('data-v',txt);
+      }
     });
   }
   function boot(){
     var tb=document.getElementById('cust-tbody'); if(!tb){ return setTimeout(boot,600); }
-    fetchRev().then(function(){ enhance(); try{ new MutationObserver(enhance).observe(tb,{childList:true,subtree:true}); }catch(e){} });
-    setInterval(enhance,2500); setInterval(fetchRev,20000);
+    fetchRev().then(function(){ enhance(); });
+    setInterval(enhance,2500); setInterval(function(){ fetchRev(); },20000);
   }
   boot();
 })();
