@@ -34,6 +34,13 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;}
   .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6;}
+  .revtop{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .revbox{background:var(--surface);border-radius:12px;padding:14px;}
+  .revbox .l{font-size:12px;color:var(--muted);margin-bottom:6px;}
+  .revbox .v{font-size:24px;font-weight:800;}
+  .revbox.big{background:#fff7ed;}
+  .revbox.big .v{color:var(--brand);}
+  @media(max-width:640px){.revtop{grid-template-columns:1fr;}}
   #gate{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:99;padding:20px;}
   #gate h1{font-size:20px;}#gate input{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;width:100%;max-width:280px;}
   #gate button{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer;}
@@ -58,6 +65,12 @@
   <div class="sub">商家数据 + 代理业绩 · 数据实时读取 <span id="upd" class="upd"></span></div>
 
   <div class="kpis" id="kpis"></div>
+
+  <div class="card"><h2>💰 营收 (RM)</h2>
+    <div id="revTop" class="revtop"></div>
+    <div id="revByAgent" style="margin-top:18px;"></div>
+    <div class="note">营收来自手机后台每张卡填的「配套费 / 曝光费」。没填的按 RM0 算。</div>
+  </div>
 
   <div class="grid2">
     <div class="card"><h2>📦 按配套</h2><div id="byPkg"></div></div>
@@ -99,7 +112,7 @@ function bars(el, items, total){
 }
 
 function load(){
-  var sel="id,business_name,project,listing_status,agent,show_today,featured,feature_tier,created_at,submit_date";
+  var sel="id,business_name,project,listing_status,agent,show_today,featured,feature_tier,created_at,submit_date,pkg_fee,expo_fee";
   fetch(SB+"/rest/v1/customers?select="+sel+"&order=id.desc",{headers:H})
     .then(function(r){return r.json();})
     .then(function(rows){ render(Array.isArray(rows)?rows:[]); })
@@ -119,6 +132,29 @@ function render(d){
     kpi('已刊登', live, '位','ok')+
     kpi('待审核', pend, '位','warn')+
     kpi('本月新增', monthNew, '位','');
+
+  // 营收
+  var num=function(v){return parseFloat(v)||0;};
+  var money=function(n){return 'RM '+Math.round(n).toLocaleString('en-MY');};
+  var pkgRev=d.reduce(function(s,x){return s+num(x.pkg_fee);},0);
+  var expoRev=d.reduce(function(s,x){return s+num(x.expo_fee);},0);
+  var totalRev=pkgRev+expoRev;
+  var paidCnt=d.filter(function(x){return num(x.pkg_fee)+num(x.expo_fee)>0;}).length;
+  document.getElementById('revTop').innerHTML=
+    '<div class="revbox big"><div class="l">总营收</div><div class="v">'+money(totalRev)+'</div></div>'+
+    '<div class="revbox"><div class="l">配套收入</div><div class="v">'+money(pkgRev)+'</div></div>'+
+    '<div class="revbox"><div class="l">曝光收入</div><div class="v">'+money(expoRev)+'</div></div>';
+  var revAg={}; d.forEach(function(x){ var r=num(x.pkg_fee)+num(x.expo_fee); if(r<=0) return; var a=(x.agent||'').trim()||'直客（无 ref）'; revAg[a]=(revAg[a]||0)+r; });
+  var revAgItems=Object.keys(revAg).map(function(a){return {name:a,n:revAg[a]};}).sort(function(a,b){return b.n-a.n;});
+  var elRA=document.getElementById('revByAgent');
+  if(revAgItems.length){
+    var maxr=Math.max.apply(null,revAgItems.map(function(i){return i.n;}));
+    elRA.innerHTML='<div style="font-size:13px;font-weight:800;color:#374151;margin-bottom:12px;">🧑‍💼 按代理营收</div>'+
+      revAgItems.map(function(i){return '<div class="row"><div class="name" title="'+esc(i.name)+'">'+esc(i.name)+'</div><div class="bar"><span style="width:'+(i.n/maxr*100)+'%"></span></div><div class="num" style="width:88px">'+money(i.n)+'</div></div>';}).join('')+
+      '<div class="note">付费商家 '+paidCnt+' 家 · 平均每单 '+money(paidCnt?totalRev/paidCnt:0)+'</div>';
+  } else {
+    elRA.innerHTML='<div class="note">还没填任何成交金额。去手机后台客户卡片填「配套费/曝光费」，这里就会出数。</div>';
+  }
 
   // 配套
   var pkgOrder=['Free Listing','Opening Profile','Launch Boost','Premium Brand Launch'];
