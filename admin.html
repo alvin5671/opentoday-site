@@ -880,6 +880,9 @@
           <button class="tab" onclick="filterByStatus('审核中', this)">审核中</button>
           <button class="tab" onclick="filterByStatus('已批准', this)">已批准</button>
           <button class="tab" onclick="filterByStatus('已下架', this)">已下架</button>
+          <button class="tab" onclick="filterByStatus('今天开业', this)">今天开业</button>
+          <button class="tab" onclick="filterByStatus('本周焦点', this)">🔥焦点</button>
+          <button class="tab" onclick="filterByStatus('精选', this)">⭐精选</button>
         </div>
         <select class="filter-select" id="cust-proj-filter" onchange="filterByProject(this.value)"><option value="">项目内容</option></select>
         <select class="filter-select" id="month-filter-sel" onchange="filterByMonth(this.value)"><option value="">月份</option></select>
@@ -2470,8 +2473,13 @@ function filterCustomers() {
     var listSel = tr.querySelector('.ot-inline-listing');
     var listVal = listSel ? listSel.value : '';
     var matchStatus;
+    var _eid = tr.dataset.sbId;
+    var _ex = (window.OT_expo || {})[_eid] || {};
     if (status === '全部') matchStatus = true;
     else if (status === '审核中' || status === '已批准' || status === '已下架') matchStatus = (listVal === status);
+    else if (status === '今天开业') matchStatus = !!_ex.show_today;
+    else if (status === '本周焦点') matchStatus = !!(_ex.featured && _ex.feature_tier === 'spotlight');
+    else if (status === '精选') matchStatus = !!(_ex.featured && _ex.feature_tier && _ex.feature_tier !== 'spotlight');
     else matchStatus = (status === '待制作' ? progressVal === '待制作' : statusVal === status);
     // project match
     var matchProject = !_custFilterProject || projVal === _custFilterProject;
@@ -3530,6 +3538,7 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
   var U="https://jumzzfvgkqsfeypbpgcq.supabase.co", K="sb_publishable_QspxuW5zHogZs2d3Uyl4lA_LEHGjHSI";
   var H={apikey:K,Authorization:"Bearer "+K};
   var fmap={}, ready=false;
+  window.OT_expo=fmap; /* 供客户筛选读取曝光/今日开业状态 */
   var hasTier=true;
   function fetchMap(){
     var sel=hasTier?"id,show_today,featured,feature_tier,featured_until,edit_token":"id,show_today,featured,featured_until,edit_token";
@@ -3675,7 +3684,11 @@ try{ localStorage.setItem("ot_admin","1"); }catch(e){}
     '.ot-b-edit{background:#eef4ff!important;color:#2563EB!important;border-color:#cfe0ff!important;}'+
     '.ot-b-unpub{background:#fff!important;color:#DC2626!important;border-color:#DC2626!important;}'+
     '.ot-mc-sec{font-size:13px;font-weight:800;color:#374151;margin:16px 2px 9px;}'+
-    '.ot-mc-empty{color:#9ca3af;font-size:13px;margin:2px 2px 10px;}';
+    '.ot-mc-empty{color:#9ca3af;font-size:13px;margin:2px 2px 10px;}'+
+    /* 精简客户表：隐藏小叮当签证财务栏（护照号/跟进人/PassTo/ExtraFee/押金/待付款/CostType/卖价/本钱/分成利润/利润/备注/支付方式/签证有效期/VALID），只留 OpenToday 相关。纯隐藏不删数据。 */
+    '#cust-table-wrap table thead th:nth-child(3),#cust-table-wrap table tbody td:nth-child(3),'+
+    '#cust-table-wrap table thead th:nth-child(4),#cust-table-wrap table tbody td:nth-child(4),'+
+    '#cust-table-wrap table thead th:nth-child(n+8):nth-child(-n+20),#cust-table-wrap table tbody td:nth-child(n+8):nth-child(-n+20){display:none!important;}';
   document.head.appendChild(st);
 
   var box=null;
