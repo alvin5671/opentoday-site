@@ -31,7 +31,7 @@
   var links = [
     { label: "首页", href: "index.html", key: "home" },
     { label: "今日开业", href: "index.html#today", key: "today" },
-    { label: "探索商家", href: "explore.html", key: "explore" },
+    { label: "寻找商家", href: "explore.html", key: "explore" },
     { label: "为商家服务", href: "pricing.html", key: "services" },
     { label: "关于我们", href: "about.html", key: "about" },
   ];
@@ -64,7 +64,7 @@
     '<footer class="site"><div class="container"><div class="foot-grid">' +
     '<div class="foot-col"><a class="logo" href="index.html"><img src="logo.png" alt="OpenToday" style="width:34px;height:34px;display:block;" /> <span class="logo-name">OpenToday</span></a>' +
     '<p style="font-size:14px;color:var(--muted);margin-top:12px;max-width:320px;">发现马来西亚最新开业商家，帮助新店被顾客、Google 和 AI 找到。专注 Johor。</p></div>' +
-    '<div class="foot-col"><h4>探索</h4><a href="explore.html">探索商家</a><a href="explore.html">最新开业</a><a href="explore.html#categories">热门分类</a></div>' +
+    '<div class="foot-col"><h4>探索</h4><a href="explore.html">寻找商家</a><a href="explore.html">最新开业</a><a href="explore.html#categories">热门分类</a></div>' +
     '<div class="foot-col"><h4>为商家服务</h4><a href="pricing.html">套餐价格</a><a href="pricing.html">Opening Profile</a><a href="pricing.html">Launch Boost</a><a href="pricing.html">Premium Brand Launch</a></div>' +
     '<div class="foot-col"><h4>关于</h4><a href="about.html">关于我们</a><a href="pricing.html">套餐价格</a><a href="submit.html">免费提交</a></div>' +
     '</div><div class="foot-bottom"><span>© 2026 OpenToday｜今日开业. 专注 Johor.</span>' +
