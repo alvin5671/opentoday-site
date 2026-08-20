@@ -35,7 +35,7 @@
     var waze = b.address ? ("https://waze.com/ul?q=" + encodeURIComponent(b.address) + "&navigate=yes") : "";
     var metaStr = [b.category, b.area || b.city, fmtDate(b.opening_date)].filter(Boolean).join(" · ");
 
-    var html = '<div class="crumb"><a href="/">首页</a> / <a href="/explore.html">探索商家</a> / <span>' + esc(name) + '</span></div>';
+    var html = '<div class="crumb"><a href="/">首页</a> / <a href="/explore.html">寻找商家</a> / <span>' + esc(name) + '</span></div>';
 
     if (premium) {
       var subbits = []; if (b.category) subbits.push(b.category); if (branches.length >= 2) subbits.push(branches.length + " 家分店");
