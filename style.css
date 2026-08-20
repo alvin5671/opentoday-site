@@ -23,7 +23,7 @@ section{padding:56px 0;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;border-radius:999px;padding:10px 18px;font-size:14px;cursor:pointer;border:none;transition:.15s;white-space:nowrap;}
 .btn-lg{padding:13px 24px;font-size:15px;}
 .btn-brand{background:var(--brand);color:#fff;} .btn-brand:hover{background:var(--brand-hover);}
-.btn-dark{background:var(--ink-strong);color:#fff;} .btn-dark:hover{background:#000;}
+.btn-dark{background:var(--ink-strong);color:#fff;} .btn-dark:hover{background:#000;} .btn-dark[href*="wa.me"]{background:#25D366;color:#fff;} .btn-dark[href*="wa.me"]:hover{background:#20BA5A;}
 .btn-wa{background:var(--success);color:#fff;} .btn-wa:hover{filter:brightness(.95);}
 .btn-outline{background:#fff;border:1px solid var(--line);color:var(--ink);} .btn-outline:hover{background:var(--surface);}
 .btn-ghost-dark{background:transparent;border:1px solid #444;color:#fff;}
